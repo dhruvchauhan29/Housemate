@@ -68,6 +68,9 @@ export class BookServiceComponent implements OnInit, OnDestroy {
           const expert = MOCK_EXPERTS.find(e => e.id === expertId);
           if (expert) {
             this.store.dispatch(selectExpert({ expert }));
+            // Navigate to select-service when expert is preselected via query param
+            // The select-service page will display the expert details and allow service selection
+            this.router.navigate(['/book-service/select-service'], { replaceUrl: true });
           }
         }
       });
