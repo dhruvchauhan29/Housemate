@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { Address } from '../../store/models/booking.model';
 import { selectAddresses, selectSelectedAddress } from '../../store/selectors/booking.selectors';
-import { selectAddress, addAddress } from '../../store/actions/booking.actions';
+import { selectAddress, addAddress, setAddingNewAddress } from '../../store/actions/booking.actions';
 
 @Component({
   selector: 'app-select-address',
@@ -70,7 +70,7 @@ export class SelectAddressComponent implements OnInit {
     const homeAddress: Address = {
       id: 'addr-1',
       label: 'Home',
-      serviceAddress: '123 Main Street, Apartment 4B',
+      serviceAddress: 'Flat 304, Building A, Green Valley Apartments, M.G. Road',
       city: 'Mumbai',
       state: 'Maharashtra',
       pinCode: '400001',
@@ -84,18 +84,32 @@ export class SelectAddressComponent implements OnInit {
     const officeAddress: Address = {
       id: 'addr-2',
       label: 'Office',
-      serviceAddress: '456 Business Park, Tower A, Floor 5',
+      serviceAddress: 'Tower B, 15th Floor, Tech Park, Bandra Kurla Complex',
       city: 'Mumbai',
       state: 'Maharashtra',
-      pinCode: '400002',
-      contactName: 'Jane Smith',
-      contactNumber: '9876543220',
-      houseType: '4 BHK',
+      pinCode: '400051',
+      contactName: 'John Doe',
+      contactNumber: '9876543210',
+      houseType: '3 BHK',
+      isDefault: false
+    };
+
+    const parentsHouse: Address = {
+      id: 'addr-3',
+      label: 'Parents House',
+      serviceAddress: 'House No. 42, Shanti Nagar, Near Central Park',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pinCode: '400092',
+      contactName: 'John Doe',
+      contactNumber: '9876543210',
+      houseType: '3 BHK',
       isDefault: false
     };
 
     this.store.dispatch(addAddress({ address: homeAddress }));
     this.store.dispatch(addAddress({ address: officeAddress }));
+    this.store.dispatch(addAddress({ address: parentsHouse }));
   }
 
   selectAddressCard(address: Address): void {
@@ -104,9 +118,14 @@ export class SelectAddressComponent implements OnInit {
 
   toggleAddNewForm(): void {
     this.showAddNewForm = !this.showAddNewForm;
+    this.store.dispatch(setAddingNewAddress({ isAdding: this.showAddNewForm }));
     if (!this.showAddNewForm) {
       this.addressForm.reset();
     }
+  }
+
+  selectHouseType(type: string): void {
+    this.addressForm.patchValue({ houseType: type });
   }
 
   saveAddress(): void {
@@ -120,6 +139,7 @@ export class SelectAddressComponent implements OnInit {
 
       this.store.dispatch(addAddress({ address: newAddress }));
       this.store.dispatch(selectAddress({ address: newAddress }));
+      this.store.dispatch(setAddingNewAddress({ isAdding: false }));
       
       this.addressForm.reset();
       this.showAddNewForm = false;

@@ -63,6 +63,11 @@ export const deleteAddress = createAction(
   props<{ addressId: string }>()
 );
 
+export const setAddingNewAddress = createAction(
+  '[Booking] Set Adding New Address',
+  props<{ isAdding: boolean }>()
+);
+
 // Coupon Actions
 export const applyCoupon = createAction(
   '[Booking] Apply Coupon',

@@ -21,6 +21,10 @@
       <span (click)="navigateHome()" class="breadcrumb-link">Home</span>
       <mat-icon>chevron_right</mat-icon>
       <span class="breadcrumb-current">Book a Service</span>
+      <ng-container *ngIf="currentRoute.includes('select-address') && isAddingNewAddress">
+        <mat-icon>chevron_right</mat-icon>
+        <span class="breadcrumb-current">Add New Address</span>
+      </ng-container>
     </div>
 
     <div class="page-header">
