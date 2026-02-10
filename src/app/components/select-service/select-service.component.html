@@ -80,4 +80,22 @@
       </mat-card-content>
     </mat-card>
   </div>
+
+  <!-- Navigation Buttons -->
+  <div class="navigation-buttons">
+    <button mat-stroked-button class="back-button" (click)="previousStep()">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="next-button" 
+      (click)="nextStep()"
+      [disabled]="!selectedServiceId"
+    >
+      Next
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
 </div>

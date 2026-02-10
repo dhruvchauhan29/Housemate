@@ -121,5 +121,19 @@ export class SelectServiceComponent implements OnInit, OnDestroy {
   getStarArray(rating: number): number[] {
     return Array(5).fill(0).map((_, i) => i < Math.floor(rating) ? 1 : 0);
   }
+
+  nextStep(): void {
+    if (this.selectedExpert) {
+      // If expert is already selected, skip to datetime
+      this.router.navigate(['/book-service/select-datetime']);
+    } else {
+      // Otherwise, go to expert selection
+      this.router.navigate(['/book-service/select-expert']);
+    }
+  }
+
+  previousStep(): void {
+    this.router.navigate(['/customer/dashboard']);
+  }
 }
 
