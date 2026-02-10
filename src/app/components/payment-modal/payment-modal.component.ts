@@ -107,8 +107,4 @@ export class PaymentModalComponent implements OnInit {
   close(): void {
     this.dialogRef.close();
   }
-
-  onPaymentMethodChange(method: 'card' | 'upi' | 'netbanking'): void {
-    this.paymentMethod = method;
-  }
 }
