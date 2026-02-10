@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +15,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './book-service.component.html',
   styleUrl: './book-service.component.scss'
 })
-export class BookServiceComponent {
+export class BookServiceComponent implements OnInit {
   currentUser: User | null = null;
   currentRoute: string = '';
   selectedServiceId: string | undefined;
@@ -28,7 +28,10 @@ export class BookServiceComponent {
   ) {
     this.currentUser = this.authService.getCurrentUser();
     
-    // Subscribe to router events to track current route
+    // Initialize currentRoute with the current router URL (will be updated by subscription)
+    this.currentRoute = this.router.url;
+    
+    // Subscribe to router events to track current route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -43,6 +46,12 @@ export class BookServiceComponent {
     this.store.select(selectSelectedExpert).subscribe(expert => {
       this.selectedExpertId = expert?.id;
     });
+  }
+
+  ngOnInit() {
+    // Ensure currentRoute is set correctly after component initialization
+    // This handles cases where initial navigation completed before subscriptions
+    this.currentRoute = this.router.url;
   }
 
   navigateHome() {
