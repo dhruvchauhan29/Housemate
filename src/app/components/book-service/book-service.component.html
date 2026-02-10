@@ -24,9 +24,16 @@
     </div>
 
     <div class="page-header">
-      <h1 class="page-title">BOOK A SERVICE</h1>
-      <p class="page-subtitle">Find a trusted expert for all your household needs</p>
-      <button mat-raised-button color="primary" class="btn-next-header">
+      <div class="header-content">
+        <h1 class="page-title">BOOK A SERVICE</h1>
+        <p class="page-subtitle">Find a trusted expert for all your household needs</p>
+      </div>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="btn-next-header"
+        [disabled]="isNextButtonDisabled()"
+        (click)="navigateNext()">
         <span>Next</span>
         <mat-icon>arrow_forward</mat-icon>
       </button>

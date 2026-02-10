@@ -1,96 +1,109 @@
 <div class="select-datetime-container">
-  <!-- Breadcrumb / Step Indicator -->
-  <div class="breadcrumb">
-    <div class="step completed">
-      <span class="step-number">1</span>
-      <span class="step-label">Select Service</span>
-      <mat-icon class="check-icon">check_circle</mat-icon>
+  <!-- Collapsed Service Selection Section -->
+  <div class="collapsed-section">
+    <div class="collapsed-header">
+      <h3 class="collapsed-title">Select Service</h3>
+      <mat-icon class="collapse-icon">expand_more</mat-icon>
     </div>
-    <div class="step-divider">→</div>
-    <div class="step active">
-      <span class="step-number">2</span>
-      <span class="step-label">Select Date & Time</span>
-    </div>
+    <mat-icon class="check-icon">check_circle</mat-icon>
   </div>
 
-  <h2 class="page-title">Schedule Your Service</h2>
-  
-  <!-- Preferred Date Section -->
-  <div class="section date-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">calendar_today</mat-icon>
-      <h3>Preferred Date</h3>
-    </div>
-    <mat-form-field appearance="outline" class="date-field">
-      <mat-label>Select Date</mat-label>
-      <input matInput [matDatepicker]="picker" (dateChange)="onDateChange($event.value)" readonly>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
+  <!-- Date & Time Selection Section -->
+  <div class="datetime-section">
+    <h2 class="section-title">Select Date & Time</h2>
+    
+    <div class="datetime-content">
+      <!-- Calendar Section -->
+      <div class="calendar-section">
+        <div class="calendar-header">
+          <div class="date-label">
+            <mat-icon class="calendar-icon">calendar_today</mat-icon>
+            <span>Preferred Date</span>
+          </div>
+          <mat-form-field appearance="outline" class="frequency-field">
+            <mat-select [value]="selectedFrequency || 'Monthly'" (selectionChange)="onFrequencyChange($event.value)">
+              <mat-option value="Monthly">Monthly</mat-option>
+              <mat-option value="Weekly">Weekly</mat-option>
+              <mat-option value="Daily">Daily</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-  <!-- Frequency Dropdown Section -->
-  <div class="section frequency-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">event_repeat</mat-icon>
-      <h3>Service Frequency</h3>
-    </div>
-    <mat-form-field appearance="outline" class="frequency-field">
-      <mat-label>Select Frequency</mat-label>
-      <mat-select [value]="selectedFrequency" (selectionChange)="onFrequencyChange($event.value)">
-        <mat-option *ngFor="let frequency of frequencyOptions" [value]="frequency">
-          {{ frequency }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+        <!-- Dual Month Calendar -->
+        <div class="dual-calendar">
+          <div class="calendar-month">
+            <div class="month-header">
+              <button mat-icon-button (click)="previousMonth()">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <span class="month-title">{{ currentMonth | date: 'MMMM yyyy' }}</span>
+            </div>
+            <div class="calendar-grid">
+              <div class="day-header">S</div>
+              <div class="day-header">M</div>
+              <div class="day-header">T</div>
+              <div class="day-header">W</div>
+              <div class="day-header">T</div>
+              <div class="day-header">F</div>
+              <div class="day-header">S</div>
+              <div 
+                *ngFor="let day of getDaysInMonth(currentMonth)" 
+                class="calendar-day"
+                [class.selected]="isDateSelected(day)"
+                [class.today]="isToday(day)"
+                [class.disabled]="!day"
+                (click)="selectDate(day)">
+                {{ day || '' }}
+              </div>
+            </div>
+          </div>
 
-  <!-- Preferred Time Slot Section -->
-  <div class="section time-slot-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">schedule</mat-icon>
-      <h3>Preferred Time Slot</h3>
-    </div>
-    <div class="time-slots-grid">
-      <button 
-        *ngFor="let slot of timeSlots" 
-        mat-stroked-button 
-        class="time-slot-button"
-        [class.selected]="isTimeSlotSelected(slot.id)"
-        [class.disabled]="!slot.available"
-        [disabled]="!slot.available"
-        (click)="onTimeSlotSelect(slot)">
-        <mat-icon>access_time</mat-icon>
-        <span>{{ getTimeSlotDisplay(slot) }}</span>
-      </button>
-    </div>
-  </div>
+          <div class="calendar-month">
+            <div class="month-header">
+              <span class="month-title">{{ secondMonth | date: 'MMMM yyyy' }}</span>
+              <button mat-icon-button (click)="nextMonth()">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+            <div class="calendar-grid">
+              <div class="day-header">S</div>
+              <div class="day-header">M</div>
+              <div class="day-header">T</div>
+              <div class="day-header">W</div>
+              <div class="day-header">T</div>
+              <div class="day-header">F</div>
+              <div class="day-header">S</div>
+              <div 
+                *ngFor="let day of getDaysInMonth(secondMonth)" 
+                class="calendar-day"
+                [class.selected]="isDateSelected(day, true)"
+                [class.disabled]="!day"
+                (click)="selectDateNextMonth(day)">
+                {{ day || '' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- Duration Selector Section -->
-  <div class="section duration-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">hourglass_empty</mat-icon>
-      <h3>Service Duration</h3>
+      <!-- Time Slot Section -->
+      <div class="time-slot-section">
+        <div class="time-slot-header">
+          <mat-icon class="clock-icon">schedule</mat-icon>
+          <span>Preferred Time Slot</span>
+        </div>
+        
+        <div class="time-slots-grid">
+          <button 
+            *ngFor="let slot of timeSlots" 
+            mat-stroked-button 
+            class="time-slot-button"
+            [class.selected]="isTimeSlotSelected(slot.id)"
+            (click)="onTimeSlotSelect(slot)">
+            {{ getTimeSlotDisplay(slot) }}
+          </button>
+        </div>
+      </div>
     </div>
-    <mat-form-field appearance="outline" class="duration-field">
-      <mat-label>Select Duration (Hours)</mat-label>
-      <mat-select [value]="selectedDuration" (selectionChange)="onDurationChange($event.value)">
-        <mat-option *ngFor="let duration of durationOptions" [value]="duration">
-          {{ duration }} {{ duration === 1 ? 'Hour' : 'Hours' }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <!-- Navigation Buttons -->
-  <div class="actions">
-    <button mat-stroked-button class="btn-secondary" (click)="previousStep()">
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
-    <button mat-raised-button color="primary" class="btn-primary" (click)="nextStep()">
-      Next
-      <mat-icon>arrow_forward</mat-icon>
-    </button>
   </div>
 </div>

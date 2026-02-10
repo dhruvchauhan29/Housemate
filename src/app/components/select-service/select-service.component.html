@@ -1,30 +1,90 @@
 <div class="select-service-container">
-  <div class="header">
-    <h2 class="title">Select Service</h2>
-  </div>
-
-  <div class="services-grid">
-    <div 
-      *ngFor="let service of services" 
-      class="service-card"
-      [class.selected]="selectedServiceId === service.id"
-      (click)="selectServiceCard(service)">
-      <div class="service-icon">{{ getServiceIcon(service.name) }}</div>
-      <h3 class="service-name">{{ service.name }}</h3>
-      <p class="service-description">{{ service.description }}</p>
-      <div class="service-price">Earn {{service.pricePerHour}}% (if you book 4 hrs or more)</div>
+  <!-- Service Selection Section -->
+  <div class="service-selection-section">
+    <h2 class="section-title">Select Service</h2>
+    <div class="services-horizontal-scroll">
+      <div 
+        *ngFor="let service of services" 
+        class="service-card"
+        [class.selected]="selectedServiceId === service.id"
+        (click)="selectServiceCard(service)">
+        <!-- TODO: Insert service icon image from Figma -->
+        <div class="service-icon-placeholder" [style.background]="'#000'">
+          <img src="" alt="Service icon from Figma design" style="display: none;" />
+        </div>
+        <h3 class="service-name">{{ service.name }}</h3>
+      </div>
     </div>
   </div>
 
-  <div class="actions">
-    <button 
-      mat-raised-button 
-      color="primary" 
-      [disabled]="!selectedServiceId"
-      (click)="nextStep()" 
-      class="btn-next">
-      <span>Next</span>
-      <mat-icon>arrow_forward</mat-icon>
-    </button>
+  <!-- Expert Selection Section -->
+  <div class="expert-selection-section">
+    <div class="expert-header">
+      <h2 class="section-title">Available Expert Near You</h2>
+      <div class="expert-actions">
+        <button mat-icon-button class="search-button">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button class="filter-button">
+          <mat-icon>tune</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="expert-cards-grid">
+      <div 
+        *ngFor="let expert of filteredExperts" 
+        class="expert-card"
+        [class.selected]="selectedExpertId === expert.id"
+        (click)="selectExpertCard(expert)">
+        <div class="expert-content">
+          <div class="expert-left">
+            <!-- TODO: Figma image placeholder – keep background black -->
+            <div class="expert-image-placeholder" [style.background]="'#000'">
+              <img src="" alt="Expert profile image from Figma design" style="display: none;" />
+            </div>
+          </div>
+          
+          <div class="expert-right">
+            <div class="expert-name-row">
+              <h3 class="expert-name">{{ expert.name }}</h3>
+              <mat-icon *ngIf="expert.verified" class="verified-icon">verified</mat-icon>
+            </div>
+
+            <div class="expert-rating">
+              <mat-icon class="star-icon">star</mat-icon>
+              <span class="rating-value">{{ expert.rating }} ({{ expert.reviewCount }})</span>
+              <mat-icon class="briefcase-icon">work</mat-icon>
+              <span class="experience">{{ expert.experience }} experience</span>
+            </div>
+
+            <div class="expert-location">
+              <mat-icon class="location-icon">location_on</mat-icon>
+              <span>{{ expert.distance }} away</span>
+            </div>
+
+            <div class="expert-services">
+              <span *ngFor="let service of expert.services.slice(0, 2)" class="service-badge">
+                {{ service }}
+              </span>
+            </div>
+
+            <div class="expert-languages">
+              <span class="languages-label">Languages:</span>
+              <span class="languages-value">{{ expert.languages.join(', ') }}</span>
+            </div>
+
+            <!-- Note: View Certificates functionality will be implemented in future -->
+            <a href="#" class="view-certificates" (click)="$event.preventDefault(); $event.stopPropagation();">
+              View Certificates
+            </a>
+          </div>
+
+          <div class="expert-price">
+            <span class="price-value">₹{{ expert.pricePerHour }}/hr</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
