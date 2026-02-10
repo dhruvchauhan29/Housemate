@@ -153,4 +153,13 @@ export class SelectExpertComponent implements OnInit {
   previousStep(): void {
     this.router.navigate(['/book-service/select-service']);
   }
+
+  bookServiceWithExpert(expert: Expert): void {
+    // Dispatch action to select the expert
+    this.store.dispatch(selectExpert({ expert }));
+    // Navigate to book-service with expertId as query parameter
+    this.router.navigate(['/book-service'], { 
+      queryParams: { expertId: expert.id }
+    });
+  }
 }
