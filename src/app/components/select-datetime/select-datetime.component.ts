@@ -36,7 +36,7 @@ export class SelectDatetimeComponent implements OnInit {
   selectedDuration$: Observable<number | undefined>;
 
   currentMonth: Date = new Date(2020, 8, 1); // September 2020
-  nextMonth: Date = new Date(2020, 9, 1); // October 2020
+  secondMonth: Date = new Date(2020, 9, 1); // October 2020
   
   timeSlots: TimeSlot[] = [
     { id: '1', startTime: '6:00 AM', endTime: '9:00 AM', available: true },
@@ -104,7 +104,7 @@ export class SelectDatetimeComponent implements OnInit {
     if (day) {
       this.selectedDay = day;
       this.selectedMonthIndex = 1;
-      const dateString = `${this.nextMonth.getFullYear()}-${String(this.nextMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dateString = `${this.secondMonth.getFullYear()}-${String(this.secondMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       this.store.dispatch(selectDate({ date: dateString }));
     }
   }
@@ -125,12 +125,12 @@ export class SelectDatetimeComponent implements OnInit {
 
   previousMonth() {
     this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
-    this.nextMonth = new Date(this.nextMonth.getFullYear(), this.nextMonth.getMonth() - 1, 1);
+    this.secondMonth = new Date(this.secondMonth.getFullYear(), this.secondMonth.getMonth() - 1, 1);
   }
 
-  nextMonthNav() {
+  nextMonth() {
     this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
-    this.nextMonth = new Date(this.nextMonth.getFullYear(), this.nextMonth.getMonth() + 1, 1);
+    this.secondMonth = new Date(this.secondMonth.getFullYear(), this.secondMonth.getMonth() + 1, 1);
   }
 
   onFrequencyChange(frequency: 'Once' | 'Daily' | 'Weekly' | 'Monthly') {

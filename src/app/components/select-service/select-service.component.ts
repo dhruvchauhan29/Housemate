@@ -101,27 +101,27 @@ export class SelectServiceComponent implements OnInit {
     },
     {
       id: '3',
-      name: 'Rajesh Kumar',
-      rating: 4.7,
-      reviewCount: 122,
-      experience: '8 years',
-      distance: '2.3 km',
-      pricePerHour: 299,
+      name: 'Priya Sharma',
+      rating: 4.8,
+      reviewCount: 156,
+      experience: '6 years',
+      distance: '1.8 km',
+      pricePerHour: 320,
       verified: true,
-      services: ['Cooking', 'Electrician'],
-      languages: ['Hindi', 'English']
+      services: ['Cleaning', 'Organizing'],
+      languages: ['Hindi', 'English', 'Marathi']
     },
     {
       id: '4',
-      name: 'Rajesh Kumar',
-      rating: 4.7,
-      reviewCount: 122,
-      experience: '8 years',
-      distance: '2.3 km',
-      pricePerHour: 299,
+      name: 'Amit Patel',
+      rating: 4.6,
+      reviewCount: 98,
+      experience: '5 years',
+      distance: '3.5 km',
+      pricePerHour: 280,
       verified: true,
-      services: ['Cooking', 'Electrician'],
-      languages: ['Hindi', 'English']
+      services: ['Gardening', 'Landscaping'],
+      languages: ['Hindi', 'English', 'Gujarati']
     }
   ];
 

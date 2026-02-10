@@ -60,8 +60,8 @@
 
           <div class="calendar-month">
             <div class="month-header">
-              <span class="month-title">{{ nextMonth | date: 'MMMM yyyy' }}</span>
-              <button mat-icon-button (click)="nextMonthNav()">
+              <span class="month-title">{{ secondMonth | date: 'MMMM yyyy' }}</span>
+              <button mat-icon-button (click)="nextMonth()">
                 <mat-icon>chevron_right</mat-icon>
               </button>
             </div>
@@ -74,7 +74,7 @@
               <div class="day-header">F</div>
               <div class="day-header">S</div>
               <div 
-                *ngFor="let day of getDaysInMonth(nextMonth)" 
+                *ngFor="let day of getDaysInMonth(secondMonth)" 
                 class="calendar-day"
                 [class.selected]="isDateSelected(day, true)"
                 [class.disabled]="!day"
