@@ -24,7 +24,7 @@ export class LandingPageComponent {
     },
     {
       title: 'Expert Support',
-      description: 'OTP-verified service start and customer ratings'
+      description: '24/7 customer support and expert assistance'
     }
   ];
 
