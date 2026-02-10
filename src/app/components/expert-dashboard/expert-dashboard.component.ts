@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { AuthService, User } from '../../services/auth.service';
 import { AppState } from '../../store/app.state';
 import { ExpertStats, Job } from '../../store/models/booking.model';
@@ -14,7 +15,7 @@ import { selectExpertStats, selectExpertJobs, selectPendingJobs } from '../../st
 
 @Component({
   selector: 'app-expert-dashboard',
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule, MatDialogModule],
   templateUrl: './expert-dashboard.component.html',
   styleUrl: './expert-dashboard.component.scss'
 })
@@ -33,7 +34,32 @@ export class ExpertDashboardComponent implements OnInit {
     averageRating: 4.7
   };
 
-  mockJobs: Job[] = [
+  pendingJobs: Job[] = [
+    {
+      id: '1',
+      serviceType: 'Cooking',
+      customerName: 'John Doe',
+      date: '31 Jan, Wednesday',
+      timeSlot: '2:30 PM, booked for 2hrs',
+      address: '201, Manjari Khurd, Pune - 143505',
+      status: 'Pending',
+      earnings: 299,
+      duration: 2
+    },
+    {
+      id: '2',
+      serviceType: 'Gardening',
+      customerName: 'John Doe',
+      date: '31 Jan, Wednesday',
+      timeSlot: '2:30 PM, booked for 2hrs',
+      address: '201, Manjari Khurd, Pune - 143505',
+      status: 'Pending',
+      earnings: 299,
+      duration: 2
+    }
+  ];
+
+  allJobs: Job[] = [
     {
       id: '1',
       serviceType: 'Gardening',
@@ -80,10 +106,13 @@ export class ExpertDashboardComponent implements OnInit {
     }
   ];
 
+  calendarDays: number[] = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+
   constructor(
     private authService: AuthService,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private dialog: MatDialog
   ) {
     this.expertStats$ = this.store.select(selectExpertStats);
     this.jobs$ = this.store.select(selectExpertJobs);
@@ -103,20 +132,25 @@ export class ExpertDashboardComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  viewJobDetails(job: Job) {
-    console.log('View job details:', job);
-    // Navigate to job details - to be implemented
+  takeAction(job: Job) {
+    console.log('Take action for job:', job);
+    // TODO: Open take action modal/dialog
   }
 
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'Pending': 'status-pending',
-      'Accepted': 'status-accepted',
-      'Rejected': 'status-rejected',
-      'Completed': 'status-completed',
-      'Cancelled': 'status-cancelled'
+  viewDetails(job: Job) {
+    console.log('View details for job:', job);
+    // TODO: Navigate to job details or open dialog
+  }
+
+  getStatusIcon(status: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Pending': 'schedule',
+      'Accepted': 'check_circle',
+      'Rejected': 'cancel',
+      'Completed': 'check_circle',
+      'Cancelled': 'cancel'
     };
-    return statusMap[status] || '';
+    return iconMap[status] || 'info';
   }
 }
 
