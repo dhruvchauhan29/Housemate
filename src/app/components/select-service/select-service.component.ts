@@ -124,7 +124,7 @@ export class SelectServiceComponent implements OnInit, OnDestroy {
 
   nextStep(): void {
     if (this.selectedExpert) {
-      // If expert is already selected, go directly to datetime
+      // If expert is already selected, skip to datetime
       this.router.navigate(['/book-service/select-datetime']);
     } else {
       // Otherwise, go to expert selection
