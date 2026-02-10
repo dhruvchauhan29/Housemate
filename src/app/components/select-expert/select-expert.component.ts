@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { Expert } from '../../store/models/booking.model';
 import { selectExpert } from '../../store/actions/booking.actions';
 import { selectSelectedExpert } from '../../store/selectors/booking.selectors';
+import { AppState } from '../../store/app.state';
 
 @Component({
   selector: 'app-select-expert',
@@ -112,7 +113,7 @@ export class SelectExpertComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private store: Store
+    private store: Store<AppState>
   ) {
     this.selectedExpert$ = this.store.select(selectSelectedExpert);
   }
