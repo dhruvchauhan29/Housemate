@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -9,7 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Service, Expert } from '../../store/models/booking.model';
 import { selectService, selectExpert } from '../../store/actions/booking.actions';
@@ -31,7 +32,8 @@ import { AppState } from '../../store/app.state';
   templateUrl: './select-service-expert.component.html',
   styleUrl: './select-service-expert.component.scss'
 })
-export class SelectServiceExpertComponent implements OnInit {
+export class SelectServiceExpertComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   searchQuery: string = '';
   selectedServiceId: string | null = null;
   selectedExpertId: string | undefined;
@@ -42,49 +44,49 @@ export class SelectServiceExpertComponent implements OnInit {
     {
       id: '1',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '2',
       name: 'Cooking',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '3',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '4',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '5',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '6',
       name: 'Cooking',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '7',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     },
     {
       id: '8',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       pricePerHour: 150,
     }
   ];
@@ -177,13 +179,18 @@ export class SelectServiceExpertComponent implements OnInit {
   ngOnInit() {
     this.filteredExperts = this.mockExperts;
 
-    this.selectedService$.subscribe(service => {
+    this.selectedService$.pipe(takeUntil(this.destroy$)).subscribe(service => {
       this.selectedServiceId = service?.id || null;
     });
 
-    this.selectedExpert$.subscribe(expert => {
+    this.selectedExpert$.pipe(takeUntil(this.destroy$)).subscribe(expert => {
       this.selectedExpertId = expert?.id;
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   selectServiceCard(service: Service) {
