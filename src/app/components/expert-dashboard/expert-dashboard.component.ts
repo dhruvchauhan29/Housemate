@@ -198,7 +198,8 @@ export class ExpertDashboardComponent implements OnInit {
   }
 
   hasEventOnDay(day: number): boolean {
-    // TODO: Implement event checking logic
+    // TODO: Replace with actual event checking logic based on appointment data
+    // For now, showing events on days 22, 25, 28 as demonstration
     return day === 22 || day === 25 || day === 28;
   }
 }

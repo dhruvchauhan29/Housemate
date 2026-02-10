@@ -132,7 +132,7 @@
               <mat-icon>filter_list</mat-icon>
             </button>
             <mat-form-field appearance="outline" class="status-filter-field">
-              <mat-select placeholder="Filter by status" [(value)]="selectedStatus">
+              <mat-select placeholder="Filter by status" [(ngModel)]="selectedStatus">
                 <mat-option value="all">All</mat-option>
                 <mat-option value="pending">Pending</mat-option>
                 <mat-option value="accepted">Accepted</mat-option>
