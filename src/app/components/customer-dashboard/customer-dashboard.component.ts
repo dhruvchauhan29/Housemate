@@ -34,7 +34,7 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   navigateToBookService() {
-    this.router.navigate(['/customer/book-service']);
+    this.router.navigate(['/book-service']);
   }
 
   navigateToBookings() {
