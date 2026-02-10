@@ -7,15 +7,15 @@
         <span class="logo-text">HouseMate</span>
       </div>
       <nav class="nav">
-        <a class="nav-link">
+        <button mat-button class="location-button">
           <mat-icon>location_on</mat-icon>
           <span>Kharadi, Pune</span>
-        </a>
-        <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button">
-          <!-- Image placeholder: Expert profile picture will be added from Figma -->
-          <mat-icon>account_circle</mat-icon>
+        </button>
+        <button mat-button [matMenuTriggerFor]="menu" class="profile-button">
+          <!-- TODO: Replace with Expert Profile Image from Figma -->
+          <mat-icon class="profile-icon">account_circle</mat-icon>
           <span class="user-name">{{ currentUser?.fullName }}</span>
-          <mat-icon>arrow_drop_down</mat-icon>
+          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="logout()">
@@ -30,133 +30,161 @@
   <div class="main-content">
     <div class="content-left">
       <!-- Welcome Section -->
-      <div class="welcome-section">
+      <mat-card class="welcome-section">
         <div class="status-badge online">
           <mat-icon>check_circle</mat-icon>
           <span>Online</span>
         </div>
         <div class="welcome-content">
-          <!-- Image placeholder: Expert avatar illustration will be added from Figma -->
+          <!-- TODO: Replace with Expert Avatar Illustration from Figma -->
           <div class="expert-illustration">
-            <div class="avatar-placeholder"></div>
+            <mat-icon class="avatar-icon">person</mat-icon>
           </div>
           <div class="welcome-text">
-            <h1 class="welcome-title">Welcome back, <span class="highlight">{{ currentUser?.fullName?.toUpperCase() }}!</span></h1>
+            <h1 class="welcome-title">Welcome back, <span class="highlight">{{ currentUser?.fullName || 'Expert' }}!</span></h1>
             <p class="expert-at">Expert at</p>
             <div class="expert-services">
-              <!-- Image placeholder: Service icons will be added from Figma -->
-              <div class="service-icon-placeholder"></div>
-              <div class="service-icon-placeholder"></div>
+              <!-- TODO: Replace with Service Icons from Figma -->
+              <mat-chip-set>
+                <mat-chip>
+                  <mat-icon>cleaning_services</mat-icon>
+                  Cleaning
+                </mat-chip>
+                <mat-chip>
+                  <mat-icon>restaurant</mat-icon>
+                  Cooking
+                </mat-chip>
+              </mat-chip-set>
             </div>
           </div>
         </div>
         
         <!-- Pending Requests -->
-        <div class="pending-section">
+        <div class="pending-section" *ngIf="pendingJobs.length > 0">
           <h3>Pending Requests</h3>
           <div class="pending-cards">
-            <div class="pending-card" *ngFor="let job of pendingJobs">
-              <div class="pending-info">
-                <strong>{{ job.date }}</strong>
-                <div class="detail-row">
-                  <mat-icon>access_time</mat-icon>
-                  <span>{{ job.timeSlot }}</span>
+            <mat-card class="pending-card" *ngFor="let job of pendingJobs">
+              <mat-card-content>
+                <div class="pending-info">
+                  <strong>{{ job.date }}</strong>
+                  <div class="detail-row">
+                    <mat-icon>access_time</mat-icon>
+                    <span>{{ job.timeSlot }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ job.address }}</span>
+                  </div>
                 </div>
-                <div class="detail-row">
-                  <mat-icon>location_on</mat-icon>
-                  <span>{{ job.address }}</span>
-                </div>
-              </div>
-              <button mat-raised-button color="primary" (click)="takeAction(job)">Take Action</button>
-            </div>
+                <button mat-raised-button color="primary" (click)="takeAction(job)">
+                  Take Action
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>
           </div>
         </div>
-      </div>
+      </mat-card>
 
       <!-- My Reports -->
-      <div class="reports-section">
+      <mat-card class="reports-section">
         <h2>My Reports</h2>
         <div class="reports-grid">
           <div class="report-card">
-            <!-- Image placeholder: Today's Job icon will be added from Figma -->
-            <div class="report-icon-placeholder"></div>
+            <!-- TODO: Replace with Today's Job Icon from Figma -->
+            <mat-icon class="report-icon" color="primary">today</mat-icon>
             <div class="report-label">Today's Job</div>
             <div class="report-value">{{ mockStats.totalJobs }}</div>
           </div>
           <div class="report-card">
-            <!-- Image placeholder: This Week icon will be added from Figma -->
-            <div class="report-icon-placeholder"></div>
+            <!-- TODO: Replace with This Week Icon from Figma -->
+            <mat-icon class="report-icon" color="accent">calendar_today</mat-icon>
             <div class="report-label">This Week</div>
             <div class="report-value">{{ mockStats.upcomingJobs }}</div>
           </div>
           <div class="report-card">
-            <!-- Image placeholder: Total Earning icon will be added from Figma -->
-            <div class="report-icon-placeholder"></div>
+            <!-- TODO: Replace with Total Earning Icon from Figma -->
+            <mat-icon class="report-icon earnings-icon">account_balance_wallet</mat-icon>
             <div class="report-label">Total Earning</div>
             <div class="report-value">₹{{ mockStats.totalEarnings }}.00</div>
           </div>
           <div class="report-card">
-            <!-- Image placeholder: My Rating icon will be added from Figma -->
-            <div class="report-icon-placeholder"></div>
+            <!-- TODO: Replace with My Rating Icon from Figma -->
+            <mat-icon class="report-icon rating-icon">star</mat-icon>
             <div class="report-label">My Rating</div>
-            <div class="report-value">{{ mockStats.averageRating }}</div>
+            <div class="report-value">
+              {{ mockStats.averageRating }}
+              <mat-icon class="star-small">star</mat-icon>
+            </div>
           </div>
         </div>
-      </div>
+      </mat-card>
 
       <!-- My Appointments -->
-      <div class="appointments-section">
+      <mat-card class="appointments-section">
         <div class="appointments-header">
           <h2>My Appointments</h2>
           <div class="appointments-actions">
-            <button mat-icon-button>
+            <button mat-icon-button matTooltip="Search appointments">
               <mat-icon>search</mat-icon>
             </button>
-            <button mat-icon-button>
+            <button mat-icon-button matTooltip="Filter appointments">
               <mat-icon>filter_list</mat-icon>
             </button>
-            <select class="status-filter">
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="accepted">Accepted</option>
-              <option value="rejected">Rejected</option>
-            </select>
+            <mat-form-field appearance="outline" class="status-filter-field">
+              <mat-select placeholder="Filter by status" [(ngModel)]="selectedStatus">
+                <mat-option value="all">All</mat-option>
+                <mat-option value="pending">Pending</mat-option>
+                <mat-option value="accepted">Accepted</mat-option>
+                <mat-option value="rejected">Rejected</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
 
         <div class="appointments-list">
-          <div class="appointment-card" *ngFor="let job of allJobs">
-            <!-- Image placeholder: Service icon will be added from Figma -->
-            <div class="appointment-icon-placeholder"></div>
-            <div class="appointment-details">
-              <div class="appointment-earning">₹{{ job.earnings }}<br><span>Earning</span></div>
-              <div class="appointment-date">{{ job.date }}</div>
-              <div class="detail-row">
-                <mat-icon>access_time</mat-icon>
-                <span>{{ job.timeSlot }}</span>
+          <mat-card class="appointment-card" *ngFor="let job of allJobs">
+            <mat-card-content>
+              <div class="appointment-layout">
+                <!-- TODO: Replace with Service Icon from Figma -->
+                <mat-icon class="appointment-icon">{{ getServiceIcon(job.serviceType) }}</mat-icon>
+                <div class="appointment-details">
+                  <div class="appointment-header">
+                    <div class="appointment-earning">₹{{ job.earnings }}</div>
+                    <span class="earning-label">Earning</span>
+                  </div>
+                  <div class="appointment-date">{{ job.date }}</div>
+                  <div class="detail-row">
+                    <mat-icon>access_time</mat-icon>
+                    <span>{{ job.timeSlot }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ job.address }}</span>
+                  </div>
+                  <mat-chip class="appointment-status" [ngClass]="'status-' + job.status.toLowerCase()">
+                    <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
+                    <span>{{ job.status }}</span>
+                  </mat-chip>
+                </div>
+                <button mat-stroked-button color="primary" (click)="viewDetails(job)">
+                  View Details
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
               </div>
-              <div class="detail-row">
-                <mat-icon>location_on</mat-icon>
-                <span>{{ job.address }}</span>
-              </div>
-              <div class="appointment-status" [ngClass]="'status-' + job.status.toLowerCase()">
-                <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
-                <span>{{ job.status }}</span>
-              </div>
-            </div>
-            <button mat-stroked-button (click)="viewDetails(job)">View Details</button>
-          </div>
+            </mat-card-content>
+          </mat-card>
         </div>
-      </div>
+      </mat-card>
     </div>
 
     <!-- Right Sidebar: My Calendar -->
     <div class="content-right">
-      <div class="calendar-section">
+      <mat-card class="calendar-section">
         <h2>My Calendar</h2>
         <div class="calendar-widget">
           <div class="calendar-nav">
-            <button mat-icon-button>
+            <button mat-icon-button (click)="previousDay()">
               <mat-icon>chevron_left</mat-icon>
             </button>
             <div class="current-date">
@@ -164,37 +192,44 @@
               <span class="day-number">22</span>
               <span class="month-name">JUNE</span>
             </div>
-            <button mat-icon-button>
+            <button mat-icon-button (click)="nextDay()">
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>
 
           <div class="calendar-grid">
-            <div class="calendar-day" *ngFor="let day of calendarDays" [class.today]="day === 22">
+            <div class="calendar-day" *ngFor="let day of calendarDays" 
+                 [class.today]="day === 22"
+                 [class.has-event]="hasEventOnDay(day)"
+                 (click)="selectDay(day)">
               {{ day }}
             </div>
           </div>
 
           <div class="today-schedule">
-            <h4>Today</h4>
-            <div class="schedule-card">
-              <!-- Image placeholder: Service icon will be added from Figma -->
-              <div class="schedule-icon-placeholder"></div>
-              <div class="schedule-info">
-                <div class="schedule-service">Gardening</div>
-                <div class="detail-row">
-                  <mat-icon>access_time</mat-icon>
-                  <span>2:30 PM, booked for 2hrs</span>
+            <h4>Today's Schedule</h4>
+            <mat-card class="schedule-card">
+              <mat-card-content>
+                <div class="schedule-layout">
+                  <!-- TODO: Replace with Service Icon from Figma -->
+                  <mat-icon class="schedule-icon">yard</mat-icon>
+                  <div class="schedule-info">
+                    <div class="schedule-service">Gardening</div>
+                    <div class="detail-row">
+                      <mat-icon>access_time</mat-icon>
+                      <span>2:30 PM, booked for 2hrs</span>
+                    </div>
+                    <div class="detail-row">
+                      <mat-icon>location_on</mat-icon>
+                      <span>201, Manjari Khurd, Pune - 143505</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="detail-row">
-                  <mat-icon>location_on</mat-icon>
-                  <span>201, Manjari Khurd, Pune - 143505</span>
-                </div>
-              </div>
-            </div>
+              </mat-card-content>
+            </mat-card>
           </div>
         </div>
-      </div>
+      </mat-card>
     </div>
   </div>
 </div>
