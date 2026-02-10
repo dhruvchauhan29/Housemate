@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AuthService, User } from '../../services/auth.service';
+import { BookingService, SavedBooking } from '../../services/booking.service';
 
 interface Booking {
   id: number;
@@ -25,12 +26,17 @@ interface Booking {
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.scss'
 })
-export class CustomerDashboardComponent implements OnInit {
+export class CustomerDashboardComponent implements OnInit, AfterViewInit {
+  @ViewChild('bookingsContainer', { read: ElementRef }) bookingsContainer?: ElementRef;
+  
   currentUser: User | null = null;
   upcomingBookings: Booking[] = [];
+  showLeftArrow = false;
+  showRightArrow = false;
 
   constructor(
     private authService: AuthService,
+    private bookingService: BookingService,
     private router: Router
   ) {}
 
@@ -39,40 +45,80 @@ export class CustomerDashboardComponent implements OnInit {
     this.loadUpcomingBookings();
   }
 
+  ngAfterViewInit() {
+    // Check if arrows are needed after view initializes
+    setTimeout(() => this.checkArrowsVisibility(), 100);
+  }
+
   loadUpcomingBookings() {
-    // Mock data for upcoming bookings - will be replaced with API call later
-    this.upcomingBookings = [
-      {
-        id: 1,
-        serviceIcon: '🧹', // Image placeholder: Cleaning service icon from Figma
-        serviceName: 'Cleaning',
-        price: '₹299/-',
-        date: '31 Jan, Wednesday',
-        time: '2:30 PM',
-        duration: '2hrs',
-        location: '201, Manjari Khurd, Pune - 143505'
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) {
+      console.error('No user logged in');
+      return;
+    }
+
+    this.bookingService.getBookingsByCustomerId(currentUser.id).subscribe({
+      next: (bookings: SavedBooking[]) => {
+        this.upcomingBookings = bookings.map(booking => ({
+          id: booking.id!,
+          serviceIcon: booking.serviceIcon,
+          serviceName: booking.serviceName,
+          price: `₹${booking.totalAmount}/-`,
+          date: this.formatDate(booking.date),
+          time: this.formatTimeSlot(booking.timeSlot),
+          duration: `${booking.duration}hrs`,
+          location: booking.address
+        }));
+        
+        // Check arrows visibility after bookings are loaded
+        setTimeout(() => this.checkArrowsVisibility(), 100);
       },
-      {
-        id: 2,
-        serviceIcon: '👨‍🍳', // Image placeholder: Cooking service icon from Figma
-        serviceName: 'Cooking',
-        price: '₹450/-',
-        date: '2 Feb, Friday',
-        time: '11:00 AM',
-        duration: '3hrs',
-        location: '45, Koregaon Park, Pune - 411001'
-      },
-      {
-        id: 3,
-        serviceIcon: '🌱', // Image placeholder: Gardening service icon from Figma
-        serviceName: 'Gardening',
-        price: '₹350/-',
-        date: '5 Feb, Monday',
-        time: '8:00 AM',
-        duration: '2hrs',
-        location: '78, Baner Road, Pune - 411045'
+      error: (error) => {
+        console.error('Error loading bookings:', error);
+        // Fallback to empty array if error
+        this.upcomingBookings = [];
       }
-    ];
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', weekday: 'long' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  formatTimeSlot(timeSlot: string): string {
+    // timeSlot format: "10:00 AM - 12:00 PM"
+    const parts = timeSlot.split(' - ');
+    return parts[0]; // Return start time
+  }
+
+  checkArrowsVisibility() {
+    if (!this.bookingsContainer) return;
+    
+    const container = this.bookingsContainer.nativeElement;
+    const hasOverflow = container.scrollWidth > container.clientWidth;
+    
+    this.showLeftArrow = hasOverflow && container.scrollLeft > 0;
+    this.showRightArrow = hasOverflow && container.scrollLeft < (container.scrollWidth - container.clientWidth - 10);
+  }
+
+  scrollLeft() {
+    if (!this.bookingsContainer) return;
+    const container = this.bookingsContainer.nativeElement;
+    container.scrollBy({ left: -350, behavior: 'smooth' });
+    setTimeout(() => this.checkArrowsVisibility(), 300);
+  }
+
+  scrollRight() {
+    if (!this.bookingsContainer) return;
+    const container = this.bookingsContainer.nativeElement;
+    container.scrollBy({ left: 350, behavior: 'smooth' });
+    setTimeout(() => this.checkArrowsVisibility(), 300);
+  }
+
+  onScroll() {
+    this.checkArrowsVisibility();
   }
 
   logout() {

@@ -44,32 +44,58 @@
     <!-- Upcoming Bookings Section -->
     <div class="bookings-section">
       <h2 class="section-title">Upcoming Bookings</h2>
-      <div class="bookings-container">
-        <div class="booking-card" *ngFor="let booking of upcomingBookings">
-          <div class="booking-header">
-            <!-- Image placeholder: Service icon from Figma -->
-            <div class="service-icon-small">{{ booking.serviceIcon }}</div>
-            <div class="booking-price">{{ booking.price }} to pay</div>
+      <div class="bookings-wrapper">
+        <button 
+          *ngIf="showLeftArrow" 
+          mat-icon-button 
+          class="scroll-arrow left-arrow" 
+          (click)="scrollLeft()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div 
+          #bookingsContainer 
+          class="bookings-container" 
+          (scroll)="onScroll()">
+          <div class="booking-card" *ngFor="let booking of upcomingBookings">
+            <div class="booking-header">
+              <!-- Image placeholder: Service icon from Figma -->
+              <div class="service-icon-small">{{ booking.serviceIcon }}</div>
+              <div class="booking-price">{{ booking.price }} to pay</div>
+            </div>
+            <div class="booking-details">
+              <div class="detail-item">
+                <mat-icon>calendar_today</mat-icon>
+                <span>{{ booking.date }}</span>
+              </div>
+              <div class="detail-item">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ booking.time }}, booked for {{ booking.duration }}</span>
+              </div>
+              <div class="detail-item">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ booking.location }}</span>
+              </div>
+            </div>
+            <div class="booking-actions">
+              <a class="action-link" (click)="viewBookingDetails(booking.id)">View Details</a>
+              <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
+            </div>
           </div>
-          <div class="booking-details">
-            <div class="detail-item">
-              <mat-icon>calendar_today</mat-icon>
-              <span>{{ booking.date }}</span>
-            </div>
-            <div class="detail-item">
-              <mat-icon>schedule</mat-icon>
-              <span>{{ booking.time }}, booked for {{ booking.duration }}</span>
-            </div>
-            <div class="detail-item">
-              <mat-icon>location_on</mat-icon>
-              <span>{{ booking.location }}</span>
-            </div>
-          </div>
-          <div class="booking-actions">
-            <a class="action-link" (click)="viewBookingDetails(booking.id)">View Details</a>
-            <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
+          <div *ngIf="upcomingBookings.length === 0" class="no-bookings">
+            <mat-icon>event_busy</mat-icon>
+            <p>No upcoming bookings</p>
+            <button mat-raised-button color="primary" (click)="navigateToBookService()">
+              Book a Service
+            </button>
           </div>
         </div>
+        <button 
+          *ngIf="showRightArrow" 
+          mat-icon-button 
+          class="scroll-arrow right-arrow" 
+          (click)="scrollRight()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
       </div>
     </div>
 

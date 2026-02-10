@@ -180,12 +180,48 @@
   padding: 0 1rem;
 }
 
+.bookings-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.scroll-arrow {
+  position: absolute;
+  z-index: 10;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 40px;
+  height: 40px;
+  
+  &:hover {
+    background: #f0f4f8;
+  }
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #1e3a5f;
+  }
+
+  &.left-arrow {
+    left: 0.5rem;
+  }
+
+  &.right-arrow {
+    right: 0.5rem;
+  }
+}
+
 .bookings-container {
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  padding: 0 1rem 1rem;
-  position: relative;
+  padding: 0.5rem;
+  width: 100%;
+  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -211,6 +247,35 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex-shrink: 0;
+}
+
+.no-bookings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  width: 100%;
+  text-align: center;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #9ca3af;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  button {
+    margin-top: 1rem;
+  }
 }
 
 .booking-header {
