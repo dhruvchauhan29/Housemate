@@ -28,6 +28,9 @@ export class BookServiceComponent {
   ) {
     this.currentUser = this.authService.getCurrentUser();
     
+    // Initialize with current route
+    this.currentRoute = this.router.url;
+    
     // Subscribe to router events to track current route
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
