@@ -1,11 +1,165 @@
-<div class="booking-summary-container">
-  <h2>Booking Summary</h2>
-  <p>Review your booking details</p>
-  <div class="summary-details">
-    <!-- Booking summary will go here -->
-  </div>
+<div class="booking-summary-container" *ngIf="booking$ | async as booking">
+  <h1 class="page-title">Booking Summary</h1>
+
+  <!-- Expert Details Section -->
+  <mat-card class="summary-card expert-card" *ngIf="booking.expert">
+    <mat-card-header>
+      <h2 class="section-title">Expert Details</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="expert-info">
+        <div class="expert-photo">
+          <!-- Image placeholder: Expert photo from Figma -->
+          <img [src]="booking.expert.imageUrl || 'assets/images/expert-placeholder.png'" 
+               [alt]="booking.expert.name" 
+               class="expert-image">
+        </div>
+        <div class="expert-details">
+          <h3 class="expert-name">{{ booking.expert.name }}</h3>
+          <div class="expert-meta">
+            <span class="rating">
+              <mat-icon class="star-icon">star</mat-icon>
+              {{ booking.expert.rating }} ({{ booking.expert.reviewCount }} reviews)
+            </span>
+            <span class="experience">{{ booking.expert.experience }}</span>
+          </div>
+          <div class="expert-badges">
+            <span class="badge verified" *ngIf="booking.expert.verified">
+              <mat-icon>verified</mat-icon> Verified
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Service Details Section -->
+  <mat-card class="summary-card service-card" *ngIf="booking.service">
+    <mat-card-header>
+      <h2 class="section-title">Service Details</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="detail-row">
+        <span class="label">Service Type:</span>
+        <span class="value">{{ booking.service.name }}</span>
+      </div>
+      <div class="detail-row" *ngIf="booking.date">
+        <span class="label">Date:</span>
+        <span class="value">{{ booking.date | date: 'fullDate' }}</span>
+      </div>
+      <div class="detail-row" *ngIf="booking.timeSlot">
+        <span class="label">Time:</span>
+        <span class="value">{{ booking.timeSlot.startTime }} - {{ booking.timeSlot.endTime }}</span>
+      </div>
+      <div class="detail-row" *ngIf="booking.frequency">
+        <span class="label">Frequency:</span>
+        <span class="value">{{ booking.frequency }}</span>
+      </div>
+      <div class="detail-row" *ngIf="booking.duration">
+        <span class="label">Duration:</span>
+        <span class="value">{{ booking.duration }} hour(s)</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Address Section -->
+  <mat-card class="summary-card address-card" *ngIf="booking.address">
+    <mat-card-header>
+      <div class="card-header-flex">
+        <h2 class="section-title">Service Address</h2>
+        <button mat-icon-button color="primary" (click)="editAddress()" class="edit-btn">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="address-info">
+        <p class="address-label">{{ booking.address.label }}</p>
+        <p class="address-text">{{ booking.address.serviceAddress }}</p>
+        <p class="address-text">{{ booking.address.city }}, {{ booking.address.state }} - {{ booking.address.pinCode }}</p>
+        <div class="contact-info">
+          <p><strong>Contact:</strong> {{ booking.address.contactName }} - {{ booking.address.contactNumber }}</p>
+          <p *ngIf="booking.address.alternateContactNumber">
+            <strong>Alternate:</strong> {{ booking.address.alternateContactNumber }}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Coupon Section -->
+  <mat-card class="summary-card coupon-card">
+    <mat-card-header>
+      <h2 class="section-title">Apply Coupon</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="coupon-section" *ngIf="!booking.coupon">
+        <mat-form-field appearance="outline" class="coupon-input">
+          <mat-label>Enter Coupon Code</mat-label>
+          <input matInput [(ngModel)]="couponCode" placeholder="e.g., SAVE10">
+          <mat-error *ngIf="couponError">{{ couponError }}</mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="applyCouponCode()" class="apply-btn">
+          Apply
+        </button>
+      </div>
+      
+      <div class="applied-coupon" *ngIf="booking.coupon">
+        <div class="coupon-info">
+          <mat-icon class="coupon-icon">local_offer</mat-icon>
+          <div class="coupon-details">
+            <span class="coupon-code">{{ booking.coupon.code }}</span>
+            <span class="coupon-discount">
+              {{ booking.coupon.discountType === 'PERCENTAGE' ? 
+                 booking.coupon.discount + '% off' : 
+                 '₹' + booking.coupon.discount + ' off' }}
+            </span>
+          </div>
+        </div>
+        <button mat-icon-button color="warn" (click)="removeCouponCode()" class="remove-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Price Breakdown Section -->
+  <mat-card class="summary-card price-card" *ngIf="pricing$ | async as pricing">
+    <mat-card-header>
+      <h2 class="section-title">Price Breakdown</h2>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="price-breakdown">
+        <div class="price-row">
+          <span class="price-label">Base Amount</span>
+          <span class="price-value">₹{{ pricing.baseAmount | number: '1.2-2' }}</span>
+        </div>
+        <div class="price-row">
+          <span class="price-label">GST (18%)</span>
+          <span class="price-value">₹{{ pricing.gst | number: '1.2-2' }}</span>
+        </div>
+        <div class="price-row discount-row" *ngIf="pricing.discount > 0">
+          <span class="price-label">Discount</span>
+          <span class="price-value discount">- ₹{{ pricing.discount | number: '1.2-2' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="price-row total-row">
+          <span class="price-label total-label">Total Amount</span>
+          <span class="price-value total-value">₹{{ pricing.totalAmount | number: '1.2-2' }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Action Buttons -->
   <div class="actions">
-    <button (click)="previousStep()" class="btn-secondary">Back</button>
-    <button (click)="confirmBooking()" class="btn-primary">Confirm & Pay</button>
+    <button mat-stroked-button color="primary" (click)="previousStep()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+    <button mat-raised-button color="primary" (click)="openPaymentModal()" class="payment-btn">
+      Proceed to Payment
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
   </div>
 </div>
