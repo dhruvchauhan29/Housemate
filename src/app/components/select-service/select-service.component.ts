@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -10,7 +10,8 @@ import { AppState } from '../../store/app.state';
 import { Service, Expert } from '../../store/models/booking.model';
 import { selectService } from '../../store/actions/booking.actions';
 import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-service',
@@ -18,11 +19,12 @@ import { Observable } from 'rxjs';
   templateUrl: './select-service.component.html',
   styleUrl: './select-service.component.scss'
 })
-export class SelectServiceComponent implements OnInit {
+export class SelectServiceComponent implements OnInit, OnDestroy {
   selectedService$: Observable<Service | undefined>;
   selectedExpert$: Observable<Expert | undefined>;
   selectedServiceId: string | null = null;
   selectedExpert: Expert | undefined;
+  private destroy$ = new Subject<void>();
 
   services: Service[] = [
     {
@@ -84,13 +86,22 @@ export class SelectServiceComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedService$.subscribe(service => {
-      this.selectedServiceId = service?.id || null;
-    });
+    this.selectedService$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(service => {
+        this.selectedServiceId = service?.id || null;
+      });
 
-    this.selectedExpert$.subscribe(expert => {
-      this.selectedExpert = expert;
-    });
+    this.selectedExpert$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(expert => {
+        this.selectedExpert = expert;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   selectServiceCard(service: Service) {
