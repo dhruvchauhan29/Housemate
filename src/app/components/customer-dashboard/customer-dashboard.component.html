@@ -24,104 +24,68 @@
   </header>
 
   <div class="main-content">
-    <div class="hero-section">
-      <div class="hero-content">
-        <!-- Image placeholder: Hero/Banner image will be added from Figma -->
-        <h1 class="hero-title">Welcome back, {{ currentUser?.fullName }}!</h1>
-        <p class="hero-subtitle">Book trusted experts for all your household needs</p>
-        <button mat-raised-button color="primary" class="btn-book-service" (click)="navigateToBookService()">
-          <mat-icon>add</mat-icon>
-          Book Service
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <p class="welcome-text">Welcome back,</p>
+        <h1 class="user-name-title">{{ (currentUser?.fullName || 'JOHN DOE').toUpperCase() }}!</h1>
+      </div>
+      <button mat-raised-button color="primary" class="btn-book-service" (click)="navigateToBookService()">
+        BOOK SERVICE
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+
+    <!-- Upcoming Bookings Section -->
+    <div class="upcoming-bookings">
+      <h2 class="section-title">Upcoming Bookings</h2>
+      <div class="bookings-scroll-container">
+        <div class="booking-card" *ngFor="let booking of upcomingBookings">
+          <div class="booking-header">
+            <div class="service-icon-container">
+              <!-- TODO: Insert service icon image from Figma -->
+              <img src="" alt="Service icon from Figma design" class="service-icon-placeholder" />
+            </div>
+            <div class="booking-price">₹{{ booking.price }}/- to pay</div>
+          </div>
+          <div class="booking-details">
+            <div class="booking-date">
+              <mat-icon class="detail-icon">event</mat-icon>
+              <span>{{ booking.date }}</span>
+            </div>
+            <div class="booking-time">
+              <mat-icon class="detail-icon">schedule</mat-icon>
+              <span>{{ booking.time }}</span>
+            </div>
+            <div class="booking-address">
+              <mat-icon class="detail-icon">location_on</mat-icon>
+              <span>{{ booking.address }}</span>
+            </div>
+          </div>
+          <div class="booking-actions">
+            <button mat-stroked-button color="primary" class="action-btn">View Details</button>
+            <button mat-stroked-button color="primary" class="action-btn">Modify Booking</button>
+          </div>
+        </div>
+        <!-- Show arrow for scrolling if there are more bookings -->
+        <button mat-icon-button class="scroll-arrow" *ngIf="upcomingBookings.length > 2">
+          <mat-icon>arrow_forward</mat-icon>
         </button>
       </div>
     </div>
 
-    <div class="featured-services">
-      <h2 class="section-title">Featured Services</h2>
+    <!-- Popular Services Section -->
+    <div class="popular-services">
+      <h2 class="section-title">Popular Services</h2>
       <div class="services-grid">
-        <div class="service-card">
-          <!-- Image placeholder: Deep House Cleaning service icon from Figma -->
-          <div class="service-icon">🧹</div>
-          <h3 class="service-title">Deep House Cleaning</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
-
-        <div class="service-card">
-          <!-- Image placeholder: Cooking Service icon from Figma -->
-          <div class="service-icon">👨‍🍳</div>
-          <h3 class="service-title">Cooking Service</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
-
-        <div class="service-card">
-          <!-- Image placeholder: Gardening Service icon from Figma -->
-          <div class="service-icon">🌱</div>
-          <h3 class="service-title">Gardening Service</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="faqs-section">
-      <h2 class="section-title">FAQs</h2>
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>How Can I Trust The Expert Sent By HouseMate?</h3>
-          <mat-icon>remove</mat-icon>
-        </div>
-        <div class="faq-answer">
-          We Thoroughly Vet All Of Our Experts Through Background Checks And Skill Assessments. 
-          You Can Also View Ratings And Reviews From Other Users Before Booking.
-        </div>
-      </div>
-
-      <div class="faq-item collapsed">
-        <div class="faq-question">
-          <h3>What If The Service Provider Is Late Or Doesn't Show Up?</h3>
-          <mat-icon>add</mat-icon>
+        <div class="service-card" *ngFor="let service of popularServices" (click)="navigateToBookService()">
+          <!-- TODO: Insert service image from Figma -->
+          <div class="service-image-placeholder">
+            <img src="" alt="Service image from Figma design" />
+          </div>
+          <h3 class="service-title">{{ service.name }}</h3>
         </div>
       </div>
     </div>
   </div>
-
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>About Modimal</h4>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Support System</a></li>
-          <li><a href="#">Terms & Condition</a></li>
-          <li><a href="#">Copyright Notice</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4>Help & Support</h4>
-        <ul>
-          <li><a href="#">Orders & Shipping</a></li>
-          <li><a href="#">Returns & Refunds</a></li>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4>Join Up</h4>
-        <ul>
-          <li><a href="#">Join As Expert</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>© 2025 HouseMate. All Rights Reserved.</p>
-    </div>
-  </footer>
 </div>

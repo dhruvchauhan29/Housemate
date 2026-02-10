@@ -6,6 +6,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthService, User } from '../../services/auth.service';
 
+interface Booking {
+  id: string;
+  price: number;
+  date: string;
+  time: string;
+  address: string;
+}
+
+interface PopularService {
+  id: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-customer-dashboard',
   imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule],
@@ -14,6 +27,38 @@ import { AuthService, User } from '../../services/auth.service';
 })
 export class CustomerDashboardComponent implements OnInit {
   currentUser: User | null = null;
+  
+  upcomingBookings: Booking[] = [
+    {
+      id: '1',
+      price: 299,
+      date: '31 Jan, Wednesday',
+      time: '2:30 PM, booked for 2hrs',
+      address: '201, Manjari Khurd, Pune - 143505'
+    },
+    {
+      id: '2',
+      price: 299,
+      date: '31 Jan, Wednesday',
+      time: '2:30 PM, booked for 2hrs',
+      address: '201, Manjari Khurd, Pune - 143505'
+    },
+    {
+      id: '3',
+      price: 299,
+      date: '31 Jan, Wednesday',
+      time: '2:30 PM, booked for 2hrs',
+      address: '201, Manjari Khurd, Pune - 143505'
+    }
+  ];
+
+  popularServices: PopularService[] = [
+    { id: '1', name: 'Cleaning' },
+    { id: '2', name: 'Cooking' },
+    { id: '3', name: 'Gardening' },
+    { id: '4', name: 'Cleaning' },
+    { id: '5', name: 'Cooking' }
+  ];
 
   constructor(
     private authService: AuthService,
