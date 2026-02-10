@@ -14,7 +14,7 @@
             <mat-icon>account_circle</mat-icon>
           </div>
           <button mat-button [matMenuTriggerFor]="menu" class="profile-button">
-            <span class="user-name">{{ currentUser?.fullName || 'John Doe' }}</span>
+            <span class="user-name">{{ currentUser?.fullName || 'JOHN DOE' }}</span>
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
@@ -70,10 +70,6 @@
             <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
           </div>
         </div>
-        <!-- Scroll indicator for more bookings -->
-        <button mat-icon-button class="scroll-button">
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
       </div>
     </div>
 

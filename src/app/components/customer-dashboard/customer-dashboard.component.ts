@@ -54,23 +54,23 @@ export class CustomerDashboardComponent implements OnInit {
       },
       {
         id: 2,
-        serviceIcon: '🧹', // Image placeholder: Cleaning service icon from Figma
-        serviceName: 'Cleaning',
-        price: '₹299/-',
-        date: '31 Jan, Wednesday',
-        time: '2:30 PM',
-        duration: '2hrs',
-        location: '201, Manjari Khurd, Pune - 143505'
+        serviceIcon: '👨‍🍳', // Image placeholder: Cooking service icon from Figma
+        serviceName: 'Cooking',
+        price: '₹450/-',
+        date: '2 Feb, Friday',
+        time: '11:00 AM',
+        duration: '3hrs',
+        location: '45, Koregaon Park, Pune - 411001'
       },
       {
         id: 3,
-        serviceIcon: '🧹', // Image placeholder: Cleaning service icon from Figma
-        serviceName: 'Cleaning',
-        price: '₹299/-',
-        date: '31 Jan, Wednesday',
-        time: '2:30 PM',
+        serviceIcon: '🌱', // Image placeholder: Gardening service icon from Figma
+        serviceName: 'Gardening',
+        price: '₹350/-',
+        date: '5 Feb, Monday',
+        time: '8:00 AM',
         duration: '2hrs',
-        location: '201, Manjari Khurd, Pune - 143505'
+        location: '78, Baner Road, Pune - 411045'
       }
     ];
   }

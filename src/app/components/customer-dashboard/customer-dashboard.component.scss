@@ -270,19 +270,6 @@
   }
 }
 
-.scroll-button {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  
-  mat-icon {
-    color: #1e3a5f;
-  }
-}
-
 // Popular Services Section
 .popular-services-section {
   margin-bottom: 3rem;
