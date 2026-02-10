@@ -89,7 +89,7 @@ export class BookingSummaryComponent implements OnInit {
     this.pricing$.pipe(take(1)).subscribe(pricing => {
       const dialogRef = this.dialog.open(PaymentModalComponent, {
         width: '500px',
-        data: { amount: pricing.totalAmount },
+        data: { totalAmount: pricing.totalAmount },
         disableClose: true
       });
 
