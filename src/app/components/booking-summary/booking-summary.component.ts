@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
+import { take } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -85,7 +86,7 @@ export class BookingSummaryComponent implements OnInit {
   }
 
   openPaymentModal() {
-    this.pricing$.subscribe(pricing => {
+    this.pricing$.pipe(take(1)).subscribe(pricing => {
       const dialogRef = this.dialog.open(PaymentModalComponent, {
         width: '500px',
         data: { amount: pricing.totalAmount },
@@ -101,7 +102,7 @@ export class BookingSummaryComponent implements OnInit {
           this.router.navigate(['/payment-error']);
         }
       });
-    }).unsubscribe();
+    });
   }
 
   previousStep() {
