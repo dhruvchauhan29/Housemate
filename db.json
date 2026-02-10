@@ -25,5 +25,43 @@
       "idProof": "uploaded-file.jpg",
       "role": "EXPERT"
     }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "expertId": 1,
+      "serviceId": "1",
+      "serviceName": "Cleaning",
+      "date": "2024-12-15",
+      "timeSlot": {
+        "id": "2",
+        "startTime": "9:00 AM",
+        "endTime": "12:00 PM",
+        "available": true
+      },
+      "duration": 3,
+      "frequency": "Once",
+      "address": {
+        "id": "1",
+        "label": "Home",
+        "serviceAddress": "123 Main St",
+        "city": "New York",
+        "state": "NY",
+        "pinCode": "10001",
+        "contactName": "John Doe",
+        "contactNumber": "+1 (555) 123-4567",
+        "alternateContactNumber": "",
+        "houseType": "Apartment",
+        "isDefault": true
+      },
+      "baseAmount": 450,
+      "gst": 81,
+      "discount": 0,
+      "totalAmount": 531,
+      "status": "Confirmed",
+      "createdAt": "2024-12-01T10:00:00Z",
+      "updatedAt": "2024-12-01T10:00:00Z"
+    }
   ]
 }
