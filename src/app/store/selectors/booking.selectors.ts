@@ -68,6 +68,11 @@ export const selectPaymentStatus = createSelector(
   (state) => state.payment
 );
 
+export const selectIsAddingNewAddress = createSelector(
+  selectBookingState,
+  (state) => state.isAddingNewAddress
+);
+
 export const selectIsBookingComplete = createSelector(
   selectBooking,
   (booking) => !!(

@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService, User } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.state';
-import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
+import { selectSelectedService, selectSelectedExpert, selectIsAddingNewAddress } from '../../store/selectors/booking.selectors';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +20,7 @@ export class BookServiceComponent implements OnInit {
   currentRoute: string = '';
   selectedServiceId: string | undefined;
   selectedExpertId: string | undefined;
+  isAddingNewAddress: boolean = false;
 
   constructor(
     private router: Router,
@@ -45,6 +46,11 @@ export class BookServiceComponent implements OnInit {
     
     this.store.select(selectSelectedExpert).subscribe(expert => {
       this.selectedExpertId = expert?.id;
+    });
+    
+    // Subscribe to isAddingNewAddress state
+    this.store.select(selectIsAddingNewAddress).subscribe(isAdding => {
+      this.isAddingNewAddress = isAdding;
     });
   }
 

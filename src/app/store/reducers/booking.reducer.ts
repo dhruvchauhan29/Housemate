@@ -6,6 +6,7 @@ export interface BookingState {
   booking: BookingDetails;
   addresses: Address[];
   payment: PaymentStatus;
+  isAddingNewAddress: boolean;
 }
 
 export const initialState: BookingState = {
@@ -13,7 +14,8 @@ export const initialState: BookingState = {
   addresses: [],
   payment: {
     status: 'IDLE' as const
-  }
+  },
+  isAddingNewAddress: false
 };
 
 export const bookingReducer = createReducer(
@@ -110,6 +112,11 @@ export const bookingReducer = createReducer(
   on(BookingActions.deleteAddress, (state, { addressId }) => ({
     ...state,
     addresses: state.addresses.filter(addr => addr.id !== addressId)
+  })),
+  
+  on(BookingActions.setAddingNewAddress, (state, { isAdding }) => ({
+    ...state,
+    isAddingNewAddress: isAdding
   })),
   
   // Coupon
