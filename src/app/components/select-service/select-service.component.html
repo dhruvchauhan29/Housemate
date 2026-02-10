@@ -1,0 +1,30 @@
+<div class="select-service-container">
+  <div class="header">
+    <h2 class="title">Select Service</h2>
+  </div>
+
+  <div class="services-grid">
+    <div 
+      *ngFor="let service of services" 
+      class="service-card"
+      [class.selected]="selectedServiceId === service.id"
+      (click)="selectServiceCard(service)">
+      <div class="service-icon">{{ getServiceIcon(service.name) }}</div>
+      <h3 class="service-name">{{ service.name }}</h3>
+      <p class="service-description">{{ service.description }}</p>
+      <div class="service-price">Earn {{service.pricePerHour}}% (if you book 4 hrs or more)</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      [disabled]="!selectedServiceId"
+      (click)="nextStep()" 
+      class="btn-next">
+      <span>Next</span>
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</div>

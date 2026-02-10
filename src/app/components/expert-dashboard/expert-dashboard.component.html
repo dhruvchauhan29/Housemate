@@ -1,4 +1,5 @@
 <div class="dashboard">
+  <!-- Header -->
   <header class="header">
     <div class="container">
       <div class="logo" (click)="navigateToHome()">
@@ -6,99 +7,191 @@
         <span class="logo-text">HouseMate</span>
       </div>
       <nav class="nav">
-        <span class="user-name">{{ currentUser?.fullName }}</span>
-        <button class="btn btn-logout" (click)="logout()">Logout</button>
+        <a class="nav-link">
+          <mat-icon>location_on</mat-icon>
+          <span>Kharadi, Pune</span>
+        </a>
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button">
+          <!-- Image placeholder: Expert profile picture will be added from Figma -->
+          <mat-icon>account_circle</mat-icon>
+          <span class="user-name">{{ currentUser?.fullName }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
       </nav>
     </div>
   </header>
 
-  <div class="dashboard-container">
-    <div class="welcome-section">
-      <h1 class="welcome-title">Welcome, {{ currentUser?.fullName }}!</h1>
-      <p class="welcome-subtitle">Expert Dashboard</p>
+  <div class="main-content">
+    <div class="content-left">
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <div class="status-badge online">
+          <mat-icon>check_circle</mat-icon>
+          <span>Online</span>
+        </div>
+        <div class="welcome-content">
+          <!-- Image placeholder: Expert avatar illustration will be added from Figma -->
+          <div class="expert-illustration">
+            <div class="avatar-placeholder"></div>
+          </div>
+          <div class="welcome-text">
+            <h1 class="welcome-title">Welcome back, <span class="highlight">{{ currentUser?.fullName?.toUpperCase() }}!</span></h1>
+            <p class="expert-at">Expert at</p>
+            <div class="expert-services">
+              <!-- Image placeholder: Service icons will be added from Figma -->
+              <div class="service-icon-placeholder"></div>
+              <div class="service-icon-placeholder"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pending Requests -->
+        <div class="pending-section">
+          <h3>Pending Requests</h3>
+          <div class="pending-cards">
+            <div class="pending-card" *ngFor="let job of pendingJobs">
+              <div class="pending-info">
+                <strong>{{ job.date }}</strong>
+                <div class="detail-row">
+                  <mat-icon>access_time</mat-icon>
+                  <span>{{ job.timeSlot }}</span>
+                </div>
+                <div class="detail-row">
+                  <mat-icon>location_on</mat-icon>
+                  <span>{{ job.address }}</span>
+                </div>
+              </div>
+              <button mat-raised-button color="primary" (click)="takeAction(job)">Take Action</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Reports -->
+      <div class="reports-section">
+        <h2>My Reports</h2>
+        <div class="reports-grid">
+          <div class="report-card">
+            <!-- Image placeholder: Today's Job icon will be added from Figma -->
+            <div class="report-icon-placeholder"></div>
+            <div class="report-label">Today's Job</div>
+            <div class="report-value">{{ mockStats.totalJobs }}</div>
+          </div>
+          <div class="report-card">
+            <!-- Image placeholder: This Week icon will be added from Figma -->
+            <div class="report-icon-placeholder"></div>
+            <div class="report-label">This Week</div>
+            <div class="report-value">{{ mockStats.upcomingJobs }}</div>
+          </div>
+          <div class="report-card">
+            <!-- Image placeholder: Total Earning icon will be added from Figma -->
+            <div class="report-icon-placeholder"></div>
+            <div class="report-label">Total Earning</div>
+            <div class="report-value">₹{{ mockStats.totalEarnings }}.00</div>
+          </div>
+          <div class="report-card">
+            <!-- Image placeholder: My Rating icon will be added from Figma -->
+            <div class="report-icon-placeholder"></div>
+            <div class="report-label">My Rating</div>
+            <div class="report-value">{{ mockStats.averageRating }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Appointments -->
+      <div class="appointments-section">
+        <div class="appointments-header">
+          <h2>My Appointments</h2>
+          <div class="appointments-actions">
+            <button mat-icon-button>
+              <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button>
+              <mat-icon>filter_list</mat-icon>
+            </button>
+            <select class="status-filter">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="appointments-list">
+          <div class="appointment-card" *ngFor="let job of allJobs">
+            <!-- Image placeholder: Service icon will be added from Figma -->
+            <div class="appointment-icon-placeholder"></div>
+            <div class="appointment-details">
+              <div class="appointment-earning">₹{{ job.earnings }}<br><span>Earning</span></div>
+              <div class="appointment-date">{{ job.date }}</div>
+              <div class="detail-row">
+                <mat-icon>access_time</mat-icon>
+                <span>{{ job.timeSlot }}</span>
+              </div>
+              <div class="detail-row">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ job.address }}</span>
+              </div>
+              <div class="appointment-status" [ngClass]="'status-' + job.status.toLowerCase()">
+                <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
+                <span>{{ job.status }}</span>
+              </div>
+            </div>
+            <button mat-stroked-button (click)="viewDetails(job)">View Details</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="dashboard-content">
-      <div class="profile-card">
-        <h2>Profile Summary</h2>
-        
-        <div class="profile-info">
-          <div class="info-row">
-            <span class="label">Name:</span>
-            <span class="value">{{ currentUser?.fullName }}</span>
+    <!-- Right Sidebar: My Calendar -->
+    <div class="content-right">
+      <div class="calendar-section">
+        <h2>My Calendar</h2>
+        <div class="calendar-widget">
+          <div class="calendar-nav">
+            <button mat-icon-button>
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <div class="current-date">
+              <span class="day-name">Monday</span>
+              <span class="day-number">22</span>
+              <span class="month-name">JUNE</span>
+            </div>
+            <button mat-icon-button>
+              <mat-icon>chevron_right</mat-icon>
+            </button>
           </div>
-          <div class="info-row">
-            <span class="label">Email:</span>
-            <span class="value">{{ currentUser?.email }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Mobile:</span>
-            <span class="value">{{ currentUser?.mobileNumber }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Address:</span>
-            <span class="value">{{ currentUser?.address }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Service Category:</span>
-            <span class="value">{{ currentUser?.serviceCategory }}</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Experience:</span>
-            <span class="value">{{ currentUser?.experience }}</span>
-          </div>
-        </div>
-      </div>
 
-      <div class="status-card">
-        <h2>Status Section</h2>
-        
-        <div class="status-grid">
-          <div class="status-item">
-            <div class="status-icon">✅</div>
-            <div class="status-label">Account Status</div>
-            <div class="status-value">Active</div>
+          <div class="calendar-grid">
+            <div class="calendar-day" *ngFor="let day of calendarDays" [class.today]="day === 22">
+              {{ day }}
+            </div>
           </div>
-          <div class="status-item">
-            <div class="status-icon">🔍</div>
-            <div class="status-label">Verification</div>
-            <div class="status-value">Verified</div>
-          </div>
-          <div class="status-item">
-            <div class="status-icon">📅</div>
-            <div class="status-label">Pending Bookings</div>
-            <div class="status-value">0</div>
-          </div>
-          <div class="status-item">
-            <div class="status-icon">✨</div>
-            <div class="status-label">Completed Jobs</div>
-            <div class="status-value">0</div>
-          </div>
-        </div>
-      </div>
 
-      <div class="actions-card">
-        <h2>Quick Actions</h2>
-        <div class="action-grid">
-          <div class="action-item">
-            <div class="action-icon">📋</div>
-            <div class="action-name">View Bookings</div>
-            <div class="action-status">Coming Soon</div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon">⏰</div>
-            <div class="action-name">Availability</div>
-            <div class="action-status">Coming Soon</div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon">💰</div>
-            <div class="action-name">Earnings</div>
-            <div class="action-status">Coming Soon</div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon">⭐</div>
-            <div class="action-name">Reviews</div>
-            <div class="action-status">Coming Soon</div>
+          <div class="today-schedule">
+            <h4>Today</h4>
+            <div class="schedule-card">
+              <!-- Image placeholder: Service icon will be added from Figma -->
+              <div class="schedule-icon-placeholder"></div>
+              <div class="schedule-info">
+                <div class="schedule-service">Gardening</div>
+                <div class="detail-row">
+                  <mat-icon>access_time</mat-icon>
+                  <span>2:30 PM, booked for 2hrs</span>
+                </div>
+                <div class="detail-row">
+                  <mat-icon>location_on</mat-icon>
+                  <span>201, Manjari Khurd, Pune - 143505</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
