@@ -40,12 +40,10 @@ export class BookServiceComponent {
     
     // Subscribe to store to get selected service and expert
     this.store.select(selectSelectedService).subscribe(service => {
-      console.log('Selected service changed:', service);
       this.selectedServiceId = service?.id;
     });
     
     this.store.select(selectSelectedExpert).subscribe(expert => {
-      console.log('Selected expert changed:', expert);
       this.selectedExpertId = expert?.id;
     });
   }
@@ -59,25 +57,14 @@ export class BookServiceComponent {
   }
   
   navigateNext() {
-    console.log('navigateNext called', {
-      currentRoute: this.currentRoute,
-      selectedServiceId: this.selectedServiceId,
-      selectedExpertId: this.selectedExpertId
-    });
-    
     if (this.currentRoute.includes('select-service')) {
       // Navigate to date/time selection if both service and expert are selected
       if (this.selectedServiceId && this.selectedExpertId) {
-        console.log('Navigating to select-datetime');
         this.router.navigate(['/book-service/select-datetime']);
-      } else {
-        console.log('Cannot navigate: service or expert not selected');
       }
     } else if (this.currentRoute.includes('select-datetime')) {
-      console.log('Navigating to select-address');
       this.router.navigate(['/book-service/select-address']);
     } else if (this.currentRoute.includes('select-address')) {
-      console.log('Navigating to booking-summary');
       this.router.navigate(['/book-service/booking-summary']);
     }
   }
