@@ -55,8 +55,13 @@ export class BookServiceComponent {
   
   navigateNext() {
     if (this.currentRoute.includes('select-service')) {
-      // Navigate to date/time selection if both service and expert are selected
-      if (this.selectedServiceId && this.selectedExpertId) {
+      // Navigate to expert selection if service is selected
+      if (this.selectedServiceId) {
+        this.router.navigate(['/book-service/select-expert']);
+      }
+    } else if (this.currentRoute.includes('select-expert')) {
+      // Navigate to date/time selection if expert is selected
+      if (this.selectedExpertId) {
         this.router.navigate(['/book-service/select-datetime']);
       }
     } else if (this.currentRoute.includes('select-datetime')) {
@@ -68,7 +73,9 @@ export class BookServiceComponent {
   
   isNextButtonDisabled(): boolean {
     if (this.currentRoute.includes('select-service')) {
-      return !this.selectedServiceId || !this.selectedExpertId;
+      return !this.selectedServiceId;
+    } else if (this.currentRoute.includes('select-expert')) {
+      return !this.selectedExpertId;
     }
     return false;
   }
