@@ -1,0 +1,8 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+  <div class="modal-content success" (click)="$event.stopPropagation()">
+    <div class="success-icon">✓</div>
+    <h2>Payment Successful!</h2>
+    <p>Your booking has been confirmed.</p>
+    <button (click)="close()" class="btn-primary">Go to Dashboard</button>
+  </div>
+</div>

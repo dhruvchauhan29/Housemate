@@ -1,0 +1,12 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Payment</h2>
+    <div class="payment-form">
+      <!-- Payment form will go here -->
+    </div>
+    <div class="modal-actions">
+      <button (click)="close()" class="btn-secondary">Cancel</button>
+      <button (click)="processPayment()" class="btn-primary">Pay Now</button>
+    </div>
+  </div>
+</div>

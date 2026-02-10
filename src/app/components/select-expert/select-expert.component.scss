@@ -1,0 +1,43 @@
+.select-expert-container {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .expert-list {
+    margin: 20px 0;
+    min-height: 200px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+
+      &:hover {
+        background: #5a6268;
+      }
+    }
+  }
+}

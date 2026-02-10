@@ -1,0 +1,31 @@
+.select-service-container {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .service-list {
+    margin: 20px 0;
+    min-height: 200px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .btn-primary {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: #0056b3;
+      }
+    }
+  }
+}
