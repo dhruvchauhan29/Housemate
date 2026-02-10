@@ -1,8 +1,24 @@
-<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
-  <div class="modal-content success" (click)="$event.stopPropagation()">
-    <div class="success-icon">✓</div>
-    <h2>Payment Successful!</h2>
-    <p>Your booking has been confirmed.</p>
-    <button (click)="close()" class="btn-primary">Go to Dashboard</button>
+<div class="payment-success">
+  <div class="success-icon-container">
+    <mat-icon class="success-icon">check_circle</mat-icon>
   </div>
+
+  <!-- Image placeholder: Success illustration from Figma -->
+
+  <h1 class="success-heading">Payment Successful!</h1>
+  <p class="success-message">Your booking has been confirmed</p>
+
+  <div class="transaction-info">
+    <span class="transaction-label">Transaction ID:</span>
+    <span class="transaction-id">{{ data.transactionId }}</span>
+  </div>
+
+  <button 
+    mat-raised-button 
+    color="primary" 
+    class="dashboard-button"
+    (click)="closeAndRedirect()">
+    <mat-icon>dashboard</mat-icon>
+    <span>Go to Dashboard</span>
+  </button>
 </div>

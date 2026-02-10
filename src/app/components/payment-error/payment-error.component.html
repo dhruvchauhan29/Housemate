@@ -1,11 +1,28 @@
-<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
-  <div class="modal-content error" (click)="$event.stopPropagation()">
-    <div class="error-icon">✕</div>
-    <h2>Payment Failed</h2>
-    <p>{{ errorMessage }}</p>
-    <div class="modal-actions">
-      <button (click)="close()" class="btn-secondary">Cancel</button>
-      <button (click)="retry()" class="btn-primary">Retry</button>
-    </div>
+<div class="payment-error">
+  <div class="error-icon-container">
+    <mat-icon class="error-icon">error</mat-icon>
+  </div>
+
+  <!-- Image placeholder: Error illustration from Figma -->
+
+  <h1 class="error-heading">Payment Failed</h1>
+  <p class="error-message">{{ data.message }}</p>
+
+  <div class="button-group">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="retry-button"
+      (click)="retry()">
+      <mat-icon>refresh</mat-icon>
+      <span>Retry Payment</span>
+    </button>
+
+    <button 
+      mat-stroked-button 
+      class="cancel-button"
+      (click)="cancel()">
+      <span>Cancel</span>
+    </button>
   </div>
 </div>

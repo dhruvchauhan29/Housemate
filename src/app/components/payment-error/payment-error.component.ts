@@ -1,27 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-payment-error',
-  imports: [CommonModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule],
   templateUrl: './payment-error.component.html',
   styleUrl: './payment-error.component.scss'
 })
 export class PaymentErrorComponent {
-  isOpen = false;
-  errorMessage = '';
+  private dialogRef = inject(MatDialogRef<PaymentErrorComponent>);
+  public data = inject(MAT_DIALOG_DATA) as { message: string };
 
-  open(message: string = 'Payment failed. Please try again.') {
-    this.errorMessage = message;
-    this.isOpen = true;
+  retry(): void {
+    this.dialogRef.close('retry');
   }
 
-  close() {
-    this.isOpen = false;
-  }
-
-  retry() {
-    this.close();
-    // Retry logic will be implemented here
+  cancel(): void {
+    this.dialogRef.close();
   }
 }
