@@ -16,4 +16,68 @@
       </div>
     </div>
   </div>
+
+  <!-- Selected Expert Section (shown when expert is pre-selected) -->
+  <div class="selected-expert-section" *ngIf="selectedExpert">
+    <h2 class="section-title">Selected Expert</h2>
+    <mat-card class="expert-detail-card">
+      <mat-card-content>
+        <div class="expert-profile">
+          <div class="profile-image-container">
+            <div class="profile-image-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+          </div>
+          
+          <div class="profile-details">
+            <div class="name-verified">
+              <h3 class="expert-name">{{ selectedExpert.name }}</h3>
+              <mat-icon *ngIf="selectedExpert.verified" class="verified-badge" matTooltip="Verified Expert">
+                check_circle
+              </mat-icon>
+            </div>
+
+            <div class="rating-section">
+              <div class="stars">
+                <mat-icon *ngFor="let star of getStarArray(selectedExpert.rating)" class="star-icon">
+                  {{ star === 1 ? 'star' : 'star_outline' }}
+                </mat-icon>
+              </div>
+              <span class="rating-value">{{ selectedExpert.rating }}</span>
+              <span class="review-count">({{ selectedExpert.reviewCount }} reviews)</span>
+            </div>
+
+            <div class="expert-info">
+              <div class="info-item">
+                <mat-icon class="info-icon">work</mat-icon>
+                <span>{{ selectedExpert.experience }}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon class="info-icon">location_on</mat-icon>
+                <span>{{ selectedExpert.distance }}</span>
+              </div>
+            </div>
+
+            <div class="price-section">
+              <span class="price">₹{{ selectedExpert.pricePerHour }}</span>
+              <span class="price-unit">/hour</span>
+            </div>
+
+            <div class="services-section">
+              <div class="services-list">
+                <span *ngFor="let service of selectedExpert.services" class="service-tag">
+                  {{ service }}
+                </span>
+              </div>
+            </div>
+
+            <div class="languages-section">
+              <mat-icon class="language-icon">language</mat-icon>
+              <span class="languages">{{ selectedExpert.languages.join(', ') }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

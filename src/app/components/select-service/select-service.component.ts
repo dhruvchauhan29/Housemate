@@ -1,25 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppState } from '../../store/app.state';
-import { Service } from '../../store/models/booking.model';
+import { Service, Expert } from '../../store/models/booking.model';
 import { selectService } from '../../store/actions/booking.actions';
-import { selectSelectedService } from '../../store/selectors/booking.selectors';
-import { Observable } from 'rxjs';
+import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-service',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './select-service.component.html',
   styleUrl: './select-service.component.scss'
 })
-export class SelectServiceComponent implements OnInit {
+export class SelectServiceComponent implements OnInit, OnDestroy {
   selectedService$: Observable<Service | undefined>;
+  selectedExpert$: Observable<Expert | undefined>;
   selectedServiceId: string | null = null;
+  selectedExpert: Expert | undefined;
+  private destroy$ = new Subject<void>();
 
   services: Service[] = [
     {
@@ -77,12 +82,26 @@ export class SelectServiceComponent implements OnInit {
     private store: Store<AppState>
   ) {
     this.selectedService$ = this.store.select(selectSelectedService);
+    this.selectedExpert$ = this.store.select(selectSelectedExpert);
   }
 
   ngOnInit() {
-    this.selectedService$.subscribe(service => {
-      this.selectedServiceId = service?.id || null;
-    });
+    this.selectedService$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(service => {
+        this.selectedServiceId = service?.id || null;
+      });
+
+    this.selectedExpert$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(expert => {
+        this.selectedExpert = expert;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   selectServiceCard(service: Service) {
@@ -97,6 +116,10 @@ export class SelectServiceComponent implements OnInit {
       'Gardening': '🌱'
     };
     return icons[serviceName] || '🏠';
+  }
+
+  getStarArray(rating: number): number[] {
+    return Array(5).fill(0).map((_, i) => i < Math.floor(rating) ? 1 : 0);
   }
 }
 
