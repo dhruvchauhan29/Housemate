@@ -1,0 +1,29 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "email": "john@example.com",
+      "password": "password",
+      "fullName": "John Doe",
+      "age": 30,
+      "address": "New York, NY",
+      "mobileNumber": "+1 (555) 123-4567",
+      "role": "CUSTOMER"
+    }
+  ],
+  "experts": [
+    {
+      "id": 1,
+      "email": "jane@example.com",
+      "password": "password",
+      "fullName": "Jane Smith",
+      "age": 28,
+      "address": "Los Angeles, CA",
+      "mobileNumber": "+1 (555) 987-6543",
+      "serviceCategory": "Cleaning",
+      "experience": "5 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT"
+    }
+  ]
+}

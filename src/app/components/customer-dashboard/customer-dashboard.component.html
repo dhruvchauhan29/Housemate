@@ -1,0 +1,74 @@
+<div class="dashboard">
+  <header class="header">
+    <div class="container">
+      <div class="logo" (click)="navigateToHome()">
+        <div class="logo-icon">H</div>
+        <span class="logo-text">HouseMate</span>
+      </div>
+      <nav class="nav">
+        <span class="user-name">{{ currentUser?.fullName }}</span>
+        <button class="btn btn-logout" (click)="logout()">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="welcome-section">
+      <h1 class="welcome-title">Welcome, {{ currentUser?.fullName }}!</h1>
+      <p class="welcome-subtitle">We're glad to have you back</p>
+    </div>
+
+    <div class="dashboard-content">
+      <div class="info-card">
+        <h2>Customer Dashboard</h2>
+        <p>This is your customer dashboard. Here you can manage your bookings and services.</p>
+        
+        <div class="user-info">
+          <h3>Your Profile</h3>
+          <div class="info-row">
+            <span class="label">Name:</span>
+            <span class="value">{{ currentUser?.fullName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ currentUser?.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Mobile:</span>
+            <span class="value">{{ currentUser?.mobileNumber }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Address:</span>
+            <span class="value">{{ currentUser?.address }}</span>
+          </div>
+        </div>
+        
+        <div class="features-section">
+          <h3>Quick Actions</h3>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <div class="feature-icon">🏠</div>
+              <div class="feature-name">Book Service</div>
+              <div class="feature-status">Coming Soon</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📋</div>
+              <div class="feature-name">My Bookings</div>
+              <div class="feature-status">Coming Soon</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">⭐</div>
+              <div class="feature-name">My Reviews</div>
+              <div class="feature-status">Coming Soon</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">💳</div>
+              <div class="feature-name">Payment History</div>
+              <div class="feature-status">Coming Soon</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
