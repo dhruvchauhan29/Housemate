@@ -77,7 +77,7 @@ export class SelectAddressComponent implements OnInit {
       contactName: 'John Doe',
       contactNumber: '9876543210',
       alternateContactNumber: '9876543211',
-      houseType: '2BHK',
+      houseType: '2 BHK',
       isDefault: true
     };
 
@@ -103,7 +103,7 @@ export class SelectAddressComponent implements OnInit {
       pinCode: '400092',
       contactName: 'John Doe',
       contactNumber: '9876543210',
-      houseType: '3BHK',
+      houseType: '3 BHK',
       isDefault: false
     };
 
