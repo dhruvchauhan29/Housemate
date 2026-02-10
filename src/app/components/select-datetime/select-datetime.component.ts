@@ -156,6 +156,6 @@ export class SelectDatetimeComponent implements OnInit {
   }
 
   previousStep() {
-    this.router.navigate(['/book-service/select-service']);
+    this.router.navigate(['/book-service/select-expert']);
   }
 }

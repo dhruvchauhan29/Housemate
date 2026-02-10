@@ -41,6 +41,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'select-service', pathMatch: 'full' },
       { path: 'select-service', component: SelectServiceComponent },
+      { path: 'select-expert', component: SelectExpertComponent },
       { path: 'select-datetime', component: SelectDatetimeComponent },
       { path: 'select-address', component: SelectAddressComponent },
       { path: 'booking-summary', component: BookingSummaryComponent }
