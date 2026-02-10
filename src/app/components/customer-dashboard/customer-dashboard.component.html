@@ -8,88 +8,177 @@
       <nav class="nav">
         <a class="nav-link" (click)="navigateToBookService()">Services</a>
         <a class="nav-link" (click)="navigateToBookings()">My Bookings</a>
-        <button mat-icon-button [matMenuTriggerFor]="menu" class="profile-button">
-          <mat-icon>account_circle</mat-icon>
-          <span class="user-name">{{ currentUser?.fullName }}</span>
-          <mat-icon>arrow_drop_down</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Logout</span>
+        <div class="profile-section">
+          <!-- Image placeholder: User profile photo from Figma -->
+          <div class="user-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+          <button mat-button [matMenuTriggerFor]="menu" class="profile-button">
+            <span class="user-name">{{ currentUser?.fullName || 'JOHN DOE' }}</span>
+            <mat-icon>arrow_drop_down</mat-icon>
           </button>
-        </mat-menu>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
+        </div>
       </nav>
     </div>
   </header>
 
   <div class="main-content">
-    <div class="hero-section">
-      <div class="hero-content">
-        <!-- Image placeholder: Hero/Banner image will be added from Figma -->
-        <h1 class="hero-title">Welcome back, {{ currentUser?.fullName }}!</h1>
-        <p class="hero-subtitle">Book trusted experts for all your household needs</p>
-        <button mat-raised-button color="primary" class="btn-book-service" (click)="navigateToBookService()">
-          <mat-icon>add</mat-icon>
-          Book Service
-        </button>
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <div class="welcome-text">
+        <h2 class="welcome-subtitle">Welcome back,</h2>
+        <h1 class="welcome-title">{{ (currentUser?.fullName || 'JOHN DOE').toUpperCase() }}!</h1>
+      </div>
+      <button mat-raised-button color="primary" class="btn-book-service" (click)="navigateToBookService()">
+        BOOK SERVICE
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+
+    <!-- Upcoming Bookings Section -->
+    <div class="bookings-section">
+      <h2 class="section-title">Upcoming Bookings</h2>
+      <div class="bookings-container">
+        <div class="booking-card" *ngFor="let booking of upcomingBookings">
+          <div class="booking-header">
+            <!-- Image placeholder: Service icon from Figma -->
+            <div class="service-icon-small">{{ booking.serviceIcon }}</div>
+            <div class="booking-price">{{ booking.price }} to pay</div>
+          </div>
+          <div class="booking-details">
+            <div class="detail-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{ booking.date }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ booking.time }}, booked for {{ booking.duration }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ booking.location }}</span>
+            </div>
+          </div>
+          <div class="booking-actions">
+            <a class="action-link" (click)="viewBookingDetails(booking.id)">View Details</a>
+            <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Popular Services Section -->
+    <div class="popular-services-section">
+      <h2 class="section-title">Popular Services</h2>
+      <div class="services-horizontal-scroll">
+        <div class="service-card-small">
+          <!-- Image placeholder: Cleaning service icon from Figma -->
+          <div class="service-icon-large">🧹</div>
+          <h3 class="service-name">Cleaning</h3>
+        </div>
+        <div class="service-card-small">
+          <!-- Image placeholder: Cooking service icon from Figma -->
+          <div class="service-icon-large">👨‍🍳</div>
+          <h3 class="service-name">Cooking</h3>
+        </div>
+        <div class="service-card-small">
+          <!-- Image placeholder: Gardening service icon from Figma -->
+          <div class="service-icon-large">🌱</div>
+          <h3 class="service-name">Gardening</h3>
+        </div>
+        <div class="service-card-small">
+          <!-- Image placeholder: Cleaning service icon from Figma -->
+          <div class="service-icon-large">🧹</div>
+          <h3 class="service-name">Cleaning</h3>
+        </div>
+        <div class="service-card-small">
+          <!-- Image placeholder: Cooking service icon from Figma -->
+          <div class="service-icon-large">👨‍🍳</div>
+          <h3 class="service-name">Cooking</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Services Section -->
     <div class="featured-services">
       <h2 class="section-title">Featured Services</h2>
-      <div class="services-grid">
-        <div class="service-card">
-          <!-- Image placeholder: Deep House Cleaning service icon from Figma -->
-          <div class="service-icon">🧹</div>
-          <h3 class="service-title">Deep House Cleaning</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
+      <div class="featured-services-grid">
+        <mat-card class="featured-service-card">
+          <!-- Image placeholder: Deep House Cleaning service image from Figma -->
+          <div class="featured-service-image">
+            <div class="service-icon-featured">🧹</div>
+          </div>
+          <mat-card-content>
+            <div class="service-price-badge">₹ 150/hr</div>
+            <h3 class="featured-service-title">Deep House Cleaning</h3>
+            <p class="featured-service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p class="featured-service-offer">Earn 15% off if you book 3 for a month</p>
+            <button mat-stroked-button color="primary" class="featured-service-btn" (click)="navigateToBookService()">BOOK SERVICE</button>
+          </mat-card-content>
+        </mat-card>
 
-        <div class="service-card">
-          <!-- Image placeholder: Cooking Service icon from Figma -->
-          <div class="service-icon">👨‍🍳</div>
-          <h3 class="service-title">Cooking Service</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
+        <mat-card class="featured-service-card">
+          <!-- Image placeholder: Cooking Service image from Figma -->
+          <div class="featured-service-image">
+            <div class="service-icon-featured">👨‍🍳</div>
+          </div>
+          <mat-card-content>
+            <div class="service-price-badge">₹ 150/hr</div>
+            <h3 class="featured-service-title">Cooking Service</h3>
+            <p class="featured-service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p class="featured-service-offer">Earn 15% off if you book 3 for a month</p>
+            <button mat-stroked-button color="primary" class="featured-service-btn" (click)="navigateToBookService()">BOOK SERVICE</button>
+          </mat-card-content>
+        </mat-card>
 
-        <div class="service-card">
-          <!-- Image placeholder: Gardening Service icon from Figma -->
-          <div class="service-icon">🌱</div>
-          <h3 class="service-title">Gardening Service</h3>
-          <p class="service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <div class="service-price">₹ 150/hr</div>
-          <button mat-stroked-button color="primary" (click)="navigateToBookService()">BOOK SERVICE</button>
-        </div>
+        <mat-card class="featured-service-card">
+          <!-- Image placeholder: Gardening Service image from Figma -->
+          <div class="featured-service-image">
+            <div class="service-icon-featured">🌱</div>
+          </div>
+          <mat-card-content>
+            <div class="service-price-badge">₹ 150/hr</div>
+            <h3 class="featured-service-title">Gardening Service</h3>
+            <p class="featured-service-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p class="featured-service-offer">Earn 15% off if you book 3 for a month</p>
+            <button mat-stroked-button color="primary" class="featured-service-btn" (click)="navigateToBookService()">BOOK SERVICE</button>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
 
+    <!-- FAQs Section -->
     <div class="faqs-section">
       <h2 class="section-title">FAQs</h2>
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>How Can I Trust The Expert Sent By HouseMate?</h3>
-          <mat-icon>remove</mat-icon>
-        </div>
-        <div class="faq-answer">
-          We Thoroughly Vet All Of Our Experts Through Background Checks And Skill Assessments. 
-          You Can Also View Ratings And Reviews From Other Users Before Booking.
-        </div>
-      </div>
+      <mat-accordion>
+        <mat-expansion-panel expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              How Can I Trust The Expert Sent By HouseMate?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>We Thoroughly Vet All Of Our Experts Through Background Checks And Skill Assessments. You Can Also View Ratings And Reviews From Other Users Before Booking.</p>
+        </mat-expansion-panel>
 
-      <div class="faq-item collapsed">
-        <div class="faq-question">
-          <h3>What If The Service Provider Is Late Or Doesn't Show Up?</h3>
-          <mat-icon>add</mat-icon>
-        </div>
-      </div>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              What If The Service Provider Is Late Or Doesn't Show Up?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>We have policies in place to handle such situations. Please contact our support team for assistance.</p>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
   </div>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-section">
@@ -121,7 +210,8 @@
     </div>
 
     <div class="footer-bottom">
-      <p>© 2025 HouseMate. All Rights Reserved.</p>
+      <mat-icon class="copyright-icon">copyright</mat-icon>
+      <p>2025 HouseMate. All Rights Reserved.</p>
     </div>
   </footer>
 </div>
