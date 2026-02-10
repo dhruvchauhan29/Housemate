@@ -1,7 +1,7 @@
 {
   "customers": [
     {
-      "id": "1",
+      "id": 1,
       "email": "john@example.com",
       "password": "password",
       "fullName": "John Doe",
@@ -13,7 +13,7 @@
   ],
   "experts": [
     {
-      "id": "1",
+      "id": 1,
       "email": "jane@example.com",
       "password": "password",
       "fullName": "Jane Smith",
@@ -55,7 +55,7 @@
       "expertName": "Expert 2",
       "expertId": 2,
       "date": "2026-02-17",
-      "timeSlot": "12:00 AM - 14:00 PM",
+      "timeSlot": "12:00 PM - 2:00 PM",
       "duration": 2,
       "address": "Address 2, Pune - 411001",
       "baseAmount": 220,
@@ -74,7 +74,7 @@
       "expertName": "Expert 3",
       "expertId": 3,
       "date": "2026-02-18",
-      "timeSlot": "13:00 AM - 15:00 PM",
+      "timeSlot": "1:00 PM - 3:00 PM",
       "duration": 2,
       "address": "Address 3, Pune - 411001",
       "baseAmount": 230,
@@ -93,7 +93,7 @@
       "expertName": "Expert 4",
       "expertId": 4,
       "date": "2026-02-19",
-      "timeSlot": "14:00 AM - 16:00 PM",
+      "timeSlot": "2:00 PM - 4:00 PM",
       "duration": 2,
       "address": "Address 4, Pune - 411001",
       "baseAmount": 240,
@@ -112,7 +112,7 @@
       "expertName": "Expert 5",
       "expertId": 5,
       "date": "2026-02-20",
-      "timeSlot": "15:00 AM - 17:00 PM",
+      "timeSlot": "3:00 PM - 5:00 PM",
       "duration": 2,
       "address": "Address 5, Pune - 411001",
       "baseAmount": 250,
