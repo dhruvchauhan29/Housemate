@@ -101,7 +101,7 @@
             *ngFor="let booking of upcomingBookings; let i = index" 
             class="dot" 
             [class.active]="i === currentBookingIndex"
-            (click)="currentBookingIndex = i">
+            (click)="goToBooking(i)">
           </span>
         </div>
       </div>

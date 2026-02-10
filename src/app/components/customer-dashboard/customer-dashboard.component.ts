@@ -71,6 +71,12 @@ export class CustomerDashboardComponent implements OnInit {
     }
   }
 
+  goToBooking(index: number): void {
+    if (index >= 0 && index < this.upcomingBookings.length) {
+      this.currentBookingIndex = index;
+    }
+  }
+
   get visibleBookings(): Booking[] {
     if (this.upcomingBookings.length === 0) {
       return [];
