@@ -6,9 +6,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AppState } from '../../store/app.state';
-import { Service } from '../../store/models/booking.model';
-import { selectService } from '../../store/actions/booking.actions';
-import { selectSelectedService } from '../../store/selectors/booking.selectors';
+import { Service, Expert } from '../../store/models/booking.model';
+import { selectService, selectExpert } from '../../store/actions/booking.actions';
+import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -19,64 +19,109 @@ import { Observable } from 'rxjs';
 })
 export class SelectServiceComponent implements OnInit {
   selectedService$: Observable<Service | undefined>;
+  selectedExpert$: Observable<Expert | undefined>;
   selectedServiceId: string | null = null;
+  selectedExpertId: string | null = null;
 
   services: Service[] = [
     {
       id: '1',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Professional cleaning services',
       pricePerHour: 150,
-      // Image placeholder: Cleaning service icon will be added from Figma
     },
     {
       id: '2',
       name: 'Cooking',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Expert cooking services',
       pricePerHour: 150,
-      // Image placeholder: Cooking service icon will be added from Figma
     },
     {
       id: '3',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Garden maintenance services',
       pricePerHour: 150,
-      // Image placeholder: Gardening service icon will be added from Figma
     },
     {
       id: '4',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Professional cleaning services',
       pricePerHour: 150,
-      // Image placeholder: Cleaning service icon (repeated) will be added from Figma
     },
     {
       id: '5',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Garden maintenance services',
       pricePerHour: 150,
-      // Image placeholder: Gardening service icon (repeated) will be added from Figma
     },
     {
       id: '6',
       name: 'Cooking',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Expert cooking services',
       pricePerHour: 150,
-      // Image placeholder: Cooking service icon (repeated) will be added from Figma
     },
     {
       id: '7',
       name: 'Gardening',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Garden maintenance services',
       pricePerHour: 150,
-      // Image placeholder: Gardening service icon (repeated) will be added from Figma
     },
     {
       id: '8',
       name: 'Cleaning',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempur incididunt',
+      description: 'Professional cleaning services',
       pricePerHour: 150,
-      // Image placeholder: Cleaning service icon (repeated) will be added from Figma
+    }
+  ];
+
+  filteredExperts: Expert[] = [
+    {
+      id: '1',
+      name: 'Sara Khan',
+      rating: 4.7,
+      reviewCount: 122,
+      experience: '8 years',
+      distance: '2.3 km',
+      pricePerHour: 299,
+      verified: true,
+      services: ['Cooking', 'Electrician'],
+      languages: ['Hindi', 'English']
+    },
+    {
+      id: '2',
+      name: 'Rajesh Kumar',
+      rating: 4.7,
+      reviewCount: 122,
+      experience: '8 years',
+      distance: '2.3 km',
+      pricePerHour: 299,
+      verified: true,
+      services: ['Cooking', 'Electrician'],
+      languages: ['Hindi', 'English']
+    },
+    {
+      id: '3',
+      name: 'Rajesh Kumar',
+      rating: 4.7,
+      reviewCount: 122,
+      experience: '8 years',
+      distance: '2.3 km',
+      pricePerHour: 299,
+      verified: true,
+      services: ['Cooking', 'Electrician'],
+      languages: ['Hindi', 'English']
+    },
+    {
+      id: '4',
+      name: 'Rajesh Kumar',
+      rating: 4.7,
+      reviewCount: 122,
+      experience: '8 years',
+      distance: '2.3 km',
+      pricePerHour: 299,
+      verified: true,
+      services: ['Cooking', 'Electrician'],
+      languages: ['Hindi', 'English']
     }
   ];
 
@@ -85,11 +130,15 @@ export class SelectServiceComponent implements OnInit {
     private store: Store<AppState>
   ) {
     this.selectedService$ = this.store.select(selectSelectedService);
+    this.selectedExpert$ = this.store.select(selectSelectedExpert);
   }
 
   ngOnInit() {
     this.selectedService$.subscribe(service => {
       this.selectedServiceId = service?.id || null;
+    });
+    this.selectedExpert$.subscribe(expert => {
+      this.selectedExpertId = expert?.id || null;
     });
   }
 
@@ -98,10 +147,9 @@ export class SelectServiceComponent implements OnInit {
     this.store.dispatch(selectService({ service }));
   }
 
-  nextStep() {
-    if (this.selectedServiceId) {
-      this.router.navigate(['/book-service/select-expert']);
-    }
+  selectExpertCard(expert: Expert) {
+    this.selectedExpertId = expert.id;
+    this.store.dispatch(selectExpert({ expert }));
   }
 
   getServiceIcon(serviceName: string): string {

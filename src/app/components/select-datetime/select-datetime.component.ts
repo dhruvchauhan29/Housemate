@@ -35,7 +35,8 @@ export class SelectDatetimeComponent implements OnInit {
   selectedTimeSlot$: Observable<TimeSlot | undefined>;
   selectedDuration$: Observable<number | undefined>;
 
-  frequencyOptions: ('Once' | 'Daily' | 'Weekly' | 'Monthly')[] = ['Once', 'Daily', 'Weekly', 'Monthly'];
+  currentMonth: Date = new Date(2020, 8, 1); // September 2020
+  nextMonth: Date = new Date(2020, 9, 1); // October 2020
   
   timeSlots: TimeSlot[] = [
     { id: '1', startTime: '6:00 AM', endTime: '9:00 AM', available: true },
@@ -45,12 +46,12 @@ export class SelectDatetimeComponent implements OnInit {
     { id: '5', startTime: '6:00 PM', endTime: '9:00 PM', available: true }
   ];
 
-  durationOptions: number[] = [1, 2, 3, 4];
-
   selectedDate: string | undefined;
   selectedFrequency: 'Once' | 'Daily' | 'Weekly' | 'Monthly' | undefined;
   selectedTimeSlotId: string | undefined;
   selectedDuration: number | undefined;
+  selectedDay: number | null = null;
+  selectedMonthIndex: number = 0; // 0 for current month, 1 for next month
 
   constructor(
     private router: Router,
@@ -69,11 +70,67 @@ export class SelectDatetimeComponent implements OnInit {
     this.selectedDuration$.subscribe(duration => this.selectedDuration = duration);
   }
 
-  onDateChange(date: Date | null) {
-    if (date) {
-      const dateString = date.toISOString().split('T')[0];
+  getDaysInMonth(date: Date): (number | null)[] {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const days: (number | null)[] = [];
+    
+    // Add empty slots for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(null);
+    }
+    
+    // Add all days of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i);
+    }
+    
+    return days;
+  }
+
+  selectDate(day: number | null) {
+    if (day) {
+      this.selectedDay = day;
+      this.selectedMonthIndex = 0;
+      const dateString = `${this.currentMonth.getFullYear()}-${String(this.currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       this.store.dispatch(selectDate({ date: dateString }));
     }
+  }
+
+  selectDateNextMonth(day: number | null) {
+    if (day) {
+      this.selectedDay = day;
+      this.selectedMonthIndex = 1;
+      const dateString = `${this.nextMonth.getFullYear()}-${String(this.nextMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      this.store.dispatch(selectDate({ date: dateString }));
+    }
+  }
+
+  isDateSelected(day: number | null, isNextMonth: boolean = false): boolean {
+    if (!day || !this.selectedDay) return false;
+    const monthIndex = isNextMonth ? 1 : 0;
+    return day === this.selectedDay && monthIndex === this.selectedMonthIndex;
+  }
+
+  isToday(day: number | null): boolean {
+    if (!day) return false;
+    const today = new Date();
+    return day === today.getDate() && 
+           this.currentMonth.getMonth() === today.getMonth() &&
+           this.currentMonth.getFullYear() === today.getFullYear();
+  }
+
+  previousMonth() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
+    this.nextMonth = new Date(this.nextMonth.getFullYear(), this.nextMonth.getMonth() - 1, 1);
+  }
+
+  nextMonthNav() {
+    this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 1);
+    this.nextMonth = new Date(this.nextMonth.getFullYear(), this.nextMonth.getMonth() + 1, 1);
   }
 
   onFrequencyChange(frequency: 'Once' | 'Daily' | 'Weekly' | 'Monthly') {
@@ -84,10 +141,6 @@ export class SelectDatetimeComponent implements OnInit {
     if (timeSlot.available) {
       this.store.dispatch(selectTimeSlot({ timeSlot }));
     }
-  }
-
-  onDurationChange(duration: number) {
-    this.store.dispatch(selectDuration({ duration }));
   }
 
   isTimeSlotSelected(timeSlotId: string): boolean {
@@ -103,6 +156,6 @@ export class SelectDatetimeComponent implements OnInit {
   }
 
   previousStep() {
-    this.router.navigate(['/book-service/select-expert']);
+    this.router.navigate(['/book-service/select-service']);
   }
 }

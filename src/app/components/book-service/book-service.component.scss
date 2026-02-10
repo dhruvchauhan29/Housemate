@@ -132,6 +132,10 @@
   align-items: center;
 }
 
+.header-content {
+  flex: 1;
+}
+
 .page-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -142,6 +146,7 @@
 .page-subtitle {
   color: #6b7280;
   font-size: 0.875rem;
+  margin: 0;
 }
 
 .btn-next-header {
