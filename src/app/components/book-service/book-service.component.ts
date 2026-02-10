@@ -28,7 +28,10 @@ export class BookServiceComponent implements OnInit {
   ) {
     this.currentUser = this.authService.getCurrentUser();
     
-    // Subscribe to router events to track current route
+    // Initialize currentRoute with the current router URL (will be updated by subscription)
+    this.currentRoute = this.router.url;
+    
+    // Subscribe to router events to track current route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -46,7 +49,8 @@ export class BookServiceComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Initialize currentRoute with the current router URL after component initialization
+    // Ensure currentRoute is set correctly after component initialization
+    // This handles cases where initial navigation completed before subscriptions
     this.currentRoute = this.router.url;
   }
 
