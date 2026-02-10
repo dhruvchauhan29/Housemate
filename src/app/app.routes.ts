@@ -9,6 +9,7 @@ import { ExpertDashboardComponent } from './components/expert-dashboard/expert-d
 import { BookServiceComponent } from './components/book-service/book-service.component';
 import { SelectServiceComponent } from './components/select-service/select-service.component';
 import { SelectExpertComponent } from './components/select-expert/select-expert.component';
+import { SelectServiceExpertComponent } from './components/select-service-expert/select-service-expert.component';
 import { SelectDatetimeComponent } from './components/select-datetime/select-datetime.component';
 import { SelectAddressComponent } from './components/select-address/select-address.component';
 import { BookingSummaryComponent } from './components/booking-summary/booking-summary.component';
@@ -39,7 +40,8 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { role: 'CUSTOMER' },
     children: [
-      { path: '', redirectTo: 'select-service', pathMatch: 'full' },
+      { path: '', redirectTo: 'select-service-expert', pathMatch: 'full' },
+      { path: 'select-service-expert', component: SelectServiceExpertComponent },
       { path: 'select-service', component: SelectServiceComponent },
       { path: 'select-expert', component: SelectExpertComponent },
       { path: 'select-datetime', component: SelectDatetimeComponent },

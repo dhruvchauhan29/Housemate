@@ -1,0 +1,147 @@
+<div class="select-service-expert-container">
+  
+  <!-- Service Selection Section -->
+  <section class="service-selection-section">
+    <div class="section-header">
+      <h2 class="section-title">Select Service</h2>
+    </div>
+
+    <div class="services-grid">
+      <div 
+        *ngFor="let service of services" 
+        class="service-card"
+        [class.selected]="selectedServiceId === service.id"
+        (click)="selectServiceCard(service)">
+        
+        <!-- TODO: Insert service image from Figma -->
+        <div class="service-image-placeholder">
+          <div class="service-icon">{{ getServiceIcon(service.name) }}</div>
+        </div>
+        
+        <h3 class="service-name">{{ service.name }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+        <div class="service-price">Earn {{service.pricePerHour}}% (if you book 4 hrs or more)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expert Selection Section -->
+  <section class="expert-selection-section">
+    <div class="section-header">
+      <h2 class="section-title">Available Expert Near You</h2>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input 
+          matInput 
+          placeholder="Search for experts" 
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange()"
+        >
+      </mat-form-field>
+      <button mat-icon-button class="filter-button">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+    </div>
+
+    <!-- Expert Cards Grid -->
+    <div class="expert-cards-grid">
+      <mat-card 
+        *ngFor="let expert of filteredExperts"
+        class="expert-card"
+        [class.selected]="selectedExpertId === expert.id"
+        (click)="selectExpertCard(expert)"
+      >
+        <mat-card-content>
+          <!-- Expert Profile Section -->
+          <div class="expert-profile">
+            <div class="profile-image-container">
+              <!-- TODO: Insert expert profile image from Figma -->
+              <div class="profile-image-placeholder">
+                <mat-icon>person</mat-icon>
+              </div>
+            </div>
+            
+            <div class="profile-details">
+              <div class="name-verified">
+                <h3 class="expert-name">{{ expert.name }}</h3>
+                <mat-icon *ngIf="expert.verified" class="verified-badge" matTooltip="Verified Expert">
+                  check_circle
+                </mat-icon>
+              </div>
+
+              <!-- Rating Section -->
+              <div class="rating-section">
+                <div class="stars">
+                  <mat-icon *ngFor="let star of getStarArray(expert.rating)" class="star-icon">
+                    {{ star === 1 ? 'star' : 'star_outline' }}
+                  </mat-icon>
+                </div>
+                <span class="rating-value">{{ expert.rating }}</span>
+                <span class="review-count">({{ expert.reviewCount }} reviews)</span>
+              </div>
+
+              <!-- Expert Info -->
+              <div class="expert-info">
+                <div class="info-item">
+                  <mat-icon class="info-icon">work</mat-icon>
+                  <span>{{ expert.experience }}</span>
+                </div>
+                <div class="info-item">
+                  <mat-icon class="info-icon">location_on</mat-icon>
+                  <span>{{ expert.distance }}</span>
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div class="price-section">
+                <span class="price">₹{{ expert.pricePerHour }}</span>
+                <span class="price-unit">/hour</span>
+              </div>
+
+              <!-- Services -->
+              <div class="services-section">
+                <div class="services-list">
+                  <span *ngFor="let service of expert.services" class="service-tag">
+                    {{ service }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Languages -->
+              <div class="languages-section">
+                <mat-icon class="language-icon">language</mat-icon>
+                <span class="languages">{{ expert.languages.join(', ') }}</span>
+              </div>
+
+              <!-- View Certificates Link -->
+              <div class="certificates-link">
+                <a href="#" (click)="$event.stopPropagation(); $event.preventDefault()">
+                  <mat-icon>verified</mat-icon>
+                  View Certificates
+                </a>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- Navigation Buttons -->
+  <div class="navigation-buttons">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="next-button" 
+      (click)="nextStep()"
+      [disabled]="!selectedServiceId || !selectedExpertId"
+    >
+      Next
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</div>
