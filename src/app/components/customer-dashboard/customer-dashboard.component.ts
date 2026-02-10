@@ -7,17 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AuthService, User } from '../../services/auth.service';
-
-interface Booking {
-  id: number;
-  serviceIcon: string;
-  serviceName: string;
-  price: string;
-  date: string;
-  time: string;
-  duration: string;
-  location: string;
-}
+import { BookingService, Booking } from '../../services/booking.service';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -28,9 +18,11 @@ interface Booking {
 export class CustomerDashboardComponent implements OnInit {
   currentUser: User | null = null;
   upcomingBookings: Booking[] = [];
+  currentBookingIndex = 0;
 
   constructor(
     private authService: AuthService,
+    private bookingService: BookingService,
     private router: Router
   ) {}
 
@@ -40,39 +32,50 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   loadUpcomingBookings() {
-    // Mock data for upcoming bookings - will be replaced with API call later
-    this.upcomingBookings = [
-      {
-        id: 1,
-        serviceIcon: '🧹', // Image placeholder: Cleaning service icon from Figma
-        serviceName: 'Cleaning',
-        price: '₹299/-',
-        date: '31 Jan, Wednesday',
-        time: '2:30 PM',
-        duration: '2hrs',
-        location: '201, Manjari Khurd, Pune - 143505'
-      },
-      {
-        id: 2,
-        serviceIcon: '👨‍🍳', // Image placeholder: Cooking service icon from Figma
-        serviceName: 'Cooking',
-        price: '₹450/-',
-        date: '2 Feb, Friday',
-        time: '11:00 AM',
-        duration: '3hrs',
-        location: '45, Koregaon Park, Pune - 411001'
-      },
-      {
-        id: 3,
-        serviceIcon: '🌱', // Image placeholder: Gardening service icon from Figma
-        serviceName: 'Gardening',
-        price: '₹350/-',
-        date: '5 Feb, Monday',
-        time: '8:00 AM',
-        duration: '2hrs',
-        location: '78, Baner Road, Pune - 411045'
-      }
-    ];
+    const userId = this.currentUser?.id;
+    if (userId) {
+      this.bookingService.getUpcomingBookings(userId).subscribe({
+        next: (bookings) => {
+          this.upcomingBookings = bookings;
+        },
+        error: (error) => {
+          console.error('Error loading bookings:', error);
+          // Keep empty array on error
+          this.upcomingBookings = [];
+        }
+      });
+    }
+  }
+
+  get hasMultipleBookings(): boolean {
+    return this.upcomingBookings.length > 1;
+  }
+
+  get canNavigatePrevious(): boolean {
+    return this.currentBookingIndex > 0;
+  }
+
+  get canNavigateNext(): boolean {
+    return this.currentBookingIndex < this.upcomingBookings.length - 1;
+  }
+
+  previousBooking(): void {
+    if (this.canNavigatePrevious) {
+      this.currentBookingIndex--;
+    }
+  }
+
+  nextBooking(): void {
+    if (this.canNavigateNext) {
+      this.currentBookingIndex++;
+    }
+  }
+
+  get visibleBookings(): Booking[] {
+    if (this.upcomingBookings.length === 0) {
+      return [];
+    }
+    return [this.upcomingBookings[this.currentBookingIndex]];
   }
 
   logout() {

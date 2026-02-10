@@ -44,33 +44,77 @@
     <!-- Upcoming Bookings Section -->
     <div class="bookings-section">
       <h2 class="section-title">Upcoming Bookings</h2>
-      <div class="bookings-container">
-        <div class="booking-card" *ngFor="let booking of upcomingBookings">
-          <div class="booking-header">
-            <!-- Image placeholder: Service icon from Figma -->
-            <div class="service-icon-small">{{ booking.serviceIcon }}</div>
-            <div class="booking-price">{{ booking.price }} to pay</div>
-          </div>
-          <div class="booking-details">
-            <div class="detail-item">
-              <mat-icon>calendar_today</mat-icon>
-              <span>{{ booking.date }}</span>
+      
+      <div class="bookings-slider-container" *ngIf="upcomingBookings.length > 0; else noBookings">
+        <!-- Left Arrow -->
+        <button 
+          mat-icon-button 
+          class="slider-arrow slider-arrow-left" 
+          (click)="previousBooking()" 
+          [disabled]="!canNavigatePrevious"
+          *ngIf="hasMultipleBookings">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <!-- Booking Cards Container -->
+        <div class="bookings-container">
+          <div class="booking-card" *ngFor="let booking of visibleBookings">
+            <div class="booking-header">
+              <!-- Image placeholder: Service icon from Figma -->
+              <div class="service-icon-small">{{ booking.serviceIcon }}</div>
+              <div class="booking-price">{{ booking.priceDisplay }} to pay</div>
             </div>
-            <div class="detail-item">
-              <mat-icon>schedule</mat-icon>
-              <span>{{ booking.time }}, booked for {{ booking.duration }}</span>
+            <div class="booking-details">
+              <div class="detail-item">
+                <mat-icon>calendar_today</mat-icon>
+                <span>{{ booking.dateDisplay }}</span>
+              </div>
+              <div class="detail-item">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ booking.time }}, booked for {{ booking.duration }}</span>
+              </div>
+              <div class="detail-item">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ booking.location }}</span>
+              </div>
             </div>
-            <div class="detail-item">
-              <mat-icon>location_on</mat-icon>
-              <span>{{ booking.location }}</span>
+            <div class="booking-actions">
+              <a class="action-link" (click)="viewBookingDetails(booking.id)">View Details</a>
+              <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
             </div>
-          </div>
-          <div class="booking-actions">
-            <a class="action-link" (click)="viewBookingDetails(booking.id)">View Details</a>
-            <a class="action-link" (click)="modifyBooking(booking.id)">Modify Booking</a>
           </div>
         </div>
+
+        <!-- Right Arrow -->
+        <button 
+          mat-icon-button 
+          class="slider-arrow slider-arrow-right" 
+          (click)="nextBooking()" 
+          [disabled]="!canNavigateNext"
+          *ngIf="hasMultipleBookings">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <!-- Pagination Dots -->
+        <div class="slider-dots" *ngIf="hasMultipleBookings">
+          <span 
+            *ngFor="let booking of upcomingBookings; let i = index" 
+            class="dot" 
+            [class.active]="i === currentBookingIndex"
+            (click)="currentBookingIndex = i">
+          </span>
+        </div>
       </div>
+
+      <ng-template #noBookings>
+        <div class="no-bookings">
+          <mat-icon class="no-bookings-icon">event_busy</mat-icon>
+          <p>No upcoming bookings</p>
+          <button mat-raised-button color="primary" (click)="navigateToBookService()">
+            BOOK A SERVICE
+          </button>
+        </div>
+      </ng-template>
     </div>
 
     <!-- Popular Services Section -->
