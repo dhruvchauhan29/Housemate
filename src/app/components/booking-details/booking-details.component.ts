@@ -44,7 +44,7 @@ export class BookingDetailsComponent implements OnInit {
     this.bookingId = this.route.snapshot.paramMap.get('id');
     
     // Defensive validation: check if bookingId is valid
-    if (!this.bookingId || this.bookingId.trim() === '') {
+    if (!this.bookingId || (typeof this.bookingId === 'string' && this.bookingId.trim() === '')) {
       console.error('[BookingDetails] No booking ID provided in route params');
       this.error = 'No booking ID provided. Please return to the bookings list.';
       this.isLoading = false;
