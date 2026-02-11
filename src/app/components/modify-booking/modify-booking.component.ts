@@ -315,7 +315,9 @@ export class ModifyBookingComponent implements OnInit {
     const updates: Partial<SavedBooking> = {};
     
     // Track if expert changed for proper propagation
-    const expertChanged = this.modifiedExpert && this.modifiedExpert.id !== this.booking.expertId?.toString();
+    const expertChanged = this.modifiedExpert && 
+                         this.booking.expertId !== undefined && 
+                         this.modifiedExpert.id !== this.booking.expertId.toString();
     
     // Add modified fields to updates
     if (this.modifiedExpert) {
@@ -327,6 +329,9 @@ export class ModifyBookingComponent implements OnInit {
       const parsedExpertId = parseInt(this.modifiedExpert.id, 10);
       if (isNaN(parsedExpertId)) {
         console.error('Invalid expert ID:', this.modifiedExpert.id);
+        this.snackBar.open('Invalid expert ID. Please try selecting the expert again.', 'OK', {
+          duration: 5000
+        });
         return;
       }
       updates.expertId = parsedExpertId;
