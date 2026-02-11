@@ -19,6 +19,7 @@ describe('CustomerDashboardComponent', () => {
   const mockUser: User = {
     id: 1,
     email: 'test@example.com',
+    password: 'test123',
     fullName: 'Test User',
     age: 30,
     address: 'Test Address',

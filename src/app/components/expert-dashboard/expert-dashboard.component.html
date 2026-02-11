@@ -211,8 +211,15 @@
                     Take Action
                     <mat-icon>arrow_forward</mat-icon>
                   </button>
+                  <button mat-raised-button color="accent" 
+                          *ngIf="canMarkComplete(booking)"
+                          (click)="markAsCompleted(booking)"
+                          matTooltip="Mark this booking as completed">
+                    Mark as Completed
+                    <mat-icon>check_circle</mat-icon>
+                  </button>
                   <button mat-stroked-button color="primary" 
-                          *ngIf="!canTakeAction(booking)"
+                          *ngIf="!canTakeAction(booking) && !canMarkComplete(booking)"
                           (click)="viewDetails(booking)">
                     View Details
                     <mat-icon>arrow_forward</mat-icon>

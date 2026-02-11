@@ -357,6 +357,47 @@ export class ExpertDashboardComponent implements OnInit {
     return booking.status === 'pending';
   }
 
+  canMarkComplete(booking: SavedBooking): boolean {
+    return booking.status === 'upcoming';
+  }
+
+  markAsCompleted(booking: SavedBooking) {
+    if (!booking.id) {
+      this.snackBar.open('Invalid booking', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    // Confirm action
+    const confirmMessage = `Mark this booking as completed?\n\nService: ${booking.serviceName}\nCustomer: ${booking.customerName}\nDate: ${this.formatDate(booking.date)}`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.bookingService.completeBooking(booking.id).subscribe({
+      next: (updatedBooking) => {
+        this.snackBar.open('Booking marked as completed!', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
+        this.loadBookings();
+      },
+      error: (err) => {
+        console.error('Error completing booking:', err);
+        this.snackBar.open('Failed to complete booking. Please try again.', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+        this.loading = false;
+      }
+    });
+  }
+
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     const options: Intl.DateTimeFormatOptions = { 
