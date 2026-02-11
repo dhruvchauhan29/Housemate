@@ -8,17 +8,17 @@
         <div class="price-details">
           <div class="price-row">
             <span class="label">Book Amount</span>
-            <span class="value">₹{{ data.bookAmount | number:'1.2-2' }}</span>
+            <span class="value">₹{{ (data.bookAmount ?? 0) | number:'1.2-2' }}</span>
           </div>
           
           <div class="price-row">
             <span class="label">Subtotal</span>
-            <span class="value">₹{{ data.subtotal | number:'1.2-2' }}</span>
+            <span class="value">₹{{ (data.subtotal ?? 0) | number:'1.2-2' }}</span>
           </div>
           
           <div class="price-row">
             <span class="label">GST (18%)</span>
-            <span class="value">₹{{ data.gst | number:'1.2-2' }}</span>
+            <span class="value">₹{{ (data.gst ?? 0) | number:'1.2-2' }}</span>
           </div>
           
           <div class="price-row total">
@@ -73,7 +73,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Cardholder Name</mat-label>
+            <mat-label>Card Holder Name</mat-label>
             <input matInput formControlName="cardName" placeholder="John Doe">
             <mat-error *ngIf="cardPaymentForm.get('cardName')?.hasError('required')">
               Name is required
