@@ -189,13 +189,13 @@
       <p *ngIf="searchQuery">
         No experts match your search criteria. Try adjusting your search.
       </p>
-      <p *ngIf="!searchQuery && (minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < 200)">
+      <p *ngIf="!searchQuery && (minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE)">
         No experts match your filter criteria. Try adjusting your filters.
       </p>
-      <p *ngIf="!searchQuery && minRating === 0 && !verifiedOnly && !selectedLanguage && minPrice === 0 && maxPrice >= 200">
+      <p *ngIf="!searchQuery && minRating === 0 && !verifiedOnly && !selectedLanguage && minPrice === 0 && maxPrice >= DEFAULT_MAX_PRICE">
         No experts are currently available. Please check back later.
       </p>
-      <button mat-raised-button color="primary" (click)="clearFilters()" *ngIf="searchQuery || minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < 200">
+      <button mat-raised-button color="primary" (click)="clearFilters()" *ngIf="searchQuery || minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < DEFAULT_MAX_PRICE">
         <mat-icon>refresh</mat-icon>
         Clear Filters
       </button>
