@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface Expert {
-  id: number;
+  id: string;
   email: string;
   fullName: string;
   age?: number;
@@ -49,7 +49,7 @@ export class ExpertService {
     return this.http.get<Expert[]>(this.apiUrl);
   }
 
-  getExpertById(id: number): Observable<Expert> {
+  getExpertById(id: string): Observable<Expert> {
     return this.http.get<Expert>(`${this.apiUrl}/${id}`);
   }
 
