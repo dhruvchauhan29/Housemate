@@ -22,16 +22,113 @@
     <div class="expert-header">
       <h2 class="section-title">Available Expert Near You</h2>
       <div class="expert-actions">
-        <button mat-icon-button class="search-button">
-          <mat-icon>search</mat-icon>
-        </button>
-        <button mat-icon-button class="filter-button">
+        <button mat-icon-button class="filter-button" (click)="toggleFilters()">
           <mat-icon>tune</mat-icon>
         </button>
       </div>
     </div>
 
-    <div class="expert-cards-grid">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input 
+          matInput 
+          placeholder="Search experts by name or language" 
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange($event)"
+        >
+        <button mat-icon-button matSuffix *ngIf="searchQuery" (click)="searchQuery = ''; onSearchChange('')">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section" *ngIf="showFilters">
+      <div class="filters-container">
+        <div class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Sort By</mat-label>
+            <mat-select [(ngModel)]="sortBy" (selectionChange)="applyFilters()">
+              <mat-option value="">Default</mat-option>
+              <mat-option value="distance">Nearest First</mat-option>
+              <mat-option value="rating">Highest Rated</mat-option>
+              <mat-option value="price">Lowest Price</mat-option>
+              <mat-option value="experience">Most Experienced</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Min Rating</mat-label>
+            <mat-select [(ngModel)]="minRating" (selectionChange)="applyFilters()">
+              <mat-option [value]="0">Any</mat-option>
+              <mat-option [value]="4.0">4.0+</mat-option>
+              <mat-option [value]="4.5">4.5+</mat-option>
+              <mat-option [value]="4.8">4.8+</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Language</mat-label>
+            <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="applyFilters()">
+              <mat-option value="">Any</mat-option>
+              <mat-option value="Hindi">Hindi</mat-option>
+              <mat-option value="English">English</mat-option>
+              <mat-option value="Marathi">Marathi</mat-option>
+              <mat-option value="Tamil">Tamil</mat-option>
+              <mat-option value="Telugu">Telugu</mat-option>
+              <mat-option value="Bengali">Bengali</mat-option>
+              <mat-option value="Gujarati">Gujarati</mat-option>
+              <mat-option value="Malayalam">Malayalam</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Min Price (₹/hr)</mat-label>
+            <input matInput type="number" [(ngModel)]="minPrice" min="0" (change)="applyFilters()">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Max Price (₹/hr)</mat-label>
+            <input matInput type="number" [(ngModel)]="maxPrice" min="0" (change)="applyFilters()">
+          </mat-form-field>
+
+          <mat-checkbox [(ngModel)]="verifiedOnly" (change)="applyFilters()" class="verified-checkbox">
+            Verified Only
+          </mat-checkbox>
+        </div>
+
+        <div class="filter-actions">
+          <button mat-stroked-button (click)="clearFilters()">
+            <mat-icon>clear_all</mat-icon>
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoadingExperts">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading experts...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="expertError && !isLoadingExperts">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h3>Oops! Something went wrong</h3>
+      <p>{{ expertError }}</p>
+      <button mat-raised-button color="primary" (click)="loadExperts()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+
+    <!-- Expert Cards Grid -->
+    <div class="expert-cards-grid" *ngIf="!isLoadingExperts && !expertError && filteredExperts.length > 0">
       <div 
         *ngFor="let expert of filteredExperts" 
         class="expert-card"
@@ -47,31 +144,29 @@
           
           <div class="expert-right">
             <div class="expert-name-row">
-              <h3 class="expert-name">{{ expert.name }}</h3>
+              <h3 class="expert-name">{{ expert.fullName }}</h3>
               <mat-icon *ngIf="expert.verified" class="verified-icon">verified</mat-icon>
             </div>
 
             <div class="expert-rating">
               <mat-icon class="star-icon">star</mat-icon>
-              <span class="rating-value">{{ expert.rating }} ({{ expert.reviewCount }})</span>
+              <span class="rating-value">{{ expert.rating || 4.5 }} ({{ expert.reviewsCount || 100 }})</span>
               <mat-icon class="briefcase-icon">work</mat-icon>
               <span class="experience">{{ expert.experience }} experience</span>
             </div>
 
             <div class="expert-location">
               <mat-icon class="location-icon">location_on</mat-icon>
-              <span>{{ expert.distance }} away</span>
+              <span>{{ expert.address }}</span>
             </div>
 
             <div class="expert-services">
-              <span *ngFor="let service of expert.services.slice(0, 2)" class="service-badge">
-                {{ service }}
-              </span>
+              <span class="service-badge">{{ expert.serviceCategory }}</span>
             </div>
 
             <div class="expert-languages">
               <span class="languages-label">Languages:</span>
-              <span class="languages-value">{{ expert.languages.join(', ') }}</span>
+              <span class="languages-value">{{ expert.languages?.join(', ') || 'Hindi, English' }}</span>
             </div>
 
             <!-- Note: View Certificates functionality will be implemented in future -->
@@ -81,10 +176,37 @@
           </div>
 
           <div class="expert-price">
-            <span class="price-value">₹{{ expert.pricePerHour }}/hr</span>
+            <span class="price-value">₹{{ expert.pricePerHour || 100 }}/hr</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoadingExperts && !expertError && filteredExperts.length === 0 && selectedServiceId">
+      <mat-icon class="empty-icon">person_search</mat-icon>
+      <h3>No Experts Found</h3>
+      <p *ngIf="searchQuery || minRating > 0 || verifiedOnly || selectedLanguage">
+        No experts match your search criteria. Try adjusting your filters.
+      </p>
+      <p *ngIf="!searchQuery && minRating === 0 && !verifiedOnly && !selectedLanguage">
+        No experts are currently available for this service. Please check back later.
+      </p>
+      <button mat-raised-button color="primary" (click)="clearFilters()">
+        <mat-icon>refresh</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="!isLoadingExperts && !expertError && filteredExperts.length > 0 && totalPages > 1">
+      <button mat-icon-button [disabled]="currentPage === 1" (click)="previousPage()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }} ({{ totalExperts }} experts)</span>
+      <button mat-icon-button [disabled]="currentPage === totalPages" (click)="nextPage()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
     </div>
   </div>
 </div>
