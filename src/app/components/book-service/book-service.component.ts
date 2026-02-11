@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { Router, RouterOutlet, RouterModule, NavigationEnd } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService, User } from '../../services/auth.service';
@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book-service',
-  imports: [CommonModule, RouterOutlet, MatIconModule, MatButtonModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, MatIconModule, MatButtonModule],
   templateUrl: './book-service.component.html',
   styleUrl: './book-service.component.scss'
 })

@@ -12,6 +12,7 @@ import { SelectExpertComponent } from './components/select-expert/select-expert.
 import { SelectDatetimeComponent } from './components/select-datetime/select-datetime.component';
 import { SelectAddressComponent } from './components/select-address/select-address.component';
 import { BookingSummaryComponent } from './components/booking-summary/booking-summary.component';
+import { MyBookingsComponent } from './components/my-bookings/my-bookings.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -24,6 +25,12 @@ export const routes: Routes = [
   { 
     path: 'customer/dashboard', 
     component: CustomerDashboardComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'CUSTOMER' }
+  },
+  { 
+    path: 'my-bookings', 
+    component: MyBookingsComponent,
     canActivate: [authGuard, roleGuard],
     data: { role: 'CUSTOMER' }
   },

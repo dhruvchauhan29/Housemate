@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,7 +22,7 @@ interface Booking {
 
 @Component({
   selector: 'app-customer-dashboard',
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule, MatExpansionModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule, MatExpansionModule],
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.scss'
 })
@@ -57,7 +57,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.bookingService.getBookingsByCustomerId(currentUser.id).subscribe({
+    this.bookingService.getBookingsByCustomerId(currentUser.id, 'upcoming').subscribe({
       next: (bookings: SavedBooking[]) => {
         this.upcomingBookings = bookings.map(booking => ({
           id: booking.id!,
@@ -135,8 +135,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
   }
 
   navigateToBookings() {
-    // Navigate to bookings page - to be implemented
-    console.log('Navigate to My Bookings');
+    this.router.navigate(['/my-bookings']);
   }
 
   viewBookingDetails(bookingId: number) {
