@@ -186,7 +186,6 @@ export class ExpertRegistrationComponent {
       this.authService.registerExpert(expert).subscribe({
         next: (user) => {
           this.isSubmitting = false;
-          // TODO: Show success message with instructions to check SMS for password
           this.router.navigate(['/expert/dashboard']);
         },
         error: (err) => {
