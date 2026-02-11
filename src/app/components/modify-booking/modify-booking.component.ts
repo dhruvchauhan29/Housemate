@@ -20,6 +20,7 @@ import { CancelConfirmationDialog } from '../booking-details/booking-details.com
 import * as BookingActions from '../../store/actions/booking.actions';
 import { AppState } from '../../store/app.state';
 import { Service, TimeSlot, Address } from '../../store/models/booking.model';
+import { ServiceUtils } from '../../utils/service.utils';
 
 @Component({
   selector: 'app-modify-booking',
@@ -453,12 +454,7 @@ export class ModifyBookingComponent implements OnInit {
   }
 
   getServiceIcon(serviceName: string): string {
-    const icons: { [key: string]: string } = {
-      'Cleaning': '🧹',
-      'Cooking': '👨‍🍳',
-      'Gardening': '🌱'
-    };
-    return icons[serviceName] || '🏠';
+    return ServiceUtils.getServiceIcon(serviceName);
   }
 
   goBack() {

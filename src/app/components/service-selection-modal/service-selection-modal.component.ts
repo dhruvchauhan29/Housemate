@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { Service } from '../../store/models/booking.model';
+import { ServiceUtils } from '../../utils/service.utils';
 
 @Component({
   selector: 'app-service-selection-modal',
@@ -27,27 +28,7 @@ import { Service } from '../../store/models/booking.model';
   styleUrl: './service-selection-modal.component.scss'
 })
 export class ServiceSelectionModalComponent implements OnInit {
-  services: Service[] = [
-    {
-      id: '1',
-      name: 'Cleaning',
-      description: 'Professional cleaning services for your home',
-      pricePerHour: 150,
-    },
-    {
-      id: '2',
-      name: 'Cooking',
-      description: 'Expert cooking services',
-      pricePerHour: 150,
-    },
-    {
-      id: '3',
-      name: 'Gardening',
-      description: 'Garden maintenance services',
-      pricePerHour: 150,
-    }
-  ];
-  
+  services: Service[] = ServiceUtils.AVAILABLE_SERVICES;
   selectedService: Service | null = null;
 
   constructor(
@@ -79,11 +60,6 @@ export class ServiceSelectionModalComponent implements OnInit {
   }
 
   getServiceIcon(serviceName: string): string {
-    const icons: { [key: string]: string } = {
-      'Cleaning': '🧹',
-      'Cooking': '👨‍🍳',
-      'Gardening': '🌱'
-    };
-    return icons[serviceName] || '🏠';
+    return ServiceUtils.getServiceIcon(serviceName);
   }
 }

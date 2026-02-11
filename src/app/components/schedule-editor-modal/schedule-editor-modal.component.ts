@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { FormsModule } from '@angular/forms';
 import { TimeSlot } from '../../store/models/booking.model';
+import { ScheduleUtils } from '../../utils/schedule.utils';
 
 export interface ScheduleData {
   date: string;
@@ -41,15 +42,8 @@ export class ScheduleEditorModalComponent implements OnInit {
   selectedTimeSlot: TimeSlot | null = null;
   selectedDuration: number = 1;
   
-  timeSlots: TimeSlot[] = [
-    { id: '1', startTime: '6:00 AM', endTime: '9:00 AM', available: true },
-    { id: '2', startTime: '9:00 AM', endTime: '12:00 PM', available: true },
-    { id: '3', startTime: '12:00 PM', endTime: '3:00 PM', available: true },
-    { id: '4', startTime: '3:00 PM', endTime: '6:00 PM', available: true },
-    { id: '5', startTime: '6:00 PM', endTime: '9:00 PM', available: true }
-  ];
-
-  durationOptions: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
+  timeSlots: TimeSlot[] = ScheduleUtils.AVAILABLE_TIME_SLOTS;
+  durationOptions: number[] = ScheduleUtils.DURATION_OPTIONS;
   
   minDate: Date = new Date(); // Today
 
@@ -89,7 +83,7 @@ export class ScheduleEditorModalComponent implements OnInit {
     if (this.selectedDate && this.selectedTimeSlot && this.selectedDuration) {
       const result: ScheduleData = {
         date: this.selectedDate.toISOString().split('T')[0],
-        timeSlot: `${this.selectedTimeSlot.startTime} - ${this.selectedTimeSlot.endTime}`,
+        timeSlot: ScheduleUtils.getTimeSlotDisplay(this.selectedTimeSlot),
         duration: this.selectedDuration
       };
       this.dialogRef.close(result);
@@ -101,7 +95,7 @@ export class ScheduleEditorModalComponent implements OnInit {
   }
 
   getTimeSlotDisplay(slot: TimeSlot): string {
-    return `${slot.startTime} - ${slot.endTime}`;
+    return ScheduleUtils.getTimeSlotDisplay(slot);
   }
 
   isFormValid(): boolean {
