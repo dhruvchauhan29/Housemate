@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 
@@ -15,6 +15,23 @@ export class ExpertRegistrationComponent {
   registrationForm: FormGroup;
   errorMessage: string = '';
   selectedFile: File | null = null;
+  selectedPhotoPreview: string | null = null;
+  isSubmitting: boolean = false;
+
+  services = [
+    { id: 'cleaning', name: 'Cleaning', icon: '🧹' },
+    { id: 'cooking', name: 'Cooking', icon: '🍳' },
+    { id: 'gardening', name: 'Gardening', icon: '🌱' }
+  ];
+
+  years = Array.from({ length: 50 }, (_, i) => i);
+  months = Array.from({ length: 12 }, (_, i) => i);
+
+  idProofTypes = [
+    { value: 'aadhar', label: 'Aadhar Card' },
+    { value: 'pan', label: 'PAN Card' },
+    { value: 'passport', label: 'Passport' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -22,39 +39,68 @@ export class ExpertRegistrationComponent {
     private router: Router
   ) {
     this.registrationForm = this.fb.group({
-      // Step 1: Personal Details
+      // Step 1: Personal Information
       fullName: ['', Validators.required],
-      age: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
-      address: ['', Validators.required],
-      mobileNumber: ['', [Validators.required, Validators.pattern(/^\+?[1-9]\d{1,14}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      dateOfBirth: ['', Validators.required],
+      completeAddress: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      pinCode: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
       
-      // Step 2: Professional Details
-      serviceCategory: ['', Validators.required],
-      experience: ['', Validators.required],
+      // Step 2: Service Profile
+      servicesOffered: this.fb.array([], Validators.required),
+      experienceYears: ['', Validators.required],
+      experienceMonths: ['', Validators.required],
+      specializations: [''],
       
-      // Step 3: ID Proof
-      idProof: ['', Validators.required]
+      // Step 3: ID Verification
+      idProofType: ['aadhar', Validators.required],
+      idProofNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
+      photograph: ['', Validators.required]
     });
   }
 
+  get servicesOfferedArray() {
+    return this.registrationForm.get('servicesOffered') as FormArray;
+  }
+
+  toggleService(serviceId: string) {
+    const index = this.servicesOfferedArray.value.indexOf(serviceId);
+    if (index > -1) {
+      this.servicesOfferedArray.removeAt(index);
+    } else {
+      this.servicesOfferedArray.push(this.fb.control(serviceId));
+    }
+    this.servicesOfferedArray.markAsTouched();
+  }
+
+  isServiceSelected(serviceId: string): boolean {
+    return this.servicesOfferedArray.value.includes(serviceId);
+  }
+
   nextStep() {
+    this.errorMessage = '';
     if (this.currentStep === 1) {
-      const step1Fields = ['fullName', 'age', 'address', 'mobileNumber', 'email', 'password'];
+      const step1Fields = ['fullName', 'mobileNumber', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
       const step1Valid = step1Fields.every(field => this.registrationForm.get(field)?.valid);
       if (step1Valid) {
         this.currentStep++;
       } else {
         step1Fields.forEach(field => this.registrationForm.get(field)?.markAsTouched());
+        this.errorMessage = 'Please fill all required fields correctly';
       }
     } else if (this.currentStep === 2) {
-      const step2Fields = ['serviceCategory', 'experience'];
-      const step2Valid = step2Fields.every(field => this.registrationForm.get(field)?.valid);
+      const step2Valid = this.servicesOfferedArray.length > 0 && 
+                         this.registrationForm.get('experienceYears')?.valid &&
+                         this.registrationForm.get('experienceMonths')?.valid;
       if (step2Valid) {
         this.currentStep++;
       } else {
-        step2Fields.forEach(field => this.registrationForm.get(field)?.markAsTouched());
+        this.servicesOfferedArray.markAsTouched();
+        this.registrationForm.get('experienceYears')?.markAsTouched();
+        this.registrationForm.get('experienceMonths')?.markAsTouched();
+        this.errorMessage = 'Please fill all required fields';
       }
     }
   }
@@ -62,6 +108,7 @@ export class ExpertRegistrationComponent {
   prevStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
+      this.errorMessage = '';
     }
   }
 
@@ -84,31 +131,63 @@ export class ExpertRegistrationComponent {
       }
       
       this.selectedFile = file;
-      this.registrationForm.patchValue({ idProof: file.name });
+      this.registrationForm.patchValue({ photograph: file.name });
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedPhotoPreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+      
       this.errorMessage = '';
     }
   }
 
   onSubmit() {
-    if (this.registrationForm.valid) {
+    if (this.registrationForm.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
+      this.errorMessage = '';
+      
+      const formData = this.registrationForm.value;
       const expert: User = {
-        ...this.registrationForm.value,
-        role: 'EXPERT' as const
+        fullName: formData.fullName,
+        mobileNumber: '+91' + formData.mobileNumber,
+        email: '', // Will be added later
+        password: 'temp123', // Temporary password
+        address: `${formData.completeAddress}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
+        role: 'EXPERT' as const,
+        serviceCategory: formData.servicesOffered.join(', '),
+        experience: `${formData.experienceYears} years ${formData.experienceMonths} months`,
+        idProof: formData.idProofType + ': ' + formData.idProofNumber
       };
       
       this.authService.registerExpert(expert).subscribe({
         next: (user) => {
+          this.isSubmitting = false;
           this.router.navigate(['/expert/dashboard']);
         },
         error: (err) => {
+          this.isSubmitting = false;
           this.errorMessage = 'Registration failed. Please try again.';
         }
       });
+    } else {
+      this.registrationForm.markAllAsTouched();
+      this.errorMessage = 'Please fill all required fields correctly';
     }
   }
 
   navigateToHome() {
     this.router.navigate(['/']);
+  }
+
+  navigateToCustomerLogin() {
+    this.router.navigate(['/customer/login']);
+  }
+
+  navigateToExpertLogin() {
+    this.router.navigate(['/expert/login']);
   }
 }
 
