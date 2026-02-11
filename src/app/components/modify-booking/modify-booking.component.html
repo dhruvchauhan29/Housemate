@@ -1,0 +1,177 @@
+<div class="modify-booking-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading booking details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+  </div>
+
+  <!-- Modify Booking Form -->
+  <div *ngIf="booking && !isLoading" class="modify-content">
+    <!-- Header -->
+    <div class="header">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Modify Booking</h1>
+      <div class="header-actions">
+        <button mat-raised-button color="warn" (click)="cancelBooking()">
+          Cancel Booking
+        </button>
+        <button mat-raised-button color="primary" (click)="confirmChanges()">
+          Confirm Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- Expert Card -->
+    <mat-card class="edit-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="card-title-flex">
+            <h2>Expert</h2>
+            <button mat-icon-button color="primary" (click)="editExpert()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="expert-info">
+          <div class="expert-details">
+            <h3>{{ booking.expertName }}</h3>
+            <p class="expert-meta">Verified Professional</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Service Type Card -->
+    <mat-card class="edit-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="card-title-flex">
+            <h2>Service Type</h2>
+            <button mat-icon-button color="primary" (click)="editService()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="service-info">
+          <span class="service-icon">{{ booking.serviceIcon }}</span>
+          <span class="service-name">{{ booking.serviceName }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Schedule Details Card -->
+    <mat-card class="edit-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="card-title-flex">
+            <h2>Schedule Details</h2>
+            <button mat-icon-button color="primary" (click)="editSchedule()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="schedule-details">
+          <div class="schedule-row">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{ formatDate(booking.date) }}</span>
+          </div>
+          <div class="schedule-row">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ booking.timeSlot }}</span>
+          </div>
+          <div class="schedule-row">
+            <mat-icon>timer</mat-icon>
+            <span>{{ booking.duration }} hour(s)</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Service Address Card -->
+    <mat-card class="edit-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="card-title-flex">
+            <h2>Service Address</h2>
+            <button mat-icon-button color="primary" (click)="editAddress()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="address-info">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ booking.address }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Price Summary -->
+    <mat-card class="price-summary-card">
+      <mat-card-header>
+        <mat-card-title>
+          <h2>Price Summary</h2>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Before Edits -->
+        <div class="price-section">
+          <h3>Before Edits</h3>
+          <div class="price-row">
+            <span>Base Amount</span>
+            <span>₹{{ booking.baseAmount }}/-</span>
+          </div>
+          <div class="price-row">
+            <span>GST (18%)</span>
+            <span>₹{{ booking.gst }}/-</span>
+          </div>
+          <div class="price-row" *ngIf="booking.discount > 0">
+            <span>Discount</span>
+            <span class="discount">-₹{{ booking.discount }}/-</span>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="price-row total">
+            <span><strong>Total</strong></span>
+            <span><strong>₹{{ booking.totalAmount }}/-</strong></span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- After Edits (if modified) -->
+        <div class="price-section after-edits">
+          <h3>After Edits</h3>
+          <div class="price-row">
+            <span>Service Amount</span>
+            <span>₹{{ newAmount }}/-</span>
+          </div>
+          <div class="price-row">
+            <span>Amount Paid</span>
+            <span class="paid">-₹{{ amountPaid }}/-</span>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="price-row amount-to-pay">
+            <span><strong>Amount to Pay</strong></span>
+            <span><strong [class.zero]="amountToPay === 0">₹{{ amountToPay }}/-</strong></span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

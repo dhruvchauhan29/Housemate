@@ -1,0 +1,209 @@
+.modify-booking-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .modify-content {
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+        flex: 1;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+      }
+    }
+
+    .edit-card {
+      margin-bottom: 20px;
+
+      mat-card-header {
+        margin-bottom: 16px;
+      }
+
+      .card-title-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        h2 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 500;
+        }
+      }
+
+      .expert-info {
+        display: flex;
+        gap: 16px;
+
+        .expert-details {
+          h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+          }
+
+          .expert-meta {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+          }
+        }
+      }
+
+      .service-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .service-icon {
+          font-size: 32px;
+        }
+
+        .service-name {
+          font-size: 18px;
+          font-weight: 500;
+        }
+      }
+
+      .schedule-details {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .schedule-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          mat-icon {
+            color: #666;
+          }
+
+          span {
+            font-size: 16px;
+          }
+        }
+      }
+
+      .address-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        mat-icon {
+          color: #666;
+          margin-top: 2px;
+        }
+
+        span {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+      }
+    }
+
+    .price-summary-card {
+      background: #f8f9fa;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 500;
+      }
+
+      .price-section {
+        padding: 16px 0;
+
+        h3 {
+          font-size: 16px;
+          font-weight: 500;
+          color: #666;
+          margin: 0 0 16px 0;
+        }
+
+        .price-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          font-size: 15px;
+
+          &.total,
+          &.amount-to-pay {
+            font-size: 18px;
+            padding-top: 12px;
+          }
+
+          .discount {
+            color: #4caf50;
+          }
+
+          .paid {
+            color: #2196f3;
+          }
+
+          .zero {
+            color: #4caf50;
+          }
+        }
+
+        &.after-edits {
+          margin-top: 16px;
+        }
+      }
+
+      mat-divider {
+        margin: 16px 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .modify-booking-container {
+    padding: 16px;
+
+    .modify-content {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .header-actions {
+          width: 100%;
+          flex-direction: column;
+
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

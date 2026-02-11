@@ -216,6 +216,14 @@
                 <mat-icon>edit</mat-icon>
                 Modify Booking
               </button>
+              <button mat-button color="accent" (click)="provideFeedback(booking)" *ngIf="booking.status === 'completed' && !booking.hasReviewed">
+                <mat-icon>star</mat-icon>
+                Rate Service
+              </button>
+              <span class="reviewed-badge" *ngIf="booking.status === 'completed' && booking.hasReviewed">
+                <mat-icon>check_circle</mat-icon>
+                Reviewed
+              </span>
             </div>
           </div>
         </mat-card>

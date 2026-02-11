@@ -14,6 +14,7 @@ interface Booking {
   serviceIcon: string;
   serviceName: string;
   price: string;
+  paymentStatus: string;
   date: string;
   time: string;
   duration: string;
@@ -64,6 +65,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
           serviceIcon: booking.serviceIcon,
           serviceName: booking.serviceName,
           price: `₹${booking.totalAmount}/-`,
+          paymentStatus: this.getPaymentStatus(booking),
           date: this.formatDate(booking.date),
           time: this.formatTimeSlot(booking.timeSlot),
           duration: `${booking.duration}hrs`,
@@ -79,6 +81,23 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
         this.upcomingBookings = [];
       }
     });
+  }
+
+  getPaymentStatus(booking: SavedBooking): string {
+    // If booking has explicit payment status, use it
+    if (booking.paymentStatus === 'paid') {
+      return 'Paid';
+    }
+    // If status is pending, payment is due
+    if (booking.status === 'pending') {
+      return 'To Pay';
+    }
+    // If status is upcoming or completed, assume paid
+    if (booking.status === 'upcoming' || booking.status === 'completed') {
+      return 'Paid';
+    }
+    // Default to paid for other statuses
+    return 'Paid';
   }
 
   formatDate(dateString: string): string {
@@ -139,13 +158,11 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
   }
 
   viewBookingDetails(bookingId: number | string) {
-    // To be implemented
-    console.log('View booking details:', bookingId);
+    this.router.navigate(['/booking-details', bookingId]);
   }
 
   modifyBooking(bookingId: number | string) {
-    // To be implemented
-    console.log('Modify booking:', bookingId);
+    this.router.navigate(['/modify-booking', bookingId]);
   }
 }
 

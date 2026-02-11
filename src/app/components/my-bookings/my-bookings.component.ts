@@ -8,8 +8,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService, User } from '../../services/auth.service';
 import { BookingService, SavedBooking } from '../../services/booking.service';
+import { FeedbackModalComponent, FeedbackResult } from '../feedback-modal/feedback-modal.component';
 
 interface BookingCount {
   upcoming: number;
@@ -53,7 +55,8 @@ export class MyBookingsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -133,19 +136,38 @@ export class MyBookingsComponent implements OnInit {
 
   viewDetails(bookingId: string | number | undefined) {
     if (!bookingId) return;
-    console.log('View details:', bookingId);
-    // TODO: Navigate to booking details page
+    this.router.navigate(['/booking-details', bookingId]);
   }
 
   modifyBooking(bookingId: string | number | undefined) {
     if (!bookingId) return;
-    console.log('Modify booking:', bookingId);
-    // TODO: Navigate to booking modification page
+    this.router.navigate(['/modify-booking', bookingId]);
   }
 
   callExpert(phone: string) {
     console.log('Call expert:', phone);
     // TODO: Implement call functionality
+  }
+
+  provideFeedback(booking: SavedBooking) {
+    const dialogRef = this.dialog.open(FeedbackModalComponent, {
+      width: '500px',
+      data: { booking }
+    });
+
+    dialogRef.afterClosed().subscribe((result: FeedbackResult | undefined) => {
+      if (result && booking.id) {
+        this.bookingService.submitFeedback(booking.id, result.rating, result.comment).subscribe({
+          next: () => {
+            // Reload bookings to reflect the review status
+            this.loadBookings();
+          },
+          error: (error) => {
+            console.error('Error submitting feedback:', error);
+          }
+        });
+      }
+    });
   }
 
   navigateToHome() {

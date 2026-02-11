@@ -21,7 +21,7 @@
   </div>
 
   <!-- Expert Cards Grid -->
-  <div class="expert-cards-grid">
+  <div class="expert-cards-grid" *ngIf="filteredExperts.length > 0">
     <mat-card 
       *ngFor="let expert of filteredExperts"
       class="expert-card"
@@ -101,6 +101,18 @@
         </div>
       </mat-card-content>
     </mat-card>
+  </div>
+
+  <!-- Empty State for No Experts -->
+  <div class="empty-state" *ngIf="filteredExperts.length === 0">
+    <mat-icon class="empty-icon">person_search</mat-icon>
+    <h3>No Experts Available</h3>
+    <p *ngIf="searchQuery">No experts match your search criteria. Try adjusting your search or filters.</p>
+    <p *ngIf="!searchQuery">No experts are currently available in your area. Please try again later or broaden your search radius.</p>
+    <button mat-raised-button color="primary" (click)="clearFilters()">
+      <mat-icon>refresh</mat-icon>
+      Clear Filters
+    </button>
   </div>
 
   <!-- Navigation Buttons -->

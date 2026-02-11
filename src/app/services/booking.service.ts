@@ -20,9 +20,16 @@ export interface SavedBooking {
   couponCode?: string;
   transactionId: string;
   status: 'upcoming' | 'completed' | 'cancelled' | 'rejected' | 'pending';
+  paymentStatus?: 'paid' | 'unpaid' | 'partial';
   createdAt: string;
   rejectionReason?: string;
   rejectionNotes?: string;
+  feedback?: {
+    rating: number;
+    comment: string;
+    submittedAt: string;
+  };
+  hasReviewed?: boolean;
 }
 
 @Injectable({
@@ -77,6 +84,17 @@ export class BookingService {
       status: 'rejected',
       rejectionReason: reason,
       rejectionNotes: notes
+    });
+  }
+
+  submitFeedback(id: number | string, rating: number, comment: string): Observable<SavedBooking> {
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, {
+      feedback: {
+        rating,
+        comment,
+        submittedAt: new Date().toISOString()
+      },
+      hasReviewed: true
     });
   }
 }

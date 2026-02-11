@@ -49,9 +49,36 @@ export class BookingSummaryComponent implements OnInit {
 
   // Mock available coupons
   private availableCoupons = {
-    'SAVE10': { id: '1', code: 'SAVE10', discount: 10, discountType: 'PERCENTAGE' as const, valid: true },
-    'FLAT50': { id: '2', code: 'FLAT50', discount: 50, discountType: 'FIXED' as const, valid: true },
-    'NEW50': { id: '3', code: 'NEW50', discount: 50, discountType: 'PERCENTAGE' as const, valid: true }
+    'SAVE10': { 
+      id: '1', 
+      code: 'SAVE10', 
+      discount: 10, 
+      discountType: 'PERCENTAGE' as const, 
+      valid: true,
+      minAmount: 200,
+      expiryDate: '2026-12-31',
+      description: '10% off on orders above ₹200'
+    },
+    'FLAT50': { 
+      id: '2', 
+      code: 'FLAT50', 
+      discount: 50, 
+      discountType: 'FIXED' as const, 
+      valid: true,
+      minAmount: 300,
+      expiryDate: '2026-12-31',
+      description: '₹50 flat discount on orders above ₹300'
+    },
+    'NEW50': { 
+      id: '3', 
+      code: 'NEW50', 
+      discount: 50, 
+      discountType: 'PERCENTAGE' as const, 
+      valid: true,
+      minAmount: 100,
+      expiryDate: '2026-12-31',
+      description: '50% off for new customers (min ₹100)'
+    }
   };
 
   ngOnInit() {
@@ -66,15 +93,43 @@ export class BookingSummaryComponent implements OnInit {
     }
 
     const couponKey = this.couponCode.toUpperCase();
-    const coupon = this.availableCoupons[couponKey as keyof typeof this.availableCoupons];
+    const couponData = this.availableCoupons[couponKey as keyof typeof this.availableCoupons];
 
-    if (coupon) {
-      this.store.dispatch(applyCoupon({ coupon }));
-      this.couponError = '';
-      this.couponCode = '';
-    } else {
+    if (!couponData) {
       this.couponError = 'Invalid coupon code';
+      return;
     }
+
+    // Check expiry date (compare date only, not time)
+    const expiryDate = new Date(couponData.expiryDate);
+    expiryDate.setHours(23, 59, 59, 999); // Set to end of day
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+    
+    if (expiryDate < today) {
+      this.couponError = 'This coupon has expired';
+      return;
+    }
+
+    // Check minimum amount eligibility
+    this.pricing$.pipe(take(1)).subscribe(pricing => {
+      if (pricing.baseAmount < couponData.minAmount) {
+        this.couponError = `Minimum order amount of ₹${couponData.minAmount} required for this coupon`;
+      } else {
+        // Coupon is valid, apply it
+        const coupon: Coupon = {
+          id: couponData.id,
+          code: couponData.code,
+          discount: couponData.discount,
+          discountType: couponData.discountType,
+          valid: true
+        };
+        
+        this.store.dispatch(applyCoupon({ coupon }));
+        this.couponError = '';
+        this.couponCode = '';
+      }
+    });
   }
 
   removeCouponCode() {
