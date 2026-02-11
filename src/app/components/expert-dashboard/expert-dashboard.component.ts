@@ -223,8 +223,8 @@ export class ExpertDashboardComponent implements OnInit {
       const totalRating = ratedBookings.reduce((sum, b) => sum + (b.feedback?.rating || 0), 0);
       this.calculatedStats.averageRating = Math.round((totalRating / ratedBookings.length) * 10) / 10;
     } else {
-      // Get rating from expert profile if no bookings rated yet
-      this.calculatedStats.averageRating = 4.7; // Could fetch from expert profile
+      // Use expert profile rating as fallback if available
+      this.calculatedStats.averageRating = (this.currentUser as any)?.rating || 0;
     }
   }
 
@@ -383,7 +383,9 @@ export class ExpertDashboardComponent implements OnInit {
   }
 
   previousDay(): void {
-    this.selectedDate.setDate(this.selectedDate.getDate() - 1);
+    const newDate = new Date(this.selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    this.selectedDate = newDate;
     this.currentDay = this.selectedDate.getDate();
     this.currentMonth = this.selectedDate.getMonth();
     this.currentYear = this.selectedDate.getFullYear();
@@ -391,7 +393,9 @@ export class ExpertDashboardComponent implements OnInit {
   }
 
   nextDay(): void {
-    this.selectedDate.setDate(this.selectedDate.getDate() + 1);
+    const newDate = new Date(this.selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    this.selectedDate = newDate;
     this.currentDay = this.selectedDate.getDate();
     this.currentMonth = this.selectedDate.getMonth();
     this.currentYear = this.selectedDate.getFullYear();

@@ -120,9 +120,12 @@
             <!-- TODO: Replace with My Rating Icon from Figma -->
             <mat-icon class="report-icon rating-icon">star</mat-icon>
             <div class="report-label">My Rating</div>
-            <div class="report-value">
+            <div class="report-value" *ngIf="calculatedStats.averageRating > 0">
               {{ calculatedStats.averageRating }}
               <mat-icon class="star-small">star</mat-icon>
+            </div>
+            <div class="report-value" *ngIf="calculatedStats.averageRating === 0">
+              No ratings yet
             </div>
           </div>
         </div>
