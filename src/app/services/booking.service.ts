@@ -19,7 +19,7 @@ export interface SavedBooking {
   totalAmount: number;
   couponCode?: string;
   transactionId: string;
-  status: 'upcoming' | 'completed' | 'cancelled';
+  status: 'upcoming' | 'completed' | 'cancelled' | 'rejected';
   createdAt: string;
 }
 
@@ -35,8 +35,11 @@ export class BookingService {
     return this.http.post<SavedBooking>(this.apiUrl, booking);
   }
 
-  getBookingsByCustomerId(customerId: number): Observable<SavedBooking[]> {
-    return this.http.get<SavedBooking[]>(`${this.apiUrl}?customerId=${customerId}&status=upcoming`);
+  getBookingsByCustomerId(customerId: number, status?: string): Observable<SavedBooking[]> {
+    const url = status 
+      ? `${this.apiUrl}?customerId=${customerId}&status=${status}`
+      : `${this.apiUrl}?customerId=${customerId}`;
+    return this.http.get<SavedBooking[]>(url);
   }
 
   getAllBookings(): Observable<SavedBooking[]> {

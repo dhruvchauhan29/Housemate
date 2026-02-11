@@ -1,0 +1,223 @@
+<div class="my-bookings-page">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo" (click)="navigateToHome()">
+        <div class="logo-icon">H</div>
+        <span class="logo-text">HouseMate</span>
+      </div>
+    </div>
+    <nav class="header-center">
+      <a href="#" class="nav-link">Services</a>
+      <a href="#" class="nav-link active">My Bookings</a>
+    </nav>
+    <div class="header-right">
+      <div class="user-menu">
+        <img src="https://ui-avatars.com/api/?name={{currentUser?.fullName}}&background=1976d2&color=fff" 
+             alt="User Avatar" 
+             class="user-avatar">
+        <span class="user-name">{{ currentUser?.fullName }}</span>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="navigateToDashboard()">
+      <mat-icon>dashboard</mat-icon>
+      <span>Dashboard</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-link" (click)="navigateToHome()">Home</span>
+    <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+    <span class="breadcrumb-current">My Bookings</span>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Title Section -->
+    <div class="title-section">
+      <div>
+        <h1 class="page-title">My Bookings</h1>
+        <p class="page-subtitle">Track and manage all your service bookings</p>
+      </div>
+      <div class="actions">
+        <button mat-icon-button class="action-btn">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button class="action-btn">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group 
+      class="booking-tabs" 
+      [selectedIndex]="selectedTabIndex"
+      (selectedIndexChange)="onTabChange($event)"
+      mat-stretch-tabs="false">
+      
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span class="tab-label">All Bookings</span>
+          <span class="tab-count">{{ bookingCounts.all }}</span>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">schedule</mat-icon>
+          <span class="tab-label">Upcoming</span>
+          <span class="tab-count">{{ bookingCounts.upcoming }}</span>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">check_circle</mat-icon>
+          <span class="tab-label">Completed</span>
+          <span class="tab-count">{{ bookingCounts.completed }}</span>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">cancel</mat-icon>
+          <span class="tab-label">Cancelled</span>
+          <span class="tab-count">{{ bookingCounts.cancelled }}</span>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">block</mat-icon>
+          <span class="tab-label">Rejected</span>
+          <span class="tab-count">{{ bookingCounts.rejected }}</span>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading bookings...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="loadBookings()">
+        Retry
+      </button>
+    </div>
+
+    <!-- Bookings List -->
+    <div *ngIf="!isLoading && !error" class="bookings-list">
+      <!-- Empty State -->
+      <div *ngIf="filteredBookings.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">event_busy</mat-icon>
+        <h3>No bookings found</h3>
+        <p>You don't have any bookings in this category yet.</p>
+        <button mat-raised-button color="primary" (click)="navigateToDashboard()">
+          Book a Service
+        </button>
+      </div>
+
+      <!-- Booking Cards -->
+      <div *ngIf="filteredBookings.length > 0" class="bookings-grid">
+        <mat-card *ngFor="let booking of filteredBookings" class="booking-card">
+          <div class="booking-header">
+            <div class="service-info">
+              <span class="service-icon">{{ booking.serviceIcon }}</span>
+              <div>
+                <h3 class="service-name">{{ booking.serviceName }}</h3>
+                <p class="booking-id">Booking ID: {{ booking.id }}</p>
+              </div>
+            </div>
+            <div class="status-container">
+              <span class="status-badge" [ngClass]="getStatusClass(booking.status)">
+                <mat-icon class="status-icon">
+                  {{ booking.status === 'upcoming' ? 'schedule' : 
+                     booking.status === 'completed' ? 'check_circle' : 
+                     booking.status === 'cancelled' ? 'cancel' : 'block' }}
+                </mat-icon>
+                {{ getStatusLabel(booking.status) }}
+              </span>
+              <span class="payment-badge" *ngIf="booking.status === 'upcoming' || booking.status === 'completed'">
+                PAID
+              </span>
+              <span class="payment-badge pending" *ngIf="booking.status === 'upcoming'">
+                ₹{{ booking.totalAmount }}/- to pay
+              </span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="booking-details">
+            <div class="detail-row">
+              <mat-icon class="detail-icon">event</mat-icon>
+              <span>{{ formatDate(booking.date) }}</span>
+            </div>
+            <div class="detail-row">
+              <mat-icon class="detail-icon">schedule</mat-icon>
+              <span>{{ formatTimeSlot(booking.timeSlot) }}, booked for {{ booking.duration }}hrs</span>
+            </div>
+            <div class="detail-row">
+              <mat-icon class="detail-icon">location_on</mat-icon>
+              <span>{{ booking.address }}</span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="expert-section">
+            <p class="expert-label">Service Expert</p>
+            <div class="expert-info">
+              <div class="expert-details">
+                <img src="https://ui-avatars.com/api/?name={{booking.expertName}}&background=1976d2&color=fff" 
+                     alt="Expert Avatar" 
+                     class="expert-avatar">
+                <div>
+                  <p class="expert-name">{{ booking.expertName }}</p>
+                  <p class="expert-phone">+91 9876543210</p>
+                </div>
+              </div>
+              <button mat-icon-button class="call-btn" (click)="callExpert('+91 9876543210')">
+                <mat-icon>phone</mat-icon>
+                <span>Call</span>
+              </button>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="booking-footer">
+            <p class="booked-date">Booked on: {{ formatDate(booking.createdAt) }}</p>
+            <div class="footer-actions">
+              <button mat-button color="primary" (click)="viewDetails(booking.id)">
+                <mat-icon>visibility</mat-icon>
+                View Details
+              </button>
+              <button mat-button color="accent" (click)="modifyBooking(booking.id)" *ngIf="booking.status === 'upcoming'">
+                <mat-icon>edit</mat-icon>
+                Modify Booking
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

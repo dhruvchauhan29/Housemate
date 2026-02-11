@@ -57,7 +57,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.bookingService.getBookingsByCustomerId(currentUser.id).subscribe({
+    this.bookingService.getBookingsByCustomerId(currentUser.id, 'upcoming').subscribe({
       next: (bookings: SavedBooking[]) => {
         this.upcomingBookings = bookings.map(booking => ({
           id: booking.id!,
@@ -135,8 +135,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
   }
 
   navigateToBookings() {
-    // Navigate to bookings page - to be implemented
-    console.log('Navigate to My Bookings');
+    this.router.navigate(['/my-bookings']);
   }
 
   viewBookingDetails(bookingId: number) {
