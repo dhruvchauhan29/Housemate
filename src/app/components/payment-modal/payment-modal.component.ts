@@ -33,7 +33,7 @@ export class PaymentModalComponent implements OnInit {
   private store = inject(Store);
   private dialog = inject(MatDialog);
   private dialogRef = inject(MatDialogRef<PaymentModalComponent>);
-  public data = inject(MAT_DIALOG_DATA) as { totalAmount: number };
+  public data = inject(MAT_DIALOG_DATA) as { totalAmount: number; baseAmount: number; gst: number };
 
   paymentMethod: 'card' | 'upi' | 'netbanking' = 'card';
   cardPaymentForm!: FormGroup;
@@ -95,8 +95,12 @@ export class PaymentModalComponent implements OnInit {
           if (result === 'retry') {
             // Reopen payment modal
             this.dialog.open(PaymentModalComponent, {
-              width: '500px',
-              data: { totalAmount: this.data.totalAmount }
+              width: '680px',
+              data: { 
+                totalAmount: this.data.totalAmount,
+                baseAmount: this.data.baseAmount,
+                gst: this.data.gst
+              }
             });
           }
         });
