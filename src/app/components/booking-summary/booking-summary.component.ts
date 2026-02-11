@@ -100,9 +100,12 @@ export class BookingSummaryComponent implements OnInit {
       return;
     }
 
-    // Check expiry date
+    // Check expiry date (compare date only, not time)
     const expiryDate = new Date(couponData.expiryDate);
+    expiryDate.setHours(23, 59, 59, 999); // Set to end of day
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+    
     if (expiryDate < today) {
       this.couponError = 'This coupon has expired';
       return;
@@ -112,21 +115,20 @@ export class BookingSummaryComponent implements OnInit {
     this.pricing$.pipe(take(1)).subscribe(pricing => {
       if (pricing.baseAmount < couponData.minAmount) {
         this.couponError = `Minimum order amount of ₹${couponData.minAmount} required for this coupon`;
-        return;
+      } else {
+        // Coupon is valid, apply it
+        const coupon: Coupon = {
+          id: couponData.id,
+          code: couponData.code,
+          discount: couponData.discount,
+          discountType: couponData.discountType,
+          valid: true
+        };
+        
+        this.store.dispatch(applyCoupon({ coupon }));
+        this.couponError = '';
+        this.couponCode = '';
       }
-
-      // Coupon is valid, apply it
-      const coupon: Coupon = {
-        id: couponData.id,
-        code: couponData.code,
-        discount: couponData.discount,
-        discountType: couponData.discountType,
-        valid: true
-      };
-      
-      this.store.dispatch(applyCoupon({ coupon }));
-      this.couponError = '';
-      this.couponCode = '';
     });
   }
 

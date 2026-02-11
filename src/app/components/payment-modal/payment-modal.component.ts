@@ -39,21 +39,23 @@ export class PaymentModalComponent implements OnInit {
   cardPaymentForm!: FormGroup;
   upiId: string = '';
   processing: boolean = false;
+  private paymentAttemptId: string | null = null;
 
   ngOnInit(): void {
+    // Generate unique payment attempt ID for idempotency using crypto API
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      this.paymentAttemptId = 'PA-' + crypto.randomUUID();
+    } else {
+      // Fallback for environments without crypto.randomUUID
+      this.paymentAttemptId = 'PA-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+    }
+    
     this.cardPaymentForm = this.fb.group({
       cardNumber: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
       cardName: ['', [Validators.required, Validators.minLength(3)]],
       expiryDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
       cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]]
     });
-  }
-
-  private paymentAttemptId: string | null = null;
-
-  ngOnInit(): void {
-    // Generate unique payment attempt ID for idempotency
-    this.paymentAttemptId = 'PA' + Date.now() + Math.random().toString(36).substring(2, 9).toUpperCase();
   }
 
   processPayment(): void {

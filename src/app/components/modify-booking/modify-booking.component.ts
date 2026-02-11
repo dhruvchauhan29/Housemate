@@ -82,7 +82,12 @@ export class ModifyBookingComponent implements OnInit {
       next: (booking) => {
         this.booking = booking;
         this.originalAmount = booking.totalAmount;
-        this.amountPaid = booking.status === 'upcoming' ? booking.totalAmount : 0;
+        // Determine paid amount based on status and payment status
+        if (booking.paymentStatus === 'paid' || booking.status === 'upcoming' || booking.status === 'completed') {
+          this.amountPaid = booking.totalAmount;
+        } else {
+          this.amountPaid = 0;
+        }
         this.isLoading = false;
         this.calculateAmounts();
       },

@@ -90,7 +90,7 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
     }
     // If status is pending, payment is due
     if (booking.status === 'pending') {
-      return 'to pay';
+      return 'To Pay';
     }
     // If status is upcoming or completed, assume paid
     if (booking.status === 'upcoming' || booking.status === 'completed') {

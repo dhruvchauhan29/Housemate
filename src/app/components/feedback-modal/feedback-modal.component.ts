@@ -74,7 +74,8 @@ export class FeedbackModalComponent {
 
     this.isSubmitting = true;
     
-    // Simulate API call
+    // Simulate API call with network latency
+    // TODO: Replace with actual BookingService.submitFeedback() call in production
     setTimeout(() => {
       const result: FeedbackResult = {
         rating: this.rating,
