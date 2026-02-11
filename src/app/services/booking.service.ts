@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 export interface SavedBooking {
   id?: number | string;
   customerId: number;
+  customerName?: string;
   serviceName: string;
   serviceIcon: string;
   expertName: string;
@@ -19,11 +20,14 @@ export interface SavedBooking {
   totalAmount: number;
   couponCode?: string;
   transactionId: string;
-  status: 'upcoming' | 'completed' | 'cancelled' | 'rejected' | 'pending';
+  status: 'upcoming' | 'completed' | 'cancelled' | 'cancelled_by_customer' | 'rejected' | 'pending';
   paymentStatus?: 'paid' | 'unpaid' | 'partial';
   createdAt: string;
+  updatedAt?: string;
   rejectionReason?: string;
   rejectionNotes?: string;
+  cancelledBy?: 'customer' | 'expert';
+  previousExpertId?: number;
   feedback?: {
     rating: number;
     comment: string;
@@ -76,14 +80,26 @@ export class BookingService {
   }
 
   acceptBooking(id: number | string): Observable<SavedBooking> {
-    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, { status: 'upcoming' });
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, { 
+      status: 'upcoming',
+      updatedAt: new Date().toISOString()
+    });
   }
 
   rejectBooking(id: number | string, reason?: string, notes?: string): Observable<SavedBooking> {
     return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, { 
       status: 'rejected',
       rejectionReason: reason,
-      rejectionNotes: notes
+      rejectionNotes: notes,
+      updatedAt: new Date().toISOString()
+    });
+  }
+
+  cancelBookingByCustomer(id: number | string): Observable<SavedBooking> {
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, {
+      status: 'cancelled_by_customer',
+      cancelledBy: 'customer',
+      updatedAt: new Date().toISOString()
     });
   }
 
