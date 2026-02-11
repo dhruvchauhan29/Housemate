@@ -1,0 +1,40 @@
+<div class="service-selection-modal">
+  <div class="modal-header">
+    <h2 mat-dialog-title>Select Service</h2>
+    <button mat-icon-button (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <p class="modal-subtitle">Choose the service you need</p>
+    
+    <div class="services-grid">
+      <mat-card 
+        *ngFor="let service of services" 
+        class="service-card"
+        [class.selected]="selectedService?.id === service.id"
+        (click)="selectService(service)">
+        <mat-card-content>
+          <div class="service-icon">{{ getServiceIcon(service.name) }}</div>
+          <h3 class="service-name">{{ service.name }}</h3>
+          <p class="service-description">{{ service.description }}</p>
+          <div class="service-price">
+            <mat-icon>currency_rupee</mat-icon>
+            <span>{{ service.pricePerHour }}/hr</span>
+          </div>
+          <mat-icon class="check-icon" *ngIf="selectedService?.id === service.id">
+            check_circle
+          </mat-icon>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="confirm()" [disabled]="!selectedService">
+      Confirm Selection
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -73,8 +73,8 @@
       </mat-card-header>
       <mat-card-content>
         <div class="service-info">
-          <span class="service-icon">{{ booking.serviceIcon }}</span>
-          <span class="service-name">{{ booking.serviceName }}</span>
+          <span class="service-icon">{{ modifiedService ? getServiceIcon(modifiedService.name) : booking.serviceIcon }}</span>
+          <span class="service-name">{{ modifiedService ? modifiedService.name : booking.serviceName }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -95,15 +95,15 @@
         <div class="schedule-details">
           <div class="schedule-row">
             <mat-icon>calendar_today</mat-icon>
-            <span>{{ formatDate(booking.date) }}</span>
+            <span>{{ formatDate(modifiedDate || booking.date) }}</span>
           </div>
           <div class="schedule-row">
             <mat-icon>schedule</mat-icon>
-            <span>{{ booking.timeSlot }}</span>
+            <span>{{ modifiedTimeSlot ? (modifiedTimeSlot.startTime + ' - ' + modifiedTimeSlot.endTime) : booking.timeSlot }}</span>
           </div>
           <div class="schedule-row">
             <mat-icon>timer</mat-icon>
-            <span>{{ booking.duration }} hour(s)</span>
+            <span>{{ modifiedDuration || booking.duration }} hour(s)</span>
           </div>
         </div>
       </mat-card-content>
