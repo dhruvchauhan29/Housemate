@@ -113,4 +113,11 @@ export class BookingService {
       hasReviewed: true
     });
   }
+
+  completeBooking(id: number | string): Observable<SavedBooking> {
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, {
+      status: 'completed',
+      updatedAt: new Date().toISOString()
+    });
+  }
 }
