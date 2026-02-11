@@ -191,9 +191,11 @@
                      class="expert-avatar">
                 <div>
                   <p class="expert-name">{{ booking.expertName }}</p>
+                  <!-- TODO: Add expertPhone to SavedBooking interface and use booking.expertPhone -->
                   <p class="expert-phone">+91 9876543210</p>
                 </div>
               </div>
+              <!-- TODO: Use booking.expertPhone when available -->
               <button mat-icon-button class="call-btn" (click)="callExpert('+91 9876543210')">
                 <mat-icon>phone</mat-icon>
                 <span>Call</span>
