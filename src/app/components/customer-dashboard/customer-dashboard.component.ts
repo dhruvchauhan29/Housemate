@@ -10,7 +10,7 @@ import { AuthService, User } from '../../services/auth.service';
 import { BookingService, SavedBooking } from '../../services/booking.service';
 
 interface Booking {
-  id: number;
+  id: number | string;
   serviceIcon: string;
   serviceName: string;
   price: string;
@@ -138,12 +138,12 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/my-bookings']);
   }
 
-  viewBookingDetails(bookingId: number) {
+  viewBookingDetails(bookingId: number | string) {
     // To be implemented
     console.log('View booking details:', bookingId);
   }
 
-  modifyBooking(bookingId: number) {
+  modifyBooking(bookingId: number | string) {
     // To be implemented
     console.log('Modify booking:', bookingId);
   }

@@ -12,11 +12,15 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { AppState } from '../../store/app.state';
 import { ExpertStats, Job } from '../../store/models/booking.model';
 import { selectExpertStats, selectExpertJobs, selectPendingJobs } from '../../store/selectors/expert.selectors';
+import { BookingService, SavedBooking } from '../../services/booking.service';
+import { TakeActionModalComponent } from '../take-action-modal/take-action-modal.component';
 
 @Component({
   selector: 'app-expert-dashboard',
@@ -31,6 +35,8 @@ import { selectExpertStats, selectExpertJobs, selectPendingJobs } from '../../st
     MatSelectModule,
     MatFormFieldModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
     FormsModule
   ],
   templateUrl: './expert-dashboard.component.html',
@@ -42,6 +48,13 @@ export class ExpertDashboardComponent implements OnInit {
   jobs$: Observable<Job[]>;
   pendingJobs$: Observable<Job[]>;
   selectedStatus: string = 'all';
+
+  // Real booking data
+  bookings: SavedBooking[] = [];
+  filteredBookings: SavedBooking[] = [];
+  pendingBookings: SavedBooking[] = [];
+  loading: boolean = false;
+  error: string = '';
   
   // Mock data for demonstration
   mockStats: ExpertStats = {
@@ -130,7 +143,9 @@ export class ExpertDashboardComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private store: Store<AppState>,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private bookingService: BookingService,
+    private snackBar: MatSnackBar
   ) {
     this.expertStats$ = this.store.select(selectExpertStats);
     this.jobs$ = this.store.select(selectExpertJobs);
@@ -139,6 +154,45 @@ export class ExpertDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
+    this.loadBookings();
+  }
+
+  loadBookings() {
+    if (!this.currentUser?.id) {
+      this.error = 'User not found';
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+
+    this.bookingService.getBookingsByExpertId(this.currentUser.id).subscribe({
+      next: (bookings) => {
+        this.bookings = bookings;
+        this.filterBookings();
+        this.pendingBookings = bookings.filter(b => b.status === 'pending');
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading bookings:', err);
+        this.error = 'Failed to load bookings. Please try again.';
+        this.loading = false;
+      }
+    });
+  }
+
+  filterBookings() {
+    if (this.selectedStatus === 'all') {
+      this.filteredBookings = this.bookings;
+    } else {
+      this.filteredBookings = this.bookings.filter(
+        b => b.status === this.selectedStatus
+      );
+    }
+  }
+
+  onStatusFilterChange() {
+    this.filterBookings();
   }
 
   logout() {
@@ -150,18 +204,64 @@ export class ExpertDashboardComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  takeAction(job: Job) {
+  takeAction(booking: SavedBooking) {
+    const dialogRef = this.dialog.open(TakeActionModalComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: { booking },
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (result.action === 'accepted') {
+          this.snackBar.open('Booking accepted successfully!', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
+          });
+        } else if (result.action === 'rejected') {
+          this.snackBar.open('Booking rejected', 'Close', {
+            duration: 3000,
+            panelClass: ['info-snackbar']
+          });
+        }
+        this.loadBookings();
+      }
+    });
+  }
+
+  takeActionOld(job: Job) {
     console.log('Take action for job:', job);
     // TODO: Open take action modal/dialog
   }
 
-  viewDetails(job: Job) {
+  viewDetails(booking: SavedBooking) {
+    const dialogRef = this.dialog.open(TakeActionModalComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: { booking },
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadBookings();
+      }
+    });
+  }
+
+  viewDetailsOld(job: Job) {
     console.log('View details for job:', job);
     // TODO: Navigate to job details or open dialog
   }
 
   getStatusIcon(status: string): string {
     const iconMap: { [key: string]: string } = {
+      'pending': 'schedule',
+      'upcoming': 'check_circle',
+      'rejected': 'cancel',
+      'completed': 'check_circle',
+      'cancelled': 'cancel',
       'Pending': 'schedule',
       'Accepted': 'check_circle',
       'Rejected': 'cancel',
@@ -169,6 +269,28 @@ export class ExpertDashboardComponent implements OnInit {
       'Cancelled': 'cancel'
     };
     return iconMap[status] || 'info';
+  }
+
+  getStatusClass(status: string): string {
+    return 'status-' + status.toLowerCase();
+  }
+
+  canTakeAction(booking: SavedBooking): boolean {
+    return booking.status === 'pending';
+  }
+
+  formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    const options: Intl.DateTimeFormatOptions = { 
+      day: 'numeric', 
+      month: 'short', 
+      weekday: 'short' 
+    };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  retryLoad() {
+    this.loadBookings();
   }
 
   getServiceIcon(serviceType: string): string {

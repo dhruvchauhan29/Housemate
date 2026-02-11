@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SavedBooking {
-  id?: number;
+  id?: number | string;
   customerId: number;
   serviceName: string;
   serviceIcon: string;
@@ -19,8 +19,10 @@ export interface SavedBooking {
   totalAmount: number;
   couponCode?: string;
   transactionId: string;
-  status: 'upcoming' | 'completed' | 'cancelled' | 'rejected';
+  status: 'upcoming' | 'completed' | 'cancelled' | 'rejected' | 'pending';
   createdAt: string;
+  rejectionReason?: string;
+  rejectionNotes?: string;
 }
 
 @Injectable({
@@ -56,5 +58,25 @@ export class BookingService {
 
   deleteBooking(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // Expert-specific methods
+  getBookingsByExpertId(expertId: number, status?: string): Observable<SavedBooking[]> {
+    const url = status 
+      ? `${this.apiUrl}?expertId=${expertId}&status=${status}`
+      : `${this.apiUrl}?expertId=${expertId}`;
+    return this.http.get<SavedBooking[]>(url);
+  }
+
+  acceptBooking(id: number | string): Observable<SavedBooking> {
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, { status: 'upcoming' });
+  }
+
+  rejectBooking(id: number | string, reason?: string, notes?: string): Observable<SavedBooking> {
+    return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, { 
+      status: 'rejected',
+      rejectionReason: reason,
+      rejectionNotes: notes
+    });
   }
 }
