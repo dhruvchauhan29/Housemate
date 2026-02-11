@@ -42,28 +42,38 @@ export class BookingDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.bookingId = this.route.snapshot.paramMap.get('id');
-    if (this.bookingId) {
-      this.loadBookingDetails();
-    } else {
-      this.error = 'No booking ID provided';
+    
+    // Defensive validation: check if bookingId is valid
+    if (!this.bookingId || (typeof this.bookingId === 'string' && this.bookingId.trim() === '')) {
+      console.error('[BookingDetails] No booking ID provided in route params');
+      this.error = 'No booking ID provided. Please return to the bookings list.';
       this.isLoading = false;
+      return;
     }
+    
+    console.log('[BookingDetails] Booking ID from route:', this.bookingId);
+    this.loadBookingDetails();
   }
 
   loadBookingDetails() {
-    if (!this.bookingId) return;
+    if (!this.bookingId) {
+      console.error('[BookingDetails] loadBookingDetails called without bookingId');
+      return;
+    }
 
     this.isLoading = true;
     this.error = null;
 
-    this.bookingService.getBookingById(+this.bookingId).subscribe({
+    console.log('[BookingDetails] Loading booking with ID:', this.bookingId);
+    this.bookingService.getBookingById(this.bookingId).subscribe({
       next: (booking) => {
+        console.log('[BookingDetails] Successfully loaded booking:', booking);
         this.booking = booking;
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading booking details:', error);
-        this.error = 'Failed to load booking details';
+        console.error('[BookingDetails] Error loading booking details:', error);
+        this.error = 'Failed to load booking details. The booking may not exist.';
         this.isLoading = false;
       }
     });
@@ -99,7 +109,7 @@ export class BookingDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(+this.booking.id, { status: 'cancelled' }).subscribe({
+        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
           next: () => {
             this.router.navigate(['/my-bookings']);
           },

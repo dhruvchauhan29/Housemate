@@ -39,21 +39,37 @@ export class BookingDetailsModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Defensive validation: check if bookingId is valid
+    if (!this.data.bookingId) {
+      console.error('[BookingDetailsModal] No booking ID provided');
+      this.error = 'No booking ID provided. Please close and try again.';
+      this.isLoading = false;
+      return;
+    }
+    
+    console.log('[BookingDetailsModal] Booking ID from data:', this.data.bookingId);
     this.loadBookingDetails();
   }
 
   loadBookingDetails() {
+    if (!this.data.bookingId) {
+      console.error('[BookingDetailsModal] loadBookingDetails called without bookingId');
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
-    this.bookingService.getBookingById(+this.data.bookingId).subscribe({
+    console.log('[BookingDetailsModal] Loading booking with ID:', this.data.bookingId);
+    this.bookingService.getBookingById(this.data.bookingId).subscribe({
       next: (booking) => {
+        console.log('[BookingDetailsModal] Successfully loaded booking:', booking);
         this.booking = booking;
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading booking details:', error);
-        this.error = 'Failed to load booking details. Please try again.';
+        console.error('[BookingDetailsModal] Error loading booking details:', error);
+        this.error = 'Failed to load booking details. The booking may not exist.';
         this.isLoading = false;
       }
     });
@@ -90,7 +106,7 @@ export class BookingDetailsModalComponent implements OnInit {
 
     cancelDialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(+this.booking.id, { status: 'cancelled' }).subscribe({
+        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
           next: () => {
             this.dialogRef.close({ cancelled: true });
           },
@@ -117,9 +133,9 @@ export class BookingDetailsModalComponent implements OnInit {
     });
 
     paymentDialogRef.afterClosed().subscribe(result => {
-      if (result?.transactionId) {
+      if (result?.transactionId && this.booking?.id) {
         // Update booking with payment info
-        this.bookingService.updateBooking(+this.booking!.id!, {
+        this.bookingService.updateBooking(this.booking.id, {
           transactionId: result.transactionId,
           paymentStatus: 'paid'
         }).subscribe({
