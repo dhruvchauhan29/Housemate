@@ -59,7 +59,7 @@ export class PaymentSuccessComponent {
         totalAmount: booking.totalAmount || 0,
         couponCode: booking.coupon?.code,
         transactionId: this.data.transactionId,
-        status: 'upcoming',
+        status: 'pending',
         createdAt: new Date().toISOString()
       };
 

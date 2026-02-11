@@ -261,7 +261,7 @@ export class ExpertDashboardComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/expert/login']);
   }
 
   navigateToHome() {

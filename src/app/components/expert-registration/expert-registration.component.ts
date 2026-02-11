@@ -42,6 +42,9 @@ export class ExpertRegistrationComponent {
       // Step 1: Personal Information
       fullName: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       completeAddress: ['', Validators.required],
       city: ['', Validators.required],
@@ -82,8 +85,18 @@ export class ExpertRegistrationComponent {
   nextStep() {
     this.errorMessage = '';
     if (this.currentStep === 1) {
-      const step1Fields = ['fullName', 'mobileNumber', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
+      const step1Fields = ['fullName', 'mobileNumber', 'email', 'password', 'confirmPassword', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
       const step1Valid = step1Fields.every(field => this.registrationForm.get(field)?.valid);
+      
+      // Check if passwords match
+      const password = this.registrationForm.get('password')?.value;
+      const confirmPassword = this.registrationForm.get('confirmPassword')?.value;
+      if (password !== confirmPassword) {
+        this.registrationForm.get('confirmPassword')?.setErrors({ mismatch: true });
+        this.errorMessage = 'Passwords do not match';
+        return;
+      }
+      
       if (step1Valid) {
         this.currentStep++;
       } else {
@@ -151,23 +164,17 @@ export class ExpertRegistrationComponent {
       
       const formData = this.registrationForm.value;
       
-      // Generate a temporary secure password
-      const tempPassword = 'Expert' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-      
       const expert: User = {
         fullName: formData.fullName,
         mobileNumber: '+91' + formData.mobileNumber,
-        email: `expert${Date.now()}@housemate.temp`, // Temporary email - should be collected in future
-        password: tempPassword, // Temporary password - should implement proper auth flow
+        email: formData.email,
+        password: formData.password,
         address: `${formData.completeAddress}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
         role: 'EXPERT' as const,
         serviceCategory: formData.servicesOffered.join(', '),
         experience: `${formData.experienceYears} years ${formData.experienceMonths} months`,
         idProof: formData.idProofType + ': ' + formData.idProofNumber
       };
-      
-      // TODO: In production, send temporary password via SMS to mobile number
-      // TODO: Implement email collection in Step 1 or post-registration
       
       this.authService.registerExpert(expert).subscribe({
         next: (user) => {
