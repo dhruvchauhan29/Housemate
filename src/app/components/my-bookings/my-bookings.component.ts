@@ -136,8 +136,12 @@ export class MyBookingsComponent implements OnInit {
   }
 
   viewDetails(bookingId: string | number | undefined) {
-    if (!bookingId) return;
+    if (!bookingId) {
+      console.error('[MyBookings] viewDetails called with undefined bookingId');
+      return;
+    }
     
+    console.log('[MyBookings] Opening details for booking:', bookingId);
     const dialogRef = this.dialog.open(BookingDetailsModalComponent, {
       width: '600px',
       maxHeight: '90vh',
@@ -153,7 +157,12 @@ export class MyBookingsComponent implements OnInit {
   }
 
   modifyBooking(bookingId: string | number | undefined) {
-    if (!bookingId) return;
+    if (!bookingId) {
+      console.error('[MyBookings] modifyBooking called with undefined bookingId');
+      return;
+    }
+    
+    console.log('[MyBookings] Navigating to modify booking:', bookingId);
     this.router.navigate(['/modify-booking', bookingId]);
   }
 

@@ -39,21 +39,53 @@ export class BookingDetailsModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Defensive validation: check if bookingId is valid
+    if (!this.data.bookingId) {
+      console.error('[BookingDetailsModal] No booking ID provided');
+      this.error = 'No booking ID provided. Please close and try again.';
+      this.isLoading = false;
+      return;
+    }
+    
+    // Validate that the ID can be converted to a number (if using numeric IDs)
+    const numericId = Number(this.data.bookingId);
+    if (isNaN(numericId)) {
+      console.error('[BookingDetailsModal] Invalid booking ID:', this.data.bookingId);
+      this.error = 'Invalid booking ID. Please close and try again.';
+      this.isLoading = false;
+      return;
+    }
+    
     this.loadBookingDetails();
   }
 
   loadBookingDetails() {
+    if (!this.data.bookingId) {
+      console.error('[BookingDetailsModal] loadBookingDetails called without bookingId');
+      return;
+    }
+
+    const numericId = Number(this.data.bookingId);
+    if (isNaN(numericId)) {
+      console.error('[BookingDetailsModal] Cannot load booking with invalid ID:', this.data.bookingId);
+      this.error = 'Invalid booking ID. Please close and try again.';
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
-    this.bookingService.getBookingById(+this.data.bookingId).subscribe({
+    console.log('[BookingDetailsModal] Loading booking with ID:', numericId);
+    this.bookingService.getBookingById(numericId).subscribe({
       next: (booking) => {
+        console.log('[BookingDetailsModal] Successfully loaded booking:', booking);
         this.booking = booking;
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading booking details:', error);
-        this.error = 'Failed to load booking details. Please try again.';
+        console.error('[BookingDetailsModal] Error loading booking details:', error);
+        this.error = 'Failed to load booking details. The booking may not exist.';
         this.isLoading = false;
       }
     });

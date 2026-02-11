@@ -77,22 +77,48 @@ export class ModifyBookingComponent implements OnInit {
 
   ngOnInit() {
     this.bookingId = this.route.snapshot.paramMap.get('id');
-    if (this.bookingId) {
-      this.loadBookingDetails();
-    } else {
-      this.error = 'No booking ID provided';
+    
+    // Defensive validation: check if bookingId is valid
+    if (!this.bookingId || this.bookingId.trim() === '') {
+      console.error('[ModifyBooking] No booking ID provided in route params');
+      this.error = 'No booking ID provided. Please return to the bookings list.';
       this.isLoading = false;
+      return;
     }
+    
+    // Validate that the ID can be converted to a number (if using numeric IDs)
+    const numericId = Number(this.bookingId);
+    if (isNaN(numericId)) {
+      console.error('[ModifyBooking] Invalid booking ID:', this.bookingId);
+      this.error = 'Invalid booking ID. Please return to the bookings list.';
+      this.isLoading = false;
+      return;
+    }
+    
+    this.loadBookingDetails();
   }
 
   loadBookingDetails() {
-    if (!this.bookingId) return;
+    if (!this.bookingId) {
+      console.error('[ModifyBooking] loadBookingDetails called without bookingId');
+      return;
+    }
+
+    const numericId = Number(this.bookingId);
+    if (isNaN(numericId)) {
+      console.error('[ModifyBooking] Cannot load booking with invalid ID:', this.bookingId);
+      this.error = 'Invalid booking ID. Please return to the bookings list.';
+      this.isLoading = false;
+      return;
+    }
 
     this.isLoading = true;
     this.error = null;
 
-    this.bookingService.getBookingById(+this.bookingId).subscribe({
+    console.log('[ModifyBooking] Loading booking with ID:', numericId);
+    this.bookingService.getBookingById(numericId).subscribe({
       next: (booking) => {
+        console.log('[ModifyBooking] Successfully loaded booking:', booking);
         this.booking = booking;
         this.originalAmount = booking.totalAmount;
         
@@ -131,8 +157,8 @@ export class ModifyBookingComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error loading booking details:', error);
-        this.error = 'Failed to load booking details';
+        console.error('[ModifyBooking] Error loading booking details:', error);
+        this.error = 'Failed to load booking details. The booking may not exist.';
         this.isLoading = false;
       }
     });
