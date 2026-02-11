@@ -13,11 +13,14 @@ import { BookingService, SavedBooking } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 import { ExpertService, Expert } from '../../services/expert.service';
 import { ExpertSelectionModalComponent } from '../expert-selection-modal/expert-selection-modal.component';
+import { ServiceSelectionModalComponent } from '../service-selection-modal/service-selection-modal.component';
+import { ScheduleEditorModalComponent } from '../schedule-editor-modal/schedule-editor-modal.component';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 import { CancelConfirmationDialog } from '../booking-details/booking-details.component';
 import * as BookingActions from '../../store/actions/booking.actions';
 import { AppState } from '../../store/app.state';
 import { Service, TimeSlot, Address } from '../../store/models/booking.model';
+import { ServiceUtils } from '../../utils/service.utils';
 
 @Component({
   selector: 'app-modify-booking',
@@ -172,15 +175,56 @@ export class ModifyBookingComponent implements OnInit {
   }
 
   editService() {
-    // Open service selection in a dialog or navigate
-    this.snackBar.open('Service modification coming soon', 'OK', { duration: 3000 });
-    // TODO: Implement service selection modal
+    if (!this.booking) return;
+    
+    const dialogRef = this.dialog.open(ServiceSelectionModalComponent, {
+      width: '700px',
+      maxHeight: '90vh',
+      data: {
+        currentServiceName: this.booking.serviceName
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.service) {
+        this.modifiedService = result.service;
+        this.calculateAmounts();
+        this.snackBar.open('Service updated. Check the new pricing below.', 'OK', {
+          duration: 3000
+        });
+      }
+    });
   }
 
   editSchedule() {
-    // Open schedule editor in a dialog or navigate
-    this.snackBar.open('Schedule modification coming soon', 'OK', { duration: 3000 });
-    // TODO: Implement schedule editor modal
+    if (!this.booking) return;
+    
+    const dialogRef = this.dialog.open(ScheduleEditorModalComponent, {
+      width: '700px',
+      maxHeight: '90vh',
+      data: {
+        currentDate: this.booking.date,
+        currentTimeSlot: this.booking.timeSlot,
+        currentDuration: this.booking.duration
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.modifiedDate = result.date;
+        this.modifiedTimeSlot = {
+          id: '',
+          startTime: result.timeSlot.split(' - ')[0],
+          endTime: result.timeSlot.split(' - ')[1],
+          available: true
+        };
+        this.modifiedDuration = result.duration;
+        this.calculateAmounts();
+        this.snackBar.open('Schedule updated. Check the new pricing below.', 'OK', {
+          duration: 3000
+        });
+      }
+    });
   }
 
   editAddress() {
@@ -196,11 +240,16 @@ export class ModifyBookingComponent implements OnInit {
     const duration = this.modifiedDuration || this.booking.duration;
     let pricePerHour = this.DEFAULT_PRICE_PER_HOUR;
     
-    // Get expert's price if available
-    if (this.modifiedExpert?.pricePerHour) {
+    // Get price per hour from modified service if available
+    if (this.modifiedService?.pricePerHour) {
+      pricePerHour = this.modifiedService.pricePerHour;
+    }
+    // Then check expert's price if available
+    else if (this.modifiedExpert?.pricePerHour) {
       pricePerHour = this.modifiedExpert.pricePerHour;
-    } else if (this.booking.baseAmount && this.booking.duration) {
-      // Derive original price per hour from booking
+    } 
+    // Fall back to deriving from original booking
+    else if (this.booking.baseAmount && this.booking.duration) {
       pricePerHour = Math.floor(this.booking.baseAmount / this.booking.duration);
     }
     
@@ -345,6 +394,25 @@ export class ModifyBookingComponent implements OnInit {
       }
     }
     
+    // Add modified service
+    if (this.modifiedService) {
+      updates.serviceName = this.modifiedService.name;
+      updates.serviceIcon = this.getServiceIcon(this.modifiedService.name);
+    }
+    
+    // Add modified schedule details
+    if (this.modifiedDate) {
+      updates.date = this.modifiedDate;
+    }
+    
+    if (this.modifiedTimeSlot) {
+      updates.timeSlot = `${this.modifiedTimeSlot.startTime} - ${this.modifiedTimeSlot.endTime}`;
+    }
+    
+    if (this.modifiedDuration) {
+      updates.duration = this.modifiedDuration;
+    }
+    
     // Update pricing
     if (this.newAmount !== this.originalAmount) {
       updates.baseAmount = this.newBaseAmount;
@@ -383,6 +451,10 @@ export class ModifyBookingComponent implements OnInit {
         this.snackBar.open('Failed to update booking. Please try again.', 'OK', { duration: 5000 });
       }
     });
+  }
+
+  getServiceIcon(serviceName: string): string {
+    return ServiceUtils.getServiceIcon(serviceName);
   }
 
   goBack() {
