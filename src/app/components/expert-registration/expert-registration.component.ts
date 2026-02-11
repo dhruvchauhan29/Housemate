@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 
@@ -61,7 +61,19 @@ export class ExpertRegistrationComponent {
       idProofType: ['aadhar', Validators.required],
       idProofNumber: ['', Validators.required],
       photograph: ['', Validators.required]
-    });
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    
+    if (password && confirmPassword && password !== confirmPassword) {
+      control.get('confirmPassword')?.setErrors({ mismatch: true });
+      return { mismatch: true };
+    }
+    
+    return null;
   }
 
   get servicesOfferedArray() {
@@ -88,20 +100,15 @@ export class ExpertRegistrationComponent {
       const step1Fields = ['fullName', 'mobileNumber', 'email', 'password', 'confirmPassword', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
       const step1Valid = step1Fields.every(field => this.registrationForm.get(field)?.valid);
       
-      // Check if passwords match
-      const password = this.registrationForm.get('password')?.value;
-      const confirmPassword = this.registrationForm.get('confirmPassword')?.value;
-      if (password !== confirmPassword) {
-        this.registrationForm.get('confirmPassword')?.setErrors({ mismatch: true });
-        this.errorMessage = 'Passwords do not match';
-        return;
-      }
-      
-      if (step1Valid) {
+      if (step1Valid && !this.registrationForm.hasError('mismatch')) {
         this.currentStep++;
       } else {
         step1Fields.forEach(field => this.registrationForm.get(field)?.markAsTouched());
-        this.errorMessage = 'Please fill all required fields correctly';
+        if (this.registrationForm.hasError('mismatch')) {
+          this.errorMessage = 'Passwords do not match';
+        } else {
+          this.errorMessage = 'Please fill all required fields correctly';
+        }
       }
     } else if (this.currentStep === 2) {
       const step2Valid = this.servicesOfferedArray.length > 0 && 
