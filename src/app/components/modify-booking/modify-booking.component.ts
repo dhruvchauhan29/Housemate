@@ -324,7 +324,12 @@ export class ModifyBookingComponent implements OnInit {
         updates.previousExpertId = this.booking.expertId;
       }
       updates.expertName = this.modifiedExpert.fullName;
-      updates.expertId = parseInt(this.modifiedExpert.id);
+      const parsedExpertId = parseInt(this.modifiedExpert.id, 10);
+      if (isNaN(parsedExpertId)) {
+        console.error('Invalid expert ID:', this.modifiedExpert.id);
+        return;
+      }
+      updates.expertId = parsedExpertId;
       
       // If expert changed and booking was accepted, reset to pending
       if (expertChanged && this.booking.status === 'upcoming') {
