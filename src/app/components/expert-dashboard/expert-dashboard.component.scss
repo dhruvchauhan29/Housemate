@@ -526,6 +526,11 @@
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
     color: #64748b !important;
   }
+  
+  &.status-cancelled-by-customer {
+    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%) !important;
+    color: #ec4899 !important;
+  }
 
   &.status-upcoming {
     background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
@@ -575,6 +580,30 @@
 
   button {
     margin-top: 1rem;
+  }
+}
+
+.empty-pending,
+.empty-schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #cbd5e1;
+    margin-bottom: 0.75rem;
+  }
+  
+  p {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    margin: 0;
   }
 }
 

@@ -244,7 +244,11 @@ export class ModifyBookingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
+        this.bookingService.updateBooking(this.booking.id, { 
+          status: 'cancelled_by_customer',
+          cancelledBy: 'customer',
+          updatedAt: new Date().toISOString()
+        }).subscribe({
           next: () => {
             this.snackBar.open('Booking cancelled successfully!', 'OK', { duration: 3000 });
             setTimeout(() => {
@@ -310,10 +314,25 @@ export class ModifyBookingComponent implements OnInit {
 
     const updates: Partial<SavedBooking> = {};
     
+    // Track if expert changed for proper propagation
+    const expertChanged = this.modifiedExpert && this.modifiedExpert.id !== this.booking.expertId;
+    
     // Add modified fields to updates
     if (this.modifiedExpert) {
+      // Store previous expert ID for audit trail
+      if (expertChanged) {
+        updates.previousExpertId = this.booking.expertId;
+      }
       updates.expertName = this.modifiedExpert.fullName;
       updates.expertId = this.modifiedExpert.id;
+      
+      // If expert changed and booking was accepted, reset to pending
+      if (expertChanged && this.booking.status === 'upcoming') {
+        updates.status = 'pending';
+        this.snackBar.open('Expert changed. New expert will need to accept the booking.', 'OK', {
+          duration: 5000
+        });
+      }
     }
     
     // Update pricing
@@ -337,6 +356,9 @@ export class ModifyBookingComponent implements OnInit {
       // with booking ID, amount, status (pending/completed/failed), timestamp
       // The refund can be processed asynchronously by a payment service
     }
+    
+    // Add updated timestamp
+    updates.updatedAt = new Date().toISOString();
 
     this.bookingService.updateBooking(this.booking.id, updates).subscribe({
       next: () => {

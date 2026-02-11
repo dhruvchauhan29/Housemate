@@ -109,7 +109,12 @@ export class BookingDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
+        // Use cancelBookingByCustomer to properly mark status
+        this.bookingService.updateBooking(this.booking.id, { 
+          status: 'cancelled_by_customer',
+          cancelledBy: 'customer',
+          updatedAt: new Date().toISOString()
+        }).subscribe({
           next: () => {
             this.router.navigate(['/my-bookings']);
           },

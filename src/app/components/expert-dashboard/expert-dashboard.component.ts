@@ -56,14 +56,20 @@ export class ExpertDashboardComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
   
-  // Mock data for demonstration
-  mockStats: ExpertStats = {
-    totalJobs: 2,
-    upcomingJobs: 5,
-    completedJobs: 0,
-    totalEarnings: 5700,
-    averageRating: 4.7
+  // Calculated stats from real data
+  calculatedStats = {
+    todayJobs: 0,
+    weekJobs: 0,
+    totalEarnings: 0,
+    averageRating: 0
   };
+  
+  // Calendar state
+  currentMonth: number = new Date().getMonth();
+  currentYear: number = new Date().getFullYear();
+  currentDay: number = new Date().getDate();
+  selectedDate: Date = new Date();
+  todayAppointments: SavedBooking[] = [];
 
   pendingJobs: Job[] = [
     {
@@ -171,6 +177,8 @@ export class ExpertDashboardComponent implements OnInit {
         this.bookings = bookings;
         this.filterBookings();
         this.pendingBookings = bookings.filter(b => b.status === 'pending');
+        this.calculateStats();
+        this.updateCalendar();
         this.loading = false;
       },
       error: (err) => {
@@ -179,6 +187,62 @@ export class ExpertDashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  calculateStats() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const weekEnd = new Date(today);
+    weekEnd.setDate(today.getDate() + 7);
+    
+    // Calculate today's jobs
+    this.calculatedStats.todayJobs = this.bookings.filter(b => {
+      const bookingDate = new Date(b.date);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate.getTime() === today.getTime() && 
+             (b.status === 'upcoming' || b.status === 'pending');
+    }).length;
+    
+    // Calculate this week's jobs
+    this.calculatedStats.weekJobs = this.bookings.filter(b => {
+      const bookingDate = new Date(b.date);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate >= today && bookingDate < weekEnd &&
+             (b.status === 'upcoming' || b.status === 'pending');
+    }).length;
+    
+    // Calculate total earnings from completed bookings
+    this.calculatedStats.totalEarnings = this.bookings
+      .filter(b => b.status === 'completed')
+      .reduce((sum, b) => sum + b.totalAmount, 0);
+    
+    // Calculate average rating from completed bookings with feedback
+    const ratedBookings = this.bookings.filter(b => b.feedback?.rating);
+    if (ratedBookings.length > 0) {
+      const totalRating = ratedBookings.reduce((sum, b) => sum + (b.feedback?.rating || 0), 0);
+      this.calculatedStats.averageRating = Math.round((totalRating / ratedBookings.length) * 10) / 10;
+    } else {
+      // Get rating from expert profile if no bookings rated yet
+      this.calculatedStats.averageRating = 4.7; // Could fetch from expert profile
+    }
+  }
+
+  updateCalendar() {
+    // Update today's appointments
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    this.todayAppointments = this.bookings.filter(b => {
+      const bookingDate = new Date(b.date);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate.getTime() === today.getTime() &&
+             (b.status === 'upcoming' || b.status === 'pending');
+    });
+    
+    // Update calendar days based on current month/year
+    const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+    this.calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   }
 
   filterBookings() {
@@ -262,17 +326,31 @@ export class ExpertDashboardComponent implements OnInit {
       'rejected': 'cancel',
       'completed': 'check_circle',
       'cancelled': 'cancel',
+      'cancelled_by_customer': 'person_off',
       'Pending': 'schedule',
       'Accepted': 'check_circle',
       'Rejected': 'cancel',
       'Completed': 'check_circle',
-      'Cancelled': 'cancel'
+      'Cancelled': 'cancel',
+      'Cancelled by Customer': 'person_off'
     };
     return iconMap[status] || 'info';
   }
 
   getStatusClass(status: string): string {
-    return 'status-' + status.toLowerCase();
+    return 'status-' + status.toLowerCase().replace(/_/g, '-');
+  }
+
+  getStatusLabel(status: string): string {
+    const labelMap: { [key: string]: string } = {
+      'pending': 'Pending',
+      'upcoming': 'Booking Accepted',
+      'rejected': 'Booking Rejected',
+      'completed': 'Completed',
+      'cancelled': 'Cancelled',
+      'cancelled_by_customer': 'Cancelled by Customer'
+    };
+    return labelMap[status] || status;
   }
 
   canTakeAction(booking: SavedBooking): boolean {
@@ -305,24 +383,60 @@ export class ExpertDashboardComponent implements OnInit {
   }
 
   previousDay(): void {
-    // TODO: Implement previous day navigation
-    console.log('Navigate to previous day');
+    this.selectedDate.setDate(this.selectedDate.getDate() - 1);
+    this.currentDay = this.selectedDate.getDate();
+    this.currentMonth = this.selectedDate.getMonth();
+    this.currentYear = this.selectedDate.getFullYear();
+    this.updateTodayAppointments();
   }
 
   nextDay(): void {
-    // TODO: Implement next day navigation
-    console.log('Navigate to next day');
+    this.selectedDate.setDate(this.selectedDate.getDate() + 1);
+    this.currentDay = this.selectedDate.getDate();
+    this.currentMonth = this.selectedDate.getMonth();
+    this.currentYear = this.selectedDate.getFullYear();
+    this.updateTodayAppointments();
   }
 
   selectDay(day: number): void {
-    // TODO: Implement day selection
-    console.log('Selected day:', day);
+    this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
+    this.currentDay = day;
+    this.updateTodayAppointments();
+  }
+
+  updateTodayAppointments(): void {
+    const selectedDay = new Date(this.selectedDate);
+    selectedDay.setHours(0, 0, 0, 0);
+    
+    this.todayAppointments = this.bookings.filter(b => {
+      const bookingDate = new Date(b.date);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate.getTime() === selectedDay.getTime() &&
+             (b.status === 'upcoming' || b.status === 'pending');
+    });
   }
 
   hasEventOnDay(day: number): boolean {
-    // TODO: Replace with actual event checking logic based on appointment data
-    // For now, showing events on days 22, 25, 28 as demonstration
-    return day === 22 || day === 25 || day === 28;
+    const checkDate = new Date(this.currentYear, this.currentMonth, day);
+    checkDate.setHours(0, 0, 0, 0);
+    
+    return this.bookings.some(b => {
+      const bookingDate = new Date(b.date);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate.getTime() === checkDate.getTime() &&
+             (b.status === 'upcoming' || b.status === 'pending');
+    });
+  }
+
+  getMonthName(): string {
+    const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 
+                        'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return monthNames[this.currentMonth];
+  }
+
+  getDayName(): string {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return dayNames[this.selectedDate.getDay()];
   }
 }
 

@@ -60,9 +60,17 @@
         </div>
         
         <!-- Pending Requests -->
-        <div class="pending-section" *ngIf="pendingBookings.length > 0">
+        <div class="pending-section">
           <h3>Pending Requests</h3>
-          <div class="pending-cards">
+          
+          <!-- Empty state -->
+          <div class="empty-pending" *ngIf="pendingBookings.length === 0">
+            <mat-icon>inbox</mat-icon>
+            <p>No pending requests</p>
+          </div>
+          
+          <!-- Pending cards -->
+          <div class="pending-cards" *ngIf="pendingBookings.length > 0">
             <mat-card class="pending-card" *ngFor="let booking of pendingBookings">
               <mat-card-content>
                 <div class="pending-info">
@@ -94,26 +102,26 @@
             <!-- TODO: Replace with Today's Job Icon from Figma -->
             <mat-icon class="report-icon" color="primary">today</mat-icon>
             <div class="report-label">Today's Job</div>
-            <div class="report-value">{{ mockStats.totalJobs }}</div>
+            <div class="report-value">{{ calculatedStats.todayJobs }}</div>
           </div>
           <div class="report-card">
             <!-- TODO: Replace with This Week Icon from Figma -->
             <mat-icon class="report-icon" color="accent">calendar_today</mat-icon>
             <div class="report-label">This Week</div>
-            <div class="report-value">{{ mockStats.upcomingJobs }}</div>
+            <div class="report-value">{{ calculatedStats.weekJobs }}</div>
           </div>
           <div class="report-card">
             <!-- TODO: Replace with Total Earning Icon from Figma -->
             <mat-icon class="report-icon earnings-icon">account_balance_wallet</mat-icon>
             <div class="report-label">Total Earning</div>
-            <div class="report-value">₹{{ mockStats.totalEarnings }}.00</div>
+            <div class="report-value">₹{{ calculatedStats.totalEarnings }}.00</div>
           </div>
           <div class="report-card">
             <!-- TODO: Replace with My Rating Icon from Figma -->
             <mat-icon class="report-icon rating-icon">star</mat-icon>
             <div class="report-label">My Rating</div>
             <div class="report-value">
-              {{ mockStats.averageRating }}
+              {{ calculatedStats.averageRating }}
               <mat-icon class="star-small">star</mat-icon>
             </div>
           </div>
@@ -189,7 +197,7 @@
                   </div>
                   <mat-chip class="appointment-status" [ngClass]="getStatusClass(booking.status)">
                     <mat-icon>{{ getStatusIcon(booking.status) }}</mat-icon>
-                    <span>{{ booking.status | titlecase }}</span>
+                    <span>{{ getStatusLabel(booking.status) }}</span>
                   </mat-chip>
                 </div>
                 <div class="appointment-actions">
@@ -223,9 +231,9 @@
               <mat-icon>chevron_left</mat-icon>
             </button>
             <div class="current-date">
-              <span class="day-name">Monday</span>
-              <span class="day-number">22</span>
-              <span class="month-name">JUNE</span>
+              <span class="day-name">{{ getDayName() }}</span>
+              <span class="day-number">{{ currentDay }}</span>
+              <span class="month-name">{{ getMonthName() }}</span>
             </div>
             <button mat-icon-button (click)="nextDay()">
               <mat-icon>chevron_right</mat-icon>
@@ -234,7 +242,7 @@
 
           <div class="calendar-grid">
             <div class="calendar-day" *ngFor="let day of calendarDays" 
-                 [class.today]="day === 22"
+                 [class.today]="day === currentDay"
                  [class.has-event]="hasEventOnDay(day)"
                  (click)="selectDay(day)">
               {{ day }}
@@ -243,20 +251,27 @@
 
           <div class="today-schedule">
             <h4>Today's Schedule</h4>
-            <mat-card class="schedule-card">
+            
+            <!-- Empty state when no appointments -->
+            <div class="empty-schedule" *ngIf="todayAppointments.length === 0">
+              <mat-icon>event_available</mat-icon>
+              <p>No appointments scheduled</p>
+            </div>
+            
+            <!-- Show appointments for selected day -->
+            <mat-card class="schedule-card" *ngFor="let appointment of todayAppointments">
               <mat-card-content>
                 <div class="schedule-layout">
-                  <!-- TODO: Replace with Service Icon from Figma -->
-                  <mat-icon class="schedule-icon">yard</mat-icon>
+                  <mat-icon class="schedule-icon">{{ getServiceIcon(appointment.serviceName) }}</mat-icon>
                   <div class="schedule-info">
-                    <div class="schedule-service">Gardening</div>
+                    <div class="schedule-service">{{ appointment.serviceName }}</div>
                     <div class="detail-row">
                       <mat-icon>access_time</mat-icon>
-                      <span>2:30 PM, booked for 2hrs</span>
+                      <span>{{ appointment.timeSlot }}</span>
                     </div>
                     <div class="detail-row">
                       <mat-icon>location_on</mat-icon>
-                      <span>201, Manjari Khurd, Pune - 143505</span>
+                      <span>{{ appointment.address }}</span>
                     </div>
                   </div>
                 </div>

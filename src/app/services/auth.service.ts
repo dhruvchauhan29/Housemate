@@ -87,4 +87,12 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user ? user.role : null;
   }
+
+  getCustomerById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/customers/${id}`);
+  }
+
+  getExpertById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/experts/${id}`);
+  }
 }
