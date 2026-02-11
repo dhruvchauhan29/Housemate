@@ -1,0 +1,193 @@
+<div class="booking-details-modal">
+  <div class="modal-header">
+    <h2 mat-dialog-title>Booking Details</h2>
+    <button mat-icon-button (click)="close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading booking details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadBookingDetails()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Booking Details Content -->
+  <mat-dialog-content *ngIf="booking && !isLoading">
+    <!-- Status & Payment Badge -->
+    <div class="status-section">
+      <mat-chip [color]="getStatusColor(booking.status)" highlighted>
+        {{ booking.status | titlecase }}
+      </mat-chip>
+      <span class="payment-status-badge" [class.paid]="booking.paymentStatus === 'paid'">
+        {{ getPaymentStatusLabel() }}
+      </span>
+    </div>
+
+    <!-- Service Information -->
+    <div class="info-section">
+      <div class="section-header">
+        <mat-icon>build</mat-icon>
+        <h3>Service Details</h3>
+      </div>
+      <div class="service-info">
+        <span class="service-icon">{{ booking.serviceIcon }}</span>
+        <div class="service-details">
+          <h4>{{ booking.serviceName }}</h4>
+          <p class="booking-id">Booking ID: {{ booking.id }}</p>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Expert Information -->
+    <div class="info-section">
+      <div class="section-header">
+        <mat-icon>person</mat-icon>
+        <h3>Service Expert</h3>
+      </div>
+      <div class="expert-info">
+        <img src="https://ui-avatars.com/api/?name={{booking.expertName}}&background=1976d2&color=fff" 
+             alt="Expert Avatar" 
+             class="expert-avatar">
+        <div class="expert-details">
+          <p class="expert-name">{{ booking.expertName }}</p>
+          <p class="expert-rating">
+            <mat-icon class="star-icon">star</mat-icon>
+            <span>Verified Professional</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Schedule Details -->
+    <div class="info-section">
+      <div class="section-header">
+        <mat-icon>event</mat-icon>
+        <h3>Schedule</h3>
+      </div>
+      <div class="schedule-details">
+        <div class="detail-row">
+          <mat-icon class="detail-icon">calendar_today</mat-icon>
+          <div class="detail-content">
+            <span class="detail-label">Date</span>
+            <span class="detail-value">{{ formatDate(booking.date) }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <mat-icon class="detail-icon">schedule</mat-icon>
+          <div class="detail-content">
+            <span class="detail-label">Time</span>
+            <span class="detail-value">{{ booking.timeSlot }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <mat-icon class="detail-icon">timer</mat-icon>
+          <div class="detail-content">
+            <span class="detail-label">Duration</span>
+            <span class="detail-value">{{ booking.duration }} hour(s)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Address Details -->
+    <div class="info-section">
+      <div class="section-header">
+        <mat-icon>location_on</mat-icon>
+        <h3>Service Address</h3>
+      </div>
+      <div class="address-details">
+        <p>{{ booking.address }}</p>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Price Summary -->
+    <div class="info-section price-summary">
+      <div class="section-header">
+        <mat-icon>receipt</mat-icon>
+        <h3>Price Summary</h3>
+      </div>
+      <div class="price-details">
+        <div class="price-row">
+          <span>Base Amount</span>
+          <span>₹{{ booking.baseAmount }}/-</span>
+        </div>
+        <div class="price-row">
+          <span>GST (18%)</span>
+          <span>₹{{ booking.gst }}/-</span>
+        </div>
+        <div class="price-row" *ngIf="booking.discount > 0">
+          <span>Discount <span class="coupon-tag" *ngIf="booking.couponCode">({{ booking.couponCode }})</span></span>
+          <span class="discount-amount">-₹{{ booking.discount }}/-</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="price-row total-row">
+          <span><strong>Total Amount</strong></span>
+          <span><strong>₹{{ booking.totalAmount }}/-</strong></span>
+        </div>
+      </div>
+      <div class="transaction-info" *ngIf="booking.transactionId">
+        <mat-icon class="info-icon">info</mat-icon>
+        <span>Transaction ID: {{ booking.transactionId }}</span>
+      </div>
+    </div>
+
+    <!-- Rejection Details (if applicable) -->
+    <div class="info-section rejection-section" *ngIf="booking.status === 'rejected' && booking.rejectionReason">
+      <mat-divider></mat-divider>
+      <div class="section-header">
+        <mat-icon color="warn">block</mat-icon>
+        <h3>Rejection Details</h3>
+      </div>
+      <div class="rejection-details">
+        <p><strong>Reason:</strong> {{ booking.rejectionReason }}</p>
+        <p *ngIf="booking.rejectionNotes"><strong>Notes:</strong> {{ booking.rejectionNotes }}</p>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <!-- Action Buttons -->
+  <mat-dialog-actions *ngIf="booking && !isLoading" align="end" class="action-buttons">
+    <button mat-button (click)="close()">
+      Close
+    </button>
+    <button mat-raised-button 
+            color="warn" 
+            *ngIf="canCancel()"
+            (click)="cancelBooking()">
+      <mat-icon>cancel</mat-icon>
+      Cancel Booking
+    </button>
+    <button mat-raised-button 
+            color="accent" 
+            *ngIf="hasDuePayment()"
+            (click)="payNow()">
+      <mat-icon>payment</mat-icon>
+      Pay Now
+    </button>
+    <button mat-raised-button 
+            color="primary" 
+            *ngIf="canModify()"
+            (click)="modifyBooking()">
+      <mat-icon>edit</mat-icon>
+      Modify Booking
+    </button>
+  </mat-dialog-actions>
+</div>

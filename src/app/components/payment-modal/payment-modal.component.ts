@@ -83,7 +83,7 @@ export class PaymentModalComponent implements OnInit {
       if (isSuccess) {
         const transactionId = this.paymentAttemptId + '-' + Date.now();
         this.store.dispatch(paymentSuccess({ transactionId }));
-        this.dialogRef.close();
+        this.dialogRef.close({ success: true, transactionId });
         this.dialog.open(PaymentSuccessComponent, {
           width: '400px',
           disableClose: true,

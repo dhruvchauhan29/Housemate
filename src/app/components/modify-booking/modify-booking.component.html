@@ -45,8 +45,15 @@
       <mat-card-content>
         <div class="expert-info">
           <div class="expert-details">
-            <h3>{{ booking.expertName }}</h3>
-            <p class="expert-meta">Verified Professional</p>
+            <h3>{{ getCurrentExpertName() }}</h3>
+            <p class="expert-meta" *ngIf="modifiedExpert">
+              <mat-icon class="verified-icon">verified</mat-icon>
+              Verified Professional
+            </p>
+            <p class="expert-meta" *ngIf="!modifiedExpert">Verified Professional</p>
+            <p class="expert-price" *ngIf="modifiedExpert && modifiedExpert.pricePerHour">
+              ₹{{ modifiedExpert.pricePerHour }}/hr
+            </p>
           </div>
         </div>
       </mat-card-content>
@@ -155,21 +162,60 @@
         <mat-divider></mat-divider>
 
         <!-- After Edits (if modified) -->
-        <div class="price-section after-edits">
+        <div class="price-section after-edits" *ngIf="hasModifications()">
           <h3>After Edits</h3>
           <div class="price-row">
-            <span>Service Amount</span>
-            <span>₹{{ newAmount }}/-</span>
+            <span>Base Amount</span>
+            <span>₹{{ newBaseAmount }}/-</span>
+          </div>
+          <div class="price-row">
+            <span>GST (18%)</span>
+            <span>₹{{ newGst }}/-</span>
+          </div>
+          <div class="price-row" *ngIf="newDiscount > 0">
+            <span>Discount</span>
+            <span class="discount">-₹{{ newDiscount }}/-</span>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="price-row total">
+            <span><strong>New Total</strong></span>
+            <span><strong>₹{{ newAmount }}/-</strong></span>
           </div>
           <div class="price-row">
             <span>Amount Paid</span>
             <span class="paid">-₹{{ amountPaid }}/-</span>
           </div>
           <mat-divider></mat-divider>
-          <div class="price-row amount-to-pay">
+          
+          <!-- Amount to Pay or Refund -->
+          <div class="price-row amount-to-pay" *ngIf="amountToPay > 0">
             <span><strong>Amount to Pay</strong></span>
-            <span><strong [class.zero]="amountToPay === 0">₹{{ amountToPay }}/-</strong></span>
+            <span class="to-pay"><strong>₹{{ amountToPay }}/-</strong></span>
           </div>
+          <div class="price-row refund" *ngIf="refundAmount > 0">
+            <span><strong>Refund Amount</strong></span>
+            <span class="refund-amount"><strong>₹{{ refundAmount }}/-</strong></span>
+          </div>
+          <div class="price-row" *ngIf="amountToPay === 0 && refundAmount === 0">
+            <span><strong>No Additional Payment</strong></span>
+            <span class="zero"><strong>₹0/-</strong></span>
+          </div>
+          
+          <!-- Refund Message -->
+          <div class="refund-message" *ngIf="refundAmount > 0">
+            <mat-icon>info</mat-icon>
+            <span>Remaining money will be refunded to your account</span>
+          </div>
+          <div class="payment-message" *ngIf="amountToPay > 0">
+            <mat-icon>payment</mat-icon>
+            <span>Payment will be required to confirm changes</span>
+          </div>
+        </div>
+
+        <!-- No Modifications Message -->
+        <div class="no-modifications" *ngIf="!hasModifications()">
+          <mat-icon>info_outline</mat-icon>
+          <p>Make changes above to see updated pricing</p>
         </div>
       </mat-card-content>
     </mat-card>

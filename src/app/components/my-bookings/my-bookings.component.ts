@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService, User } from '../../services/auth.service';
 import { BookingService, SavedBooking } from '../../services/booking.service';
 import { FeedbackModalComponent, FeedbackResult } from '../feedback-modal/feedback-modal.component';
+import { BookingDetailsModalComponent } from '../booking-details-modal/booking-details-modal.component';
 
 interface BookingCount {
   upcoming: number;
@@ -136,7 +137,19 @@ export class MyBookingsComponent implements OnInit {
 
   viewDetails(bookingId: string | number | undefined) {
     if (!bookingId) return;
-    this.router.navigate(['/booking-details', bookingId]);
+    
+    const dialogRef = this.dialog.open(BookingDetailsModalComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      data: { bookingId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Reload bookings if any changes were made (cancelled, paid, etc.)
+      if (result?.cancelled || result?.paid) {
+        this.loadBookings();
+      }
+    });
   }
 
   modifyBooking(bookingId: string | number | undefined) {
