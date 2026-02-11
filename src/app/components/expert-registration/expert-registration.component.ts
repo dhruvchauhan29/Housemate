@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 
@@ -42,6 +42,9 @@ export class ExpertRegistrationComponent {
       // Step 1: Personal Information
       fullName: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       completeAddress: ['', Validators.required],
       city: ['', Validators.required],
@@ -58,7 +61,19 @@ export class ExpertRegistrationComponent {
       idProofType: ['aadhar', Validators.required],
       idProofNumber: ['', Validators.required],
       photograph: ['', Validators.required]
-    });
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    
+    if (password && confirmPassword && password !== confirmPassword) {
+      control.get('confirmPassword')?.setErrors({ mismatch: true });
+      return { mismatch: true };
+    }
+    
+    return null;
   }
 
   get servicesOfferedArray() {
@@ -82,13 +97,18 @@ export class ExpertRegistrationComponent {
   nextStep() {
     this.errorMessage = '';
     if (this.currentStep === 1) {
-      const step1Fields = ['fullName', 'mobileNumber', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
+      const step1Fields = ['fullName', 'mobileNumber', 'email', 'password', 'confirmPassword', 'dateOfBirth', 'completeAddress', 'city', 'state', 'pinCode'];
       const step1Valid = step1Fields.every(field => this.registrationForm.get(field)?.valid);
-      if (step1Valid) {
+      
+      if (step1Valid && !this.registrationForm.hasError('mismatch')) {
         this.currentStep++;
       } else {
         step1Fields.forEach(field => this.registrationForm.get(field)?.markAsTouched());
-        this.errorMessage = 'Please fill all required fields correctly';
+        if (this.registrationForm.hasError('mismatch')) {
+          this.errorMessage = 'Passwords do not match';
+        } else {
+          this.errorMessage = 'Please fill all required fields correctly';
+        }
       }
     } else if (this.currentStep === 2) {
       const step2Valid = this.servicesOfferedArray.length > 0 && 
@@ -151,14 +171,11 @@ export class ExpertRegistrationComponent {
       
       const formData = this.registrationForm.value;
       
-      // Generate a temporary secure password
-      const tempPassword = 'Expert' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-      
       const expert: User = {
         fullName: formData.fullName,
         mobileNumber: '+91' + formData.mobileNumber,
-        email: `expert${Date.now()}@housemate.temp`, // Temporary email - should be collected in future
-        password: tempPassword, // Temporary password - should implement proper auth flow
+        email: formData.email,
+        password: formData.password,
         address: `${formData.completeAddress}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
         role: 'EXPERT' as const,
         serviceCategory: formData.servicesOffered.join(', '),
@@ -166,13 +183,9 @@ export class ExpertRegistrationComponent {
         idProof: formData.idProofType + ': ' + formData.idProofNumber
       };
       
-      // TODO: In production, send temporary password via SMS to mobile number
-      // TODO: Implement email collection in Step 1 or post-registration
-      
       this.authService.registerExpert(expert).subscribe({
         next: (user) => {
           this.isSubmitting = false;
-          // TODO: Show success message with instructions to check SMS for password
           this.router.navigate(['/expert/dashboard']);
         },
         error: (err) => {

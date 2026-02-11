@@ -112,13 +112,13 @@ describe('ExpertDashboardComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['/']);
   });
 
-  it('should logout and navigate to home', () => {
+  it('should logout and navigate to expert login', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     
     component.logout();
     
     expect(authService.logout).toHaveBeenCalled();
-    expect(routerSpy).toHaveBeenCalledWith(['/']);
+    expect(routerSpy).toHaveBeenCalledWith(['/expert/login']);
   });
 
   it('should display user name in template', () => {
