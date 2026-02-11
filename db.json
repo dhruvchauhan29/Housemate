@@ -1,7 +1,7 @@
 {
   "customers": [
     {
-      "id": 1,
+      "id": "1",
       "email": "john@example.com",
       "password": "password",
       "fullName": "John Doe",
@@ -13,7 +13,7 @@
   ],
   "experts": [
     {
-      "id": 1,
+      "id": "1",
       "email": "jane@example.com",
       "password": "password",
       "fullName": "Jane Smith",
@@ -28,10 +28,13 @@
       "rating": 4.7,
       "reviewsCount": 122,
       "verified": true,
-      "languages": ["Hindi", "English"]
+      "languages": [
+        "Hindi",
+        "English"
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "email": "sara@example.com",
       "password": "password",
       "fullName": "Sara Khan",
@@ -46,10 +49,13 @@
       "rating": 4.7,
       "reviewsCount": 122,
       "verified": true,
-      "languages": ["Hindi", "English"]
+      "languages": [
+        "Hindi",
+        "English"
+      ]
     },
     {
-      "id": 3,
+      "id": "3",
       "email": "rajesh@example.com",
       "password": "password",
       "fullName": "Rajesh Kumar",
@@ -64,10 +70,13 @@
       "rating": 4.7,
       "reviewsCount": 122,
       "verified": true,
-      "languages": ["Hindi", "English"]
+      "languages": [
+        "Hindi",
+        "English"
+      ]
     },
     {
-      "id": 4,
+      "id": "4",
       "email": "amit@example.com",
       "password": "password",
       "fullName": "Amit Sharma",
@@ -82,7 +91,10 @@
       "rating": 4.5,
       "reviewsCount": 98,
       "verified": true,
-      "languages": ["Hindi", "English"]
+      "languages": [
+        "Hindi",
+        "English"
+      ]
     }
   ],
   "bookings": [
@@ -103,7 +115,8 @@
       "totalAmount": 354,
       "transactionId": "TXN987654400",
       "status": "pending",
-      "createdAt": "2026-02-11T05:00:00Z"
+      "createdAt": "2026-02-11T05:00:00Z",
+      "customerName": "John Doe"
     },
     {
       "id": "pending2",
@@ -122,7 +135,8 @@
       "totalAmount": 295,
       "transactionId": "TXN987654401",
       "status": "pending",
-      "createdAt": "2026-02-11T06:00:00Z"
+      "createdAt": "2026-02-11T06:00:00Z",
+      "customerName": "John Doe"
     },
     {
       "id": "2f93",
@@ -354,6 +368,46 @@
       "transactionId": "TXN987654325",
       "status": "rejected",
       "createdAt": "2026-02-09T10:00:00Z"
+    },
+    {
+      "id": "today1",
+      "customerId": 1,
+      "customerName": "John Doe",
+      "serviceName": "Cleaning",
+      "serviceIcon": "🧹",
+      "expertName": "Jane Smith",
+      "expertId": 1,
+      "date": "2026-02-11",
+      "timeSlot": "10:00 AM - 12:00 PM",
+      "duration": 2,
+      "address": "201, Manjari Khurd, Pune - 143505",
+      "baseAmount": 200,
+      "gst": 36,
+      "discount": 0,
+      "totalAmount": 236,
+      "transactionId": "TXN999999999",
+      "status": "upcoming",
+      "createdAt": "2026-02-10T08:00:00Z"
+    },
+    {
+      "id": "today1",
+      "customerId": 1,
+      "customerName": "John Doe",
+      "serviceName": "Cleaning",
+      "serviceIcon": "🧹",
+      "expertName": "Jane Smith",
+      "expertId": 1,
+      "date": "2026-02-11",
+      "timeSlot": "10:00 AM - 12:00 PM",
+      "duration": 2,
+      "address": "201, Manjari Khurd, Pune - 143505",
+      "baseAmount": 200,
+      "gst": 36,
+      "discount": 0,
+      "totalAmount": 236,
+      "transactionId": "TXN999999999",
+      "status": "upcoming",
+      "createdAt": "2026-02-10T08:00:00Z"
     }
   ]
 }
