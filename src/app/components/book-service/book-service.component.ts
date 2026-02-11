@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService, User } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/app.state';
-import { selectSelectedService, selectSelectedExpert, selectIsAddingNewAddress } from '../../store/selectors/booking.selectors';
+import { selectSelectedService, selectSelectedExpert, selectIsAddingNewAddress, selectSelectedDate, selectSelectedTimeSlot, selectSelectedDuration } from '../../store/selectors/booking.selectors';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +20,9 @@ export class BookServiceComponent implements OnInit {
   currentRoute: string = '';
   selectedServiceId: string | undefined;
   selectedExpertId: string | undefined;
+  selectedDate: string | undefined;
+  selectedTimeSlotId: string | undefined;
+  selectedDuration: number | undefined;
   isAddingNewAddress: boolean = false;
 
   constructor(
@@ -46,6 +49,19 @@ export class BookServiceComponent implements OnInit {
     
     this.store.select(selectSelectedExpert).subscribe(expert => {
       this.selectedExpertId = expert?.id;
+    });
+    
+    // Subscribe to date, time slot, and duration
+    this.store.select(selectSelectedDate).subscribe(date => {
+      this.selectedDate = date;
+    });
+    
+    this.store.select(selectSelectedTimeSlot).subscribe(timeSlot => {
+      this.selectedTimeSlotId = timeSlot?.id;
+    });
+    
+    this.store.select(selectSelectedDuration).subscribe(duration => {
+      this.selectedDuration = duration;
     });
     
     // Subscribe to isAddingNewAddress state
@@ -84,6 +100,8 @@ export class BookServiceComponent implements OnInit {
   isNextButtonDisabled(): boolean {
     if (this.currentRoute.includes('select-service')) {
       return !this.selectedServiceId || !this.selectedExpertId;
+    } else if (this.currentRoute.includes('select-datetime')) {
+      return !this.selectedDate || !this.selectedTimeSlotId || !this.selectedDuration;
     }
     return false;
   }

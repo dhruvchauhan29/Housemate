@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { Address } from '../../store/models/booking.model';
 import { selectAddresses, selectSelectedAddress } from '../../store/selectors/booking.selectors';
-import { selectAddress, addAddress, setAddingNewAddress } from '../../store/actions/booking.actions';
+import { selectAddress, addAddress, setAddingNewAddress, calculateTotal } from '../../store/actions/booking.actions';
 
 @Component({
   selector: 'app-select-address',
@@ -147,6 +147,8 @@ export class SelectAddressComponent implements OnInit {
   }
 
   nextStep(): void {
+    // Calculate total before navigating to booking summary
+    this.store.dispatch(calculateTotal());
     this.router.navigate(['/book-service/booking-summary']);
   }
 
