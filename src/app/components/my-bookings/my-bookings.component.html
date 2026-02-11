@@ -154,7 +154,7 @@
                 </mat-icon>
                 {{ getStatusLabel(booking.status) }}
               </span>
-              <span class="payment-badge" *ngIf="booking.status === 'upcoming' || booking.status === 'completed'">
+              <span class="payment-badge" *ngIf="booking.status === 'completed'">
                 PAID
               </span>
               <span class="payment-badge pending" *ngIf="booking.status === 'upcoming'">
