@@ -1,12 +1,15 @@
 .registration-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #e8ecf1 0%, #f5f7fa 100%);
+  background: #e8ecf4;
 }
 
 .header {
   background: white;
   padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
@@ -32,105 +35,166 @@
   font-size: 1.5rem;
 }
 
+.header-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.header-link {
+  color: #1e3a5f;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  
+  &:hover {
+    color: #2d5278;
+  }
+}
+
 .registration-container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 2rem;
 }
 
 .registration-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
+  grid-template-columns: 140px 1fr;
+  gap: 3rem;
+  align-items: flex-start;
 }
 
-.registration-form-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.subtitle {
-  color: #5a7fa0;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.title {
-  color: #1e3a5f;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.description {
-  color: #5a7fa0;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-
-/* Step Indicator */
-.step-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-}
-
-.step {
+/* Step Sidebar */
+.step-sidebar {
+  padding-top: 8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
-  
-  &.active .step-number {
-    background: #1e3a5f;
-    color: white;
-  }
-  
-  &.completed .step-number {
-    background: #10b981;
-    color: white;
-  }
 }
 
-.step-number {
-  width: 36px;
-  height: 36px;
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.step-circle {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #e5e7eb;
+  background: #d1d5db;
   color: #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  font-size: 1.1rem;
   margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
 }
 
-.step-label {
+.step-item.active .step-circle {
+  background: #1e3a5f;
+  color: white;
+}
+
+.step-item.completed .step-circle {
+  background: #10b981;
+  color: white;
+}
+
+.step-text {
   font-size: 0.75rem;
   color: #6b7280;
-  text-align: center;
+  line-height: 1.3;
+  max-width: 80px;
 }
 
-.step-line {
-  width: 60px;
-  height: 2px;
-  background: #e5e7eb;
-  margin: 0 0.5rem;
-  align-self: flex-start;
-  margin-top: 18px;
+.step-connector {
+  width: 2px;
+  height: 60px;
+  background: #d1d5db;
+  margin: 0.5rem 0;
+  transition: all 0.3s ease;
   
-  &.active {
-    background: #1e3a5f;
+  &.completed {
+    background: #10b981;
+  }
+}
+
+/* Form Section */
+.registration-form-section {
+  background: white;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-header {
+  margin-bottom: 2rem;
+}
+
+.subtitle {
+  color: #5a7fa0;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.title {
+  color: #1e5f8f;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.description {
+  color: #5a7fa0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+/* Info & Privacy Banners */
+.info-banner, .privacy-banner {
+  background: #e8f4f8;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  border-radius: 4px;
+}
+
+.privacy-banner {
+  background: #f0fdf4;
+  border-left-color: #10b981;
+}
+
+.info-icon, .privacy-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.info-text, .privacy-text {
+  font-size: 0.875rem;
+  color: #1e3a5f;
+  line-height: 1.5;
+  
+  strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  p {
+    margin: 0;
   }
 }
 
 .step-content {
-  min-height: 300px;
+  min-height: 450px;
 }
 
 .form-group {
@@ -138,61 +202,249 @@
 }
 
 .form-label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: #1e3a5f;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
+}
+
+.label-icon {
+  font-size: 1.1rem;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.field-hint {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.field-sublabel {
+  display: block;
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.field-note {
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 .form-control {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.875rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
   box-sizing: border-box;
+  transition: border-color 0.2s;
   
   &:focus {
     outline: none;
     border-color: #1e3a5f;
   }
+  
+  &.invalid {
+    border-color: #dc2626;
+  }
 }
 
-.form-hint {
-  display: block;
-  color: #9ca3af;
-  font-size: 0.75rem;
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.mobile-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.country-code {
+  padding: 0.75rem;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.mobile-field {
+  flex: 1;
+}
+
+.pin-input {
+  max-width: 200px;
+}
+
+/* Services Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.service-card {
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  
+  &:hover {
+    border-color: #1e3a5f;
+    transform: translateY(-2px);
+  }
+  
+  &.selected {
+    border-color: #1e3a5f;
+    background: #e8f0f8;
+  }
+}
+
+.service-icon {
+  font-size: 3rem;
   margin-bottom: 0.5rem;
 }
 
-.file-info {
-  margin-top: 0.5rem;
-  color: #10b981;
-  font-size: 0.875rem;
+.service-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e3a5f;
+}
+
+/* Experience Row */
+.experience-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.experience-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Upload Area */
+.upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background: #f9fafb;
+  transition: all 0.2s;
+  
+  &:hover {
+    border-color: #1e3a5f;
+    background: #f3f4f6;
+  }
+  
+  &.has-file {
+    border-style: solid;
+    border-color: #10b981;
+    background: #f0fdf4;
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
+  cursor: pointer;
+  display: block;
+}
+
+.upload-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #6b7280;
+}
+
+.upload-text {
+  font-size: 0.95rem;
+  color: #1e3a5f;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.upload-hint {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.photo-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    object-fit: cover;
+  }
+  
+  .file-name {
+    font-size: 0.85rem;
+    color: #10b981;
+    font-weight: 500;
+  }
 }
 
 .error-message {
   color: #dc2626;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  
+  &.global-error {
+    background: #fef2f2;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    border-left: 3px solid #dc2626;
+  }
 }
 
+/* Buttons */
 .button-group {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
 }
 
 .btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-primary {
@@ -201,6 +453,8 @@
   
   &:hover:not(:disabled) {
     background: #2d5278;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 95, 0.3);
   }
   
   &:disabled {
@@ -210,12 +464,34 @@
 }
 
 .btn-secondary {
-  background: transparent;
+  background: #f3f4f6;
   color: #1e3a5f;
-  border: 2px solid #1e3a5f;
+  border: 2px solid transparent;
   
-  &:hover {
-    background: #f3f4f6;
+  &:hover:not(:disabled) {
+    background: #e5e7eb;
+    border-color: #1e3a5f;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-submit {
+  background: #1e3a5f;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: #10b981;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 
@@ -224,11 +500,11 @@
   text-align: center;
   
   a {
-    color: #1e3a5f;
+    color: #1e5f8f;
     font-weight: 600;
     text-decoration: underline;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     
     &:hover {
       color: #2d5278;
@@ -236,25 +512,43 @@
   }
 }
 
-.registration-image-section {
-  min-height: 500px;
-  background: linear-gradient(135deg, #e8ecf1 0%, #d1d5db 100%);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 @media (max-width: 768px) {
   .registration-content {
     grid-template-columns: 1fr;
   }
   
-  .registration-image-section {
-    display: none;
+  .step-sidebar {
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 0;
+    margin-bottom: 2rem;
   }
   
-  .step-label {
-    display: none;
+  .step-connector {
+    width: 40px;
+    height: 2px;
+    margin: 0 0.5rem;
+    align-self: center;
+    margin-top: -30px;
+  }
+  
+  .step-text {
+    font-size: 0.7rem;
+  }
+  
+  .form-row, .experience-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .registration-form-section {
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
   }
 }
