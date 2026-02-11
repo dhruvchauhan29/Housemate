@@ -329,8 +329,9 @@
       "totalAmount": 136,
       "couponCode": "NEW50",
       "transactionId": "TXN123456789",
-      "status": "upcoming",
-      "createdAt": "2026-02-10T22:00:00Z"
+      "status": "completed",
+      "createdAt": "2026-02-10T22:00:00Z",
+      "updatedAt": "2026-02-11T10:00:00.000Z"
     },
     {
       "id": "7c65",
