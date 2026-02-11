@@ -248,11 +248,12 @@
                 <span class="label-icon">⭐</span>
                 Specializations
               </label>
+              <p class="field-hint">Describe any specific skills or areas where you excel (optional)</p>
               <textarea 
                 class="form-control" 
                 formControlName="specializations"
                 rows="4"
-                placeholder="Describe any specific skills or areas where you excel (optional)&#10;E.g., Expert in deep cleaning, Experienced with traditional Indian cooking, Certified in first aid for elderly care..."
+                placeholder="E.g., Expert in deep cleaning, Experienced with traditional Indian cooking, Certified in first aid for elderly care..."
               ></textarea>
             </div>
           </div>
@@ -290,7 +291,7 @@
                 type="text" 
                 class="form-control" 
                 formControlName="idProofNumber"
-                [placeholder]="registrationForm.get('idProofType')?.value === 'aadhar' ? '56721-234-5566' : ''"
+                [placeholder]="registrationForm.get('idProofType')?.value === 'aadhar' ? '567212345566' : 'Enter ID number'"
                 [maxlength]="registrationForm.get('idProofType')?.value === 'aadhar' ? 12 : 20"
                 [class.invalid]="registrationForm.get('idProofNumber')?.invalid && registrationForm.get('idProofNumber')?.touched"
               />

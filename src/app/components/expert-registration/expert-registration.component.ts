@@ -56,7 +56,7 @@ export class ExpertRegistrationComponent {
       
       // Step 3: ID Verification
       idProofType: ['aadhar', Validators.required],
-      idProofNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
+      idProofNumber: ['', Validators.required],
       photograph: ['', Validators.required]
     });
   }
@@ -150,11 +150,15 @@ export class ExpertRegistrationComponent {
       this.errorMessage = '';
       
       const formData = this.registrationForm.value;
+      
+      // Generate a temporary secure password
+      const tempPassword = 'Expert' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+      
       const expert: User = {
         fullName: formData.fullName,
         mobileNumber: '+91' + formData.mobileNumber,
-        email: '', // Will be added later
-        password: 'temp123', // Temporary password
+        email: `expert${Date.now()}@housemate.temp`, // Temporary email - should be collected in future
+        password: tempPassword, // Temporary password - should implement proper auth flow
         address: `${formData.completeAddress}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
         role: 'EXPERT' as const,
         serviceCategory: formData.servicesOffered.join(', '),
@@ -162,9 +166,13 @@ export class ExpertRegistrationComponent {
         idProof: formData.idProofType + ': ' + formData.idProofNumber
       };
       
+      // TODO: In production, send temporary password via SMS to mobile number
+      // TODO: Implement email collection in Step 1 or post-registration
+      
       this.authService.registerExpert(expert).subscribe({
         next: (user) => {
           this.isSubmitting = false;
+          // TODO: Show success message with instructions to check SMS for password
           this.router.navigate(['/expert/dashboard']);
         },
         error: (err) => {
