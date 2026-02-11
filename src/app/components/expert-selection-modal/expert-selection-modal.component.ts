@@ -41,7 +41,7 @@ export class ExpertSelectionModalComponent implements OnInit {
     private dialogRef: MatDialogRef<ExpertSelectionModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { 
       serviceCategory: string;
-      currentExpertId?: number;
+      currentExpertId?: string;
     },
     private expertService: ExpertService
   ) {}

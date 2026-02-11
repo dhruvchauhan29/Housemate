@@ -124,7 +124,7 @@ export class ModifyBookingComponent implements OnInit {
         
         // Load the original expert details
         if (booking.expertId) {
-          this.expertService.getExpertById(booking.expertId).subscribe({
+          this.expertService.getExpertById(booking.expertId.toString()).subscribe({
             next: (expert) => {
               this.modifiedExpert = expert;
               this.isLoading = false;
@@ -315,7 +315,7 @@ export class ModifyBookingComponent implements OnInit {
     const updates: Partial<SavedBooking> = {};
     
     // Track if expert changed for proper propagation
-    const expertChanged = this.modifiedExpert && this.modifiedExpert.id !== this.booking.expertId;
+    const expertChanged = this.modifiedExpert && this.modifiedExpert.id !== this.booking.expertId?.toString();
     
     // Add modified fields to updates
     if (this.modifiedExpert) {
@@ -324,7 +324,7 @@ export class ModifyBookingComponent implements OnInit {
         updates.previousExpertId = this.booking.expertId;
       }
       updates.expertName = this.modifiedExpert.fullName;
-      updates.expertId = this.modifiedExpert.id;
+      updates.expertId = parseInt(this.modifiedExpert.id);
       
       // If expert changed and booking was accepted, reset to pending
       if (expertChanged && this.booking.status === 'upcoming') {
