@@ -34,7 +34,7 @@
         <mat-icon matPrefix>search</mat-icon>
         <input 
           matInput 
-          placeholder="Search experts by name or language" 
+          placeholder="Search by expert name" 
           [(ngModel)]="searchQuery"
           (ngModelChange)="onSearchChange($event)"
         >
@@ -183,16 +183,19 @@
     </div>
 
     <!-- Empty State -->
-    <div class="empty-state" *ngIf="!isLoadingExperts && !expertError && filteredExperts.length === 0 && selectedServiceId">
+    <div class="empty-state" *ngIf="!isLoadingExperts && !expertError && filteredExperts.length === 0">
       <mat-icon class="empty-icon">person_search</mat-icon>
       <h3>No Experts Found</h3>
-      <p *ngIf="searchQuery || minRating > 0 || verifiedOnly || selectedLanguage">
-        No experts match your search criteria. Try adjusting your filters.
+      <p *ngIf="searchQuery">
+        No experts match your search criteria. Try adjusting your search.
       </p>
-      <p *ngIf="!searchQuery && minRating === 0 && !verifiedOnly && !selectedLanguage">
-        No experts are currently available for this service. Please check back later.
+      <p *ngIf="!searchQuery && (minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < 200)">
+        No experts match your filter criteria. Try adjusting your filters.
       </p>
-      <button mat-raised-button color="primary" (click)="clearFilters()">
+      <p *ngIf="!searchQuery && minRating === 0 && !verifiedOnly && !selectedLanguage && minPrice === 0 && maxPrice >= 200">
+        No experts are currently available. Please check back later.
+      </p>
+      <button mat-raised-button color="primary" (click)="clearFilters()" *ngIf="searchQuery || minRating > 0 || verifiedOnly || selectedLanguage || minPrice > 0 || maxPrice < 200">
         <mat-icon>refresh</mat-icon>
         Clear Filters
       </button>

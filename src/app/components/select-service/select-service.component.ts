@@ -146,6 +146,9 @@ export class SelectServiceComponent implements OnInit {
       this.currentPage = 1;
       this.loadExperts();
     });
+    
+    // Load all experts on initialization (no filter)
+    this.loadExperts();
   }
 
   selectServiceCard(service: Service) {
@@ -174,20 +177,15 @@ export class SelectServiceComponent implements OnInit {
   }
 
   loadExperts() {
-    if (!this.selectedServiceId) {
-      this.filteredExperts = [];
-      return;
-    }
-    
     this.isLoadingExperts = true;
     this.expertError = null;
     
-    // Get service name for filtering
+    // Get service name for filtering (if service is selected)
     const selectedService = this.services.find(s => s.id === this.selectedServiceId);
     const serviceName = selectedService?.name || '';
     
     const params: ExpertSearchParams = {
-      serviceCategory: serviceName,
+      serviceCategory: serviceName || undefined, // Allow empty to get all experts
       q: this.searchQuery || undefined,
       minRating: this.minRating > 0 ? this.minRating : undefined,
       minPrice: this.minPrice > 0 ? this.minPrice : undefined,
