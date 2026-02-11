@@ -207,3 +207,108 @@
     }
   }
 }
+.expert-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+
+  .verified-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #1976d2;
+  }
+}
+
+.expert-price {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.price-section.after-edits {
+  background-color: #e3f2fd;
+  padding: 16px;
+  border-radius: 8px;
+
+  .price-row {
+    &.refund {
+      .refund-amount {
+        color: #4caf50;
+        font-weight: 600;
+      }
+    }
+
+    &.amount-to-pay {
+      .to-pay {
+        color: #f44336;
+        font-weight: 600;
+      }
+    }
+
+    .zero {
+      color: #666;
+    }
+  }
+
+  .refund-message,
+  .payment-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .refund-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+
+    mat-icon {
+      color: #4caf50;
+    }
+  }
+
+  .payment-message {
+    background-color: #fff3e0;
+    color: #e65100;
+
+    mat-icon {
+      color: #ff9800;
+    }
+  }
+}
+
+.no-modifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  color: #999;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}

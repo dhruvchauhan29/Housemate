@@ -1,0 +1,244 @@
+.expert-selection-modal {
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 600px;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .close-button {
+      margin-right: -8px;
+    }
+  }
+
+  mat-dialog-content {
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+
+    mat-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      margin: 16px 0;
+      color: #666;
+    }
+  }
+
+  .experts-header {
+    padding: 16px 24px;
+    background-color: #f5f5f5;
+
+    .experts-count {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+
+    mat-icon {
+      font-size: 64px;
+      height: 64px;
+      width: 64px;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+
+  .experts-list {
+    padding: 16px 24px;
+
+    .expert-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #1976d2;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+      }
+
+      &.selected {
+        border-color: #1976d2;
+        background-color: #e3f2fd;
+        box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .expert-radio {
+        margin-top: 8px;
+      }
+
+      .expert-content {
+        flex: 1;
+        min-width: 0;
+
+        .expert-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 12px;
+
+          .expert-info {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+
+            .expert-avatar {
+              width: 56px;
+              height: 56px;
+              border-radius: 50%;
+              flex-shrink: 0;
+            }
+
+            .expert-details {
+              flex: 1;
+              min-width: 0;
+
+              .expert-name-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 4px;
+
+                h3 {
+                  margin: 0;
+                  font-size: 16px;
+                  font-weight: 500;
+                  color: #333;
+                }
+
+                .verified-icon {
+                  font-size: 18px;
+                  height: 18px;
+                  width: 18px;
+                }
+              }
+
+              .expert-rating {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .rating-stars {
+                  display: flex;
+                  gap: 2px;
+
+                  .star-icon {
+                    font-size: 16px;
+                    height: 16px;
+                    width: 16px;
+                    color: #ffa726;
+                  }
+                }
+
+                .rating-text {
+                  font-size: 13px;
+                  color: #666;
+                }
+              }
+            }
+          }
+
+          .expert-price {
+            flex-shrink: 0;
+            text-align: right;
+
+            .price-label {
+              font-size: 16px;
+              font-weight: 600;
+              color: #1976d2;
+            }
+          }
+        }
+
+        mat-divider {
+          margin: 12px 0;
+        }
+
+        .expert-meta {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+
+          .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #666;
+
+            mat-icon {
+              font-size: 16px;
+              height: 16px;
+              width: 16px;
+              color: #999;
+            }
+
+            span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    gap: 12px;
+  }
+}

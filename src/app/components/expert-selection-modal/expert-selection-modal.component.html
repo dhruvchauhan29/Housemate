@@ -1,0 +1,119 @@
+<div class="expert-selection-modal">
+  <div class="modal-header">
+    <h2 mat-dialog-title>Select Service Expert</h2>
+    <button mat-icon-button (click)="cancel()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading experts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadExperts()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Experts List -->
+  <mat-dialog-content *ngIf="!isLoading && !error">
+    <div class="experts-header">
+      <p class="experts-count">{{ filteredExperts.length }} Available Experts Near You</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredExperts.length === 0" class="empty-state">
+      <mat-icon>person_search</mat-icon>
+      <p>No experts available for this service at the moment.</p>
+    </div>
+
+    <!-- Expert Cards -->
+    <div class="experts-list" *ngIf="filteredExperts.length > 0">
+      <div 
+        *ngFor="let expert of filteredExperts" 
+        class="expert-card"
+        [class.selected]="selectedExpert?.id === expert.id"
+        (click)="selectExpert(expert)">
+        
+        <mat-radio-button 
+          [checked]="selectedExpert?.id === expert.id"
+          [value]="expert.id"
+          class="expert-radio">
+        </mat-radio-button>
+
+        <div class="expert-content">
+          <div class="expert-header">
+            <div class="expert-info">
+              <img 
+                src="https://ui-avatars.com/api/?name={{expert.fullName}}&background=1976d2&color=fff" 
+                alt="{{expert.fullName}}" 
+                class="expert-avatar">
+              <div class="expert-details">
+                <div class="expert-name-row">
+                  <h3>{{ expert.fullName }}</h3>
+                  <mat-icon *ngIf="expert.verified !== false" class="verified-icon" color="primary">verified</mat-icon>
+                </div>
+                <div class="expert-rating">
+                  <span class="rating-stars">
+                    <mat-icon *ngFor="let star of getRatingStars(expert.rating)" class="star-icon">
+                      {{ star }}
+                    </mat-icon>
+                  </span>
+                  <span class="rating-text">{{ expert.rating || DEFAULT_RATING }} ({{ expert.reviewsCount || DEFAULT_REVIEWS_COUNT }})</span>
+                </div>
+              </div>
+            </div>
+            <div class="expert-price">
+              <span class="price-label">₹{{ expert.pricePerHour || DEFAULT_PRICE_PER_HOUR }}/hr</span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="expert-meta">
+            <div class="meta-item">
+              <mat-icon>work</mat-icon>
+              <span>{{ getExperienceYears(expert.experience) }} years experience</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ expert.address || DEFAULT_DISTANCE }}</span>
+            </div>
+            <div class="meta-item" *ngIf="expert.serviceCategory">
+              <mat-icon>build</mat-icon>
+              <span>{{ expert.serviceCategory }}</span>
+            </div>
+            <div class="meta-item" *ngIf="expert.languages && expert.languages.length > 0">
+              <mat-icon>translate</mat-icon>
+              <span>{{ expert.languages.join(', ') }}</span>
+            </div>
+            <div class="meta-item" *ngIf="!expert.languages || expert.languages.length === 0">
+              <mat-icon>translate</mat-icon>
+              <span>Hindi, English</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <!-- Action Buttons -->
+  <mat-dialog-actions *ngIf="!isLoading && !error" align="end" class="action-buttons">
+    <button mat-button (click)="cancel()">
+      Cancel
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      [disabled]="!selectedExpert"
+      (click)="confirm()">
+      Select Expert
+    </button>
+  </mat-dialog-actions>
+</div>
