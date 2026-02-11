@@ -133,14 +133,12 @@ export class MyBookingsComponent implements OnInit {
 
   viewDetails(bookingId: string | number | undefined) {
     if (!bookingId) return;
-    console.log('View details:', bookingId);
-    // TODO: Navigate to booking details page
+    this.router.navigate(['/booking-details', bookingId]);
   }
 
   modifyBooking(bookingId: string | number | undefined) {
     if (!bookingId) return;
-    console.log('Modify booking:', bookingId);
-    // TODO: Navigate to booking modification page
+    this.router.navigate(['/modify-booking', bookingId]);
   }
 
   callExpert(phone: string) {

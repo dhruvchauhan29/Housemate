@@ -292,6 +292,10 @@
   font-size: 0.9rem;
   color: #1e3a5f;
   font-weight: 600;
+
+  &.paid {
+    color: #4caf50;
+  }
 }
 
 .booking-details {

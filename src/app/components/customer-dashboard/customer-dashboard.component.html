@@ -60,7 +60,9 @@
             <div class="booking-header">
               <!-- Image placeholder: Service icon from Figma -->
               <div class="service-icon-small">{{ booking.serviceIcon }}</div>
-              <div class="booking-price">{{ booking.price }} to pay</div>
+              <div class="booking-price" [class.paid]="booking.paymentStatus === 'Paid'">
+                {{ booking.price }} {{ booking.paymentStatus === 'Paid' ? '' : booking.paymentStatus }}
+              </div>
             </div>
             <div class="booking-details">
               <div class="detail-item">

@@ -13,6 +13,8 @@ import { SelectDatetimeComponent } from './components/select-datetime/select-dat
 import { SelectAddressComponent } from './components/select-address/select-address.component';
 import { BookingSummaryComponent } from './components/booking-summary/booking-summary.component';
 import { MyBookingsComponent } from './components/my-bookings/my-bookings.component';
+import { BookingDetailsComponent } from './components/booking-details/booking-details.component';
+import { ModifyBookingComponent } from './components/modify-booking/modify-booking.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -31,6 +33,18 @@ export const routes: Routes = [
   { 
     path: 'my-bookings', 
     component: MyBookingsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'CUSTOMER' }
+  },
+  { 
+    path: 'booking-details/:id', 
+    component: BookingDetailsComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'CUSTOMER' }
+  },
+  { 
+    path: 'modify-booking/:id', 
+    component: ModifyBookingComponent,
     canActivate: [authGuard, roleGuard],
     data: { role: 'CUSTOMER' }
   },

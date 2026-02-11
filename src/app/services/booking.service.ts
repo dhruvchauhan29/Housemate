@@ -20,6 +20,7 @@ export interface SavedBooking {
   couponCode?: string;
   transactionId: string;
   status: 'upcoming' | 'completed' | 'cancelled' | 'rejected' | 'pending';
+  paymentStatus?: 'paid' | 'unpaid' | 'partial';
   createdAt: string;
   rejectionReason?: string;
   rejectionNotes?: string;
