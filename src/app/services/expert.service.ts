@@ -162,13 +162,15 @@ export class ExpertService {
     }
   }
 
+  private readonly MAX_DISTANCE = 999;
+
   private extractYears(experience: string): number {
-    const match = experience.match(/(\d+)/);
+    const match = experience.match(/(\d+)\s*years?/i);
     return match ? parseInt(match[1]) : 0;
   }
 
   private extractDistance(address: string): number {
     const match = address.match(/([\d.]+)\s*km/i);
-    return match ? parseFloat(match[1]) : 999;
+    return match ? parseFloat(match[1]) : this.MAX_DISTANCE;
   }
 }

@@ -17,7 +17,7 @@ import { selectService, selectExpert } from '../../store/actions/booking.actions
 import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ExpertService, ExpertSearchParams } from '../../services/expert.service';
+import { ExpertService, ExpertSearchParams, Expert as ApiExpert } from '../../services/expert.service';
 
 @Component({
   selector: 'app-select-service',
@@ -94,7 +94,7 @@ export class SelectServiceComponent implements OnInit {
   ];
 
   // Expert listing
-  filteredExperts: any[] = [];
+  filteredExperts: ApiExpert[] = [];
   isLoadingExperts = false;
   expertError: string | null = null;
   totalExperts = 0;
@@ -154,7 +154,7 @@ export class SelectServiceComponent implements OnInit {
     this.loadExperts();
   }
 
-  selectExpertCard(expert: any) {
+  selectExpertCard(expert: ApiExpert) {
     // Map API expert to store Expert model
     const storeExpert: Expert = {
       id: expert.id,

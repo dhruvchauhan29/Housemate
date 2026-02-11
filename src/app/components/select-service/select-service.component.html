@@ -144,7 +144,7 @@
           
           <div class="expert-right">
             <div class="expert-name-row">
-              <h3 class="expert-name">{{ expert.fullName }}</h3>
+              <h3 class="expert-name">{{ expert.fullName || 'Unknown Expert' }}</h3>
               <mat-icon *ngIf="expert.verified" class="verified-icon">verified</mat-icon>
             </div>
 
