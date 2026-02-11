@@ -1,0 +1,138 @@
+<div class="take-action-modal">
+  <div class="modal-header">
+    <h2 class="modal-title">TAKE ACTION</h2>
+    <button mat-icon-button (click)="close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="modal-content">
+    <!-- Service Type & Earnings -->
+    <div class="booking-summary-grid">
+      <div class="summary-section">
+        <h3 class="section-title">Service Type</h3>
+        <div class="service-display">
+          <div class="service-icon-wrapper">
+            <mat-icon class="service-icon">{{ getServiceIcon(booking.serviceName) }}</mat-icon>
+          </div>
+          <span class="service-name">{{ booking.serviceName }}</span>
+        </div>
+      </div>
+
+      <div class="summary-section earnings-section">
+        <h3 class="section-title">Earnings From This Booking</h3>
+        <div class="earnings-display">
+          <div class="gift-icon">
+            <mat-icon>card_giftcard</mat-icon>
+          </div>
+          <div class="earnings-amount">₹{{ booking.totalAmount }}.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Details -->
+    <div class="details-section">
+      <div class="details-card">
+        <div class="card-icon">
+          <mat-icon>event</mat-icon>
+        </div>
+        <h3 class="card-title">Schedule Details</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Frequency:</span>
+            <span class="detail-value">Once</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Start Date:</span>
+            <span class="detail-value">{{ booking.date }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Time Slot:</span>
+            <span class="detail-value">{{ booking.timeSlot }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Duration per session:</span>
+            <span class="detail-value">{{ booking.duration }} hours</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Details -->
+      <div class="details-card">
+        <div class="card-icon">
+          <mat-icon>person</mat-icon>
+        </div>
+        <h3 class="card-title">Customer Name</h3>
+        <p class="customer-name">John Doe</p>
+      </div>
+
+      <!-- Service Address -->
+      <div class="details-card">
+        <div class="card-icon">
+          <mat-icon>location_on</mat-icon>
+        </div>
+        <h3 class="card-title">Service Address</h3>
+        <p class="service-address">{{ booking.address }}</p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="errorMessage">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Reject Form -->
+    <div class="reject-form" *ngIf="showRejectForm">
+      <form [formGroup]="rejectForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Rejection Reason</mat-label>
+          <mat-select formControlName="reason">
+            <mat-option *ngFor="let reason of rejectionReasons" [value]="reason">
+              {{ reason }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="rejectForm.get('reason')?.hasError('required')">
+            Please select a reason
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Additional Notes (Optional)</mat-label>
+          <textarea matInput formControlName="notes" rows="3" 
+                    placeholder="Provide any additional information..."></textarea>
+        </mat-form-field>
+      </form>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons" *ngIf="!showRejectForm">
+      <button mat-stroked-button class="reject-button" 
+              (click)="showRejectConfirmation()"
+              [disabled]="processing">
+        REJECT BOOKING
+      </button>
+      <button mat-raised-button color="primary" class="accept-button" 
+              (click)="acceptBooking()"
+              [disabled]="processing">
+        <span *ngIf="!processing">ACCEPT BOOKING</span>
+        <span *ngIf="processing">ACCEPTING...</span>
+      </button>
+    </div>
+
+    <!-- Reject Confirmation Buttons -->
+    <div class="action-buttons" *ngIf="showRejectForm">
+      <button mat-stroked-button class="cancel-button" 
+              (click)="cancelReject()"
+              [disabled]="processing">
+        CANCEL
+      </button>
+      <button mat-raised-button color="warn" class="confirm-reject-button" 
+              (click)="rejectBooking()"
+              [disabled]="processing || rejectForm.invalid">
+        <span *ngIf="!processing">CONFIRM REJECT</span>
+        <span *ngIf="processing">REJECTING...</span>
+      </button>
+    </div>
+  </div>
+</div>

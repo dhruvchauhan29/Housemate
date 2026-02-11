@@ -60,23 +60,23 @@
         </div>
         
         <!-- Pending Requests -->
-        <div class="pending-section" *ngIf="pendingJobs.length > 0">
+        <div class="pending-section" *ngIf="pendingBookings.length > 0">
           <h3>Pending Requests</h3>
           <div class="pending-cards">
-            <mat-card class="pending-card" *ngFor="let job of pendingJobs">
+            <mat-card class="pending-card" *ngFor="let booking of pendingBookings">
               <mat-card-content>
                 <div class="pending-info">
-                  <strong>{{ job.date }}</strong>
+                  <strong>{{ formatDate(booking.date) }}</strong>
                   <div class="detail-row">
                     <mat-icon>access_time</mat-icon>
-                    <span>{{ job.timeSlot }}</span>
+                    <span>{{ booking.timeSlot }}</span>
                   </div>
                   <div class="detail-row">
                     <mat-icon>location_on</mat-icon>
-                    <span>{{ job.address }}</span>
+                    <span>{{ booking.address }}</span>
                   </div>
                 </div>
-                <button mat-raised-button color="primary" (click)="takeAction(job)">
+                <button mat-raised-button color="primary" (click)="takeAction(booking)">
                   Take Action
                   <mat-icon>arrow_forward</mat-icon>
                 </button>
@@ -132,45 +132,80 @@
               <mat-icon>filter_list</mat-icon>
             </button>
             <mat-form-field appearance="outline" class="status-filter-field">
-              <mat-select placeholder="Filter by status" [(ngModel)]="selectedStatus">
+              <mat-select placeholder="Filter by status" [(ngModel)]="selectedStatus" (selectionChange)="onStatusFilterChange()">
                 <mat-option value="all">All</mat-option>
                 <mat-option value="pending">Pending</mat-option>
-                <mat-option value="accepted">Accepted</mat-option>
+                <mat-option value="upcoming">Upcoming</mat-option>
+                <mat-option value="completed">Completed</mat-option>
                 <mat-option value="rejected">Rejected</mat-option>
+                <mat-option value="cancelled">Cancelled</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
         </div>
 
-        <div class="appointments-list">
-          <mat-card class="appointment-card" *ngFor="let job of allJobs">
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Loading appointments...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" *ngIf="error && !loading">
+          <mat-icon>error_outline</mat-icon>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="retryLoad()">
+            <mat-icon>refresh</mat-icon>
+            Retry
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!loading && !error && filteredBookings.length === 0">
+          <mat-icon>event_busy</mat-icon>
+          <p>No appointments found</p>
+          <span class="empty-subtitle">Your bookings will appear here</span>
+        </div>
+
+        <!-- Appointments List -->
+        <div class="appointments-list" *ngIf="!loading && !error && filteredBookings.length > 0">
+          <mat-card class="appointment-card" *ngFor="let booking of filteredBookings">
             <mat-card-content>
               <div class="appointment-layout">
-                <!-- TODO: Replace with Service Icon from Figma -->
-                <mat-icon class="appointment-icon">{{ getServiceIcon(job.serviceType) }}</mat-icon>
+                <mat-icon class="appointment-icon">{{ getServiceIcon(booking.serviceName) }}</mat-icon>
                 <div class="appointment-details">
                   <div class="appointment-header">
-                    <div class="appointment-earning">₹{{ job.earnings }}</div>
+                    <div class="appointment-earning">₹{{ booking.totalAmount }}</div>
                     <span class="earning-label">Earning</span>
                   </div>
-                  <div class="appointment-date">{{ job.date }}</div>
+                  <div class="appointment-date">{{ formatDate(booking.date) }}</div>
                   <div class="detail-row">
                     <mat-icon>access_time</mat-icon>
-                    <span>{{ job.timeSlot }}</span>
+                    <span>{{ booking.timeSlot }}</span>
                   </div>
                   <div class="detail-row">
                     <mat-icon>location_on</mat-icon>
-                    <span>{{ job.address }}</span>
+                    <span>{{ booking.address }}</span>
                   </div>
-                  <mat-chip class="appointment-status" [ngClass]="'status-' + job.status.toLowerCase()">
-                    <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
-                    <span>{{ job.status }}</span>
+                  <mat-chip class="appointment-status" [ngClass]="getStatusClass(booking.status)">
+                    <mat-icon>{{ getStatusIcon(booking.status) }}</mat-icon>
+                    <span>{{ booking.status | titlecase }}</span>
                   </mat-chip>
                 </div>
-                <button mat-stroked-button color="primary" (click)="viewDetails(job)">
-                  View Details
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
+                <div class="appointment-actions">
+                  <button mat-raised-button color="primary" 
+                          *ngIf="canTakeAction(booking)"
+                          (click)="takeAction(booking)">
+                    Take Action
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                  <button mat-stroked-button color="primary" 
+                          *ngIf="!canTakeAction(booking)"
+                          (click)="viewDetails(booking)">
+                    View Details
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
               </div>
             </mat-card-content>
           </mat-card>
