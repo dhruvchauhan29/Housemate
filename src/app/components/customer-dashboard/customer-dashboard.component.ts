@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,7 +22,7 @@ interface Booking {
 
 @Component({
   selector: 'app-customer-dashboard',
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule, MatExpansionModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule, MatMenuModule, MatCardModule, MatExpansionModule],
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.scss'
 })
