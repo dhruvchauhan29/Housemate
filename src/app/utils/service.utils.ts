@@ -7,6 +7,8 @@ export class ServiceUtils {
   /**
    * Available services in the system
    * TODO: Move to backend API or configuration service
+   * TODO: Differentiate pricing per service type when real pricing data becomes available
+   *       Current uniform pricing (150/hr) is a placeholder
    */
   static readonly AVAILABLE_SERVICES: Service[] = [
     {
