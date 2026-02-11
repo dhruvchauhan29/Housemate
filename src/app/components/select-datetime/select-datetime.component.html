@@ -102,6 +102,23 @@
             {{ getTimeSlotDisplay(slot) }}
           </button>
         </div>
+
+        <!-- Duration Selection -->
+        <div class="duration-header">
+          <mat-icon class="clock-icon">access_time</mat-icon>
+          <span>Service Duration</span>
+        </div>
+        
+        <div class="duration-grid">
+          <button 
+            *ngFor="let duration of durationOptions" 
+            mat-stroked-button 
+            class="duration-button"
+            [class.selected]="selectedDuration === duration"
+            (click)="onDurationSelect(duration)">
+            {{ duration }} hour{{ duration > 1 ? 's' : '' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

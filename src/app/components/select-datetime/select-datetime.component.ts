@@ -46,6 +46,8 @@ export class SelectDatetimeComponent implements OnInit {
     { id: '5', startTime: '6:00 PM', endTime: '9:00 PM', available: true }
   ];
 
+  durationOptions: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
+
   selectedDate: string | undefined;
   selectedFrequency: 'Once' | 'Daily' | 'Weekly' | 'Monthly' | undefined;
   selectedTimeSlotId: string | undefined;
@@ -141,6 +143,10 @@ export class SelectDatetimeComponent implements OnInit {
     if (timeSlot.available) {
       this.store.dispatch(selectTimeSlot({ timeSlot }));
     }
+  }
+
+  onDurationSelect(duration: number) {
+    this.store.dispatch(selectDuration({ duration }));
   }
 
   isTimeSlotSelected(timeSlotId: string): boolean {
