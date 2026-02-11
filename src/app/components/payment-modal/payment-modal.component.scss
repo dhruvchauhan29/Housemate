@@ -1,23 +1,36 @@
+// Color variables
+$background-light: #f8f9fa;
+$primary-color: #0C5C92;
+$primary-color-hover: #094872;
+$text-primary: #333;
+$text-secondary: #666;
+$border-color: #ddd;
+$border-color-light: #e0e0e0;
+$error-color: #d32f2f;
+$info-bg: #e3f2fd;
+$info-border: #2196f3;
+$info-text: #1565c0;
+
 .payment-modal {
   .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid $border-color-light;
     margin: -24px -24px 0;
-    background-color: #f8f9fa;
+    background-color: $background-light;
     
     h2 {
       margin: 0;
       font-size: 18px;
       font-weight: 600;
-      color: #333;
+      color: $text-primary;
     }
 
     .close-button {
       mat-icon {
-        color: #666;
+        color: $text-secondary;
       }
     }
   }
@@ -35,7 +48,7 @@
   // Left Column: Price Summary
   .price-summary-section {
     flex: 0 0 280px;
-    background-color: #f8f9fa;
+    background-color: $background-light;
     padding: 32px 24px;
     display: flex;
     flex-direction: column;
@@ -49,13 +62,13 @@
 
       .label {
         font-size: 14px;
-        color: #666;
+        color: $text-secondary;
         font-weight: 400;
       }
 
       .value {
         font-size: 14px;
-        color: #333;
+        color: $text-primary;
         font-weight: 600;
       }
     }
@@ -66,17 +79,17 @@
       align-items: center;
       padding: 20px 0 12px;
       margin-top: auto;
-      border-top: 2px solid #ddd;
+      border-top: 2px solid $border-color;
 
       .label {
         font-size: 16px;
-        color: #333;
+        color: $text-primary;
         font-weight: 700;
       }
 
       .value {
         font-size: 20px;
-        color: #0C5C92;
+        color: $primary-color;
         font-weight: 700;
       }
     }
@@ -91,7 +104,7 @@
     .payment-title {
       font-size: 20px;
       font-weight: 700;
-      color: #333;
+      color: $text-primary;
       margin: 0 0 24px 0;
       letter-spacing: 0.5px;
     }
@@ -101,14 +114,14 @@
       display: flex;
       gap: 0;
       margin-bottom: 32px;
-      border-bottom: 2px solid #e0e0e0;
+      border-bottom: 2px solid $border-color-light;
 
       .tab-button {
         flex: 1;
         padding: 12px 16px;
         border: none;
         background: transparent;
-        color: #666;
+        color: $text-secondary;
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
@@ -118,15 +131,15 @@
         margin-bottom: -2px;
 
         &:hover {
-          color: #0C5C92;
-          background-color: #f5f8fa;
+          color: $primary-color;
+          background-color: $background-light;
         }
 
         &.active {
-          color: #0C5C92;
+          color: $primary-color;
           font-weight: 600;
-          border-bottom-color: #0C5C92;
-          background-color: #f5f8fa;
+          border-bottom-color: $primary-color;
+          background-color: $background-light;
         }
       }
     }
@@ -148,7 +161,7 @@
       .field-label {
         display: block;
         font-size: 13px;
-        color: #666;
+        color: $text-secondary;
         margin-bottom: 8px;
         font-weight: 500;
       }
@@ -156,10 +169,10 @@
       .form-input {
         width: 100%;
         padding: 12px 14px;
-        border: 1px solid #ddd;
+        border: 1px solid $border-color;
         border-radius: 4px;
         font-size: 14px;
-        color: #333;
+        color: $text-primary;
         transition: border-color 0.3s ease;
         box-sizing: border-box;
 
@@ -169,7 +182,7 @@
 
         &:focus {
           outline: none;
-          border-color: #0C5C92;
+          border-color: $primary-color;
           box-shadow: 0 0 0 2px rgba(12, 92, 146, 0.1);
         }
 
@@ -181,7 +194,7 @@
 
       .error-message {
         font-size: 12px;
-        color: #d32f2f;
+        color: $error-color;
         margin-top: 4px;
       }
     }
@@ -197,12 +210,12 @@
       align-items: center;
       gap: 8px;
       padding: 12px 16px;
-      background-color: #f5f8fa;
+      background-color: $background-light;
       border-radius: 4px;
       margin: 24px 0;
 
       .lock-icon {
-        color: #0C5C92;
+        color: $primary-color;
         font-size: 18px;
         width: 18px;
         height: 18px;
@@ -210,14 +223,14 @@
 
       span {
         font-size: 13px;
-        color: #666;
+        color: $text-secondary;
       }
     }
 
     .pay-button {
       width: 100%;
       padding: 14px 24px;
-      background-color: #0C5C92;
+      background-color: $primary-color;
       color: white;
       border: none;
       border-radius: 6px;
@@ -228,7 +241,7 @@
       margin-top: 8px;
 
       &:hover:not(:disabled) {
-        background-color: #094872;
+        background-color: $primary-color-hover;
         box-shadow: 0 4px 12px rgba(12, 92, 146, 0.3);
       }
 
@@ -246,7 +259,7 @@
     // UPI Form
     .upi-form {
       .hint-text {
-        color: #666;
+        color: $text-secondary;
         font-size: 13px;
         margin: 12px 0 24px 0;
       }
@@ -259,13 +272,13 @@
         align-items: flex-start;
         gap: 12px;
         padding: 16px;
-        background-color: #e3f2fd;
+        background-color: $info-bg;
         border-radius: 4px;
-        border-left: 4px solid #2196f3;
+        border-left: 4px solid $info-border;
         margin-bottom: 24px;
 
         mat-icon {
-          color: #2196f3;
+          color: $info-border;
           font-size: 20px;
           width: 20px;
           height: 20px;
@@ -274,7 +287,7 @@
 
         p {
           margin: 0;
-          color: #1565c0;
+          color: $info-text;
           font-size: 14px;
           line-height: 1.5;
         }
@@ -302,7 +315,7 @@
 
     .price-summary-section {
       flex: none;
-      border-bottom: 2px solid #ddd;
+      border-bottom: 2px solid $border-color;
     }
 
     .payment-section {
@@ -345,10 +358,10 @@
         .tab-button {
           width: 100%;
           text-align: left;
-          border-bottom: 1px solid #e0e0e0;
+          border-bottom: 1px solid $border-color-light;
 
           &.active {
-            border-bottom-color: #0C5C92;
+            border-bottom-color: $primary-color;
           }
         }
       }
