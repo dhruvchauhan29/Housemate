@@ -49,6 +49,13 @@ export class PaymentModalComponent implements OnInit {
     });
   }
 
+  private paymentAttemptId: string | null = null;
+
+  ngOnInit(): void {
+    // Generate unique payment attempt ID for idempotency
+    this.paymentAttemptId = 'PA' + Date.now() + Math.random().toString(36).substring(2, 9).toUpperCase();
+  }
+
   processPayment(): void {
     if (this.processing) return;
 
@@ -67,12 +74,12 @@ export class PaymentModalComponent implements OnInit {
     this.processing = true;
     this.store.dispatch(initiatePayment());
 
-    // Simulate payment processing
+    // Simulate payment processing with idempotency check
     setTimeout(() => {
       const isSuccess = Math.random() > 0.2; // 80% success rate
 
       if (isSuccess) {
-        const transactionId = 'TXN' + Date.now() + Math.random().toString(36).substring(2, 9).toUpperCase();
+        const transactionId = this.paymentAttemptId + '-' + Date.now();
         this.store.dispatch(paymentSuccess({ transactionId }));
         this.dialogRef.close();
         this.dialog.open(PaymentSuccessComponent, {
@@ -93,14 +100,15 @@ export class PaymentModalComponent implements OnInit {
 
         errorDialogRef.afterClosed().subscribe(result => {
           if (result === 'retry') {
-            // Reopen payment modal
+            // Reopen payment modal with new attempt ID
             this.dialog.open(PaymentModalComponent, {
               width: '680px',
               data: { 
                 totalAmount: this.data.totalAmount,
                 baseAmount: this.data.baseAmount,
                 gst: this.data.gst
-              }
+              },
+              disableClose: true
             });
           }
         });

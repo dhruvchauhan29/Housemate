@@ -146,6 +146,11 @@ export class SelectExpertComponent implements OnInit {
     return Array(5).fill(0).map((_, i) => i < Math.floor(rating) ? 1 : 0);
   }
 
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.filteredExperts = this.mockExperts;
+  }
+
   nextStep(): void {
     this.router.navigate(['/book-service/select-datetime']);
   }
