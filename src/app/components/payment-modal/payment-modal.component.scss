@@ -3,15 +3,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
+    padding: 20px 24px;
     border-bottom: 1px solid #e0e0e0;
     margin: -24px -24px 0;
+    background-color: #f8f9fa;
     
     h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 600;
-      color: #1a237e;
+      color: #333;
     }
 
     .close-button {
@@ -22,186 +23,263 @@
   }
 
   ::ng-deep mat-dialog-content {
-    padding: 24px !important;
-    min-height: 400px;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
-  .total-amount {
+  .modal-content-wrapper {
+    display: flex;
+    min-height: 520px;
+  }
+
+  // Left Column: Price Summary
+  .price-summary-section {
+    flex: 0 0 280px;
+    background-color: #f8f9fa;
+    padding: 32px 24px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 24px;
-    margin: 16px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
-    color: white;
-    animation: fadeInUp 0.5s ease;
+    gap: 20px;
 
-    .label {
-      font-size: 14px;
-      opacity: 0.9;
-      margin-bottom: 8px;
+    .price-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+
+      .label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 400;
+      }
+
+      .value {
+        font-size: 14px;
+        color: #333;
+        font-weight: 600;
+      }
     }
 
-    .amount {
-      font-size: 36px;
-      font-weight: 700;
+    .total-amount-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 12px;
+      margin-top: auto;
+      border-top: 2px solid #ddd;
+
+      .label {
+        font-size: 16px;
+        color: #333;
+        font-weight: 700;
+      }
+
+      .value {
+        font-size: 20px;
+        color: #0C5C92;
+        font-weight: 700;
+      }
     }
   }
 
-  .payment-methods {
-    margin: 24px 0;
+  // Right Column: Payment Form
+  .payment-section {
+    flex: 1;
+    padding: 32px 32px 40px;
+    background-color: #fff;
 
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
+    .payment-title {
+      font-size: 20px;
+      font-weight: 700;
       color: #333;
-      margin-bottom: 16px;
+      margin: 0 0 24px 0;
+      letter-spacing: 0.5px;
     }
 
-    .payment-method-group {
+    // Payment Tabs
+    .payment-tabs {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      gap: 0;
+      margin-bottom: 32px;
+      border-bottom: 2px solid #e0e0e0;
 
-      ::ng-deep .mat-radio-button {
-        padding: 16px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
+      .tab-button {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        background: transparent;
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
 
         &:hover {
-          border-color: #667eea;
-          background-color: #f5f5ff;
+          color: #0C5C92;
+          background-color: #f5f8fa;
         }
 
-        &.mat-radio-checked {
-          border-color: #667eea;
-          background-color: #f5f5ff;
-        }
-      }
-
-      .method-content {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-
-        mat-icon {
-          color: #667eea;
-        }
-
-        span {
-          font-size: 16px;
-          font-weight: 500;
+        &.active {
+          color: #0C5C92;
+          font-weight: 600;
+          border-bottom-color: #0C5C92;
+          background-color: #f5f8fa;
         }
       }
     }
-  }
 
-  .card-form {
-    animation: fadeIn 0.3s ease;
+    // Form Styles
+    .card-form,
+    .upi-form,
+    .netbanking-form {
+      animation: fadeIn 0.3s ease;
+    }
 
-    .full-width {
-      width: 100%;
-      margin-bottom: 16px;
+    .form-field {
+      margin-bottom: 20px;
+
+      &.half-width {
+        flex: 1;
+      }
+
+      .field-label {
+        display: block;
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: #999;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #0C5C92;
+          box-shadow: 0 0 0 2px rgba(12, 92, 146, 0.1);
+        }
+
+        &:disabled {
+          background-color: #f5f5f5;
+          cursor: not-allowed;
+        }
+      }
+
+      .error-message {
+        font-size: 12px;
+        color: #d32f2f;
+        margin-top: 4px;
+      }
     }
 
     .form-row {
       display: flex;
       gap: 16px;
-
-      .expiry-field {
-        flex: 1;
-      }
-
-      .cvv-field {
-        flex: 1;
-      }
-    }
-  }
-
-  .upi-form {
-    animation: fadeIn 0.3s ease;
-    padding: 16px 0;
-
-    .full-width {
-      width: 100%;
-    }
-
-    .hint-text {
-      color: #666;
-      font-size: 14px;
-      margin-top: 8px;
-    }
-  }
-
-  .netbanking-info {
-    animation: fadeIn 0.3s ease;
-    padding: 24px 0;
-
-    .info-box {
-      display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 16px;
-      background-color: #e3f2fd;
-      border-radius: 8px;
-      border-left: 4px solid #2196f3;
+    }
 
-      mat-icon {
-        color: #2196f3;
-        margin-top: 2px;
+    .security-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background-color: #f5f8fa;
+      border-radius: 4px;
+      margin: 24px 0;
+
+      .lock-icon {
+        color: #0C5C92;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
 
-      p {
-        margin: 0;
-        color: #1565c0;
-        line-height: 1.5;
+      span {
+        font-size: 13px;
+        color: #666;
       }
     }
-  }
-
-  ::ng-deep mat-dialog-actions {
-    padding: 16px 24px;
-    margin: 0 -24px -24px;
-    border-top: 1px solid #e0e0e0;
 
     .pay-button {
       width: 100%;
-      height: 56px;
-      font-size: 18px;
+      padding: 14px 24px;
+      background-color: #0C5C92;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
       font-weight: 600;
-      border-radius: 8px;
+      cursor: pointer;
       transition: all 0.3s ease;
+      margin-top: 8px;
 
-      mat-icon {
-        margin-right: 8px;
+      &:hover:not(:disabled) {
+        background-color: #094872;
+        box-shadow: 0 4px 12px rgba(12, 92, 146, 0.3);
       }
 
-      .spinner {
-        animation: spin 1s linear infinite;
-      }
-
-      &:not(:disabled):hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      &:active:not(:disabled) {
+        transform: translateY(1px);
       }
 
       &:disabled {
+        background-color: #b0bec5;
+        cursor: not-allowed;
         opacity: 0.7;
       }
     }
-  }
-}
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    // UPI Form
+    .upi-form {
+      .hint-text {
+        color: #666;
+        font-size: 13px;
+        margin: 12px 0 24px 0;
+      }
+    }
+
+    // Net Banking Form
+    .netbanking-form {
+      .info-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+        background-color: #e3f2fd;
+        border-radius: 4px;
+        border-left: 4px solid #2196f3;
+        margin-bottom: 24px;
+
+        mat-icon {
+          color: #2196f3;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          margin-top: 2px;
+        }
+
+        p {
+          margin: 0;
+          color: #1565c0;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+      }
+    }
   }
 }
 
@@ -214,26 +292,71 @@
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+// Responsive Design
+@media (max-width: 768px) {
+  .payment-modal {
+    .modal-content-wrapper {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .price-summary-section {
+      flex: none;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .payment-section {
+      padding: 24px 20px;
+
+      .payment-tabs {
+        .tab-button {
+          font-size: 12px;
+          padding: 10px 8px;
+        }
+      }
+    }
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .payment-modal {
-    .total-amount {
-      .amount {
-        font-size: 28px;
+    .modal-header {
+      padding: 16px 20px;
+
+      h2 {
+        font-size: 16px;
       }
     }
 
-    .card-form .form-row {
-      flex-direction: column;
-      gap: 0;
+    .price-summary-section {
+      padding: 24px 20px;
+    }
+
+    .payment-section {
+      padding: 20px 16px;
+
+      .payment-title {
+        font-size: 18px;
+      }
+
+      .payment-tabs {
+        flex-direction: column;
+
+        .tab-button {
+          width: 100%;
+          text-align: left;
+          border-bottom: 1px solid #e0e0e0;
+
+          &.active {
+            border-bottom-color: #0C5C92;
+          }
+        }
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
     }
   }
 }
