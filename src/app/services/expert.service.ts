@@ -70,12 +70,11 @@ export class ExpertService {
       map(experts => {
         let filtered = experts;
         
-        // Apply search query filter (name, languages)
+        // Apply search query filter (name only)
         if (params.q) {
           const query = params.q.toLowerCase();
           filtered = filtered.filter(expert => 
-            expert.fullName.toLowerCase().includes(query) ||
-            (expert.languages && expert.languages.some(lang => lang.toLowerCase().includes(query)))
+            expert.fullName.toLowerCase().includes(query)
           );
         }
         

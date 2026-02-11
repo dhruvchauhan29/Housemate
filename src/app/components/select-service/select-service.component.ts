@@ -108,6 +108,7 @@ export class SelectServiceComponent implements OnInit {
   minRating = 0;
   minPrice = 0;
   maxPrice = 200;
+  readonly DEFAULT_MAX_PRICE = 200;
   verifiedOnly = false;
   selectedLanguage = '';
   sortBy = '';
@@ -146,6 +147,9 @@ export class SelectServiceComponent implements OnInit {
       this.currentPage = 1;
       this.loadExperts();
     });
+    
+    // Load all experts on initialization (no filter)
+    this.loadExperts();
   }
 
   selectServiceCard(service: Service) {
@@ -174,24 +178,19 @@ export class SelectServiceComponent implements OnInit {
   }
 
   loadExperts() {
-    if (!this.selectedServiceId) {
-      this.filteredExperts = [];
-      return;
-    }
-    
     this.isLoadingExperts = true;
     this.expertError = null;
     
-    // Get service name for filtering
+    // Get service name for filtering (if service is selected)
     const selectedService = this.services.find(s => s.id === this.selectedServiceId);
     const serviceName = selectedService?.name || '';
     
     const params: ExpertSearchParams = {
-      serviceCategory: serviceName,
+      serviceCategory: serviceName ? serviceName : undefined, // Allow empty to get all experts
       q: this.searchQuery || undefined,
       minRating: this.minRating > 0 ? this.minRating : undefined,
       minPrice: this.minPrice > 0 ? this.minPrice : undefined,
-      maxPrice: this.maxPrice < 200 ? this.maxPrice : undefined,
+      maxPrice: this.maxPrice < this.DEFAULT_MAX_PRICE ? this.maxPrice : undefined,
       verified: this.verifiedOnly ? true : undefined,
       language: this.selectedLanguage || undefined,
       sort: (this.sortBy as any) || undefined,
@@ -232,7 +231,7 @@ export class SelectServiceComponent implements OnInit {
     this.searchQuery = '';
     this.minRating = 0;
     this.minPrice = 0;
-    this.maxPrice = 200;
+    this.maxPrice = this.DEFAULT_MAX_PRICE;
     this.verifiedOnly = false;
     this.selectedLanguage = '';
     this.sortBy = '';

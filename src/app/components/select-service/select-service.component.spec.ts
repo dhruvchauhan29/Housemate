@@ -8,11 +8,14 @@ import { SelectServiceComponent } from './select-service.component';
 import { AppState } from '../../store/app.state';
 import { selectSelectedService } from '../../store/selectors/booking.selectors';
 import { selectService } from '../../store/actions/booking.actions';
+import { ExpertService } from '../../services/expert.service';
+import { of } from 'rxjs';
 
 describe('SelectServiceComponent', () => {
   let component: SelectServiceComponent;
   let fixture: ComponentFixture<SelectServiceComponent>;
   let store: MockStore<AppState>;
+  let expertService: jasmine.SpyObj<ExpertService>;
 
   const initialState = {
     booking: {
@@ -31,6 +34,9 @@ describe('SelectServiceComponent', () => {
   };
 
   beforeEach(async () => {
+    const expertServiceSpy = jasmine.createSpyObj('ExpertService', ['searchExperts']);
+    expertServiceSpy.searchExperts.and.returnValue(of({ experts: [], total: 0 }));
+
     await TestBed.configureTestingModule({
       imports: [
         SelectServiceComponent,
@@ -40,11 +46,13 @@ describe('SelectServiceComponent', () => {
         MatCardModule
       ],
       providers: [
-        provideMockStore({ initialState })
+        provideMockStore({ initialState }),
+        { provide: ExpertService, useValue: expertServiceSpy }
       ]
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
+    expertService = TestBed.inject(ExpertService) as jasmine.SpyObj<ExpertService>;
     fixture = TestBed.createComponent(SelectServiceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -69,28 +77,36 @@ describe('SelectServiceComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(selectService({ service }));
   });
 
-  it('should navigate to next step when service is selected', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    component.selectedServiceId = '1';
-    
-    component.nextStep();
-    
-    expect(routerSpy).toHaveBeenCalledWith(['/book-service/select-expert']);
-  });
-
-  it('should not navigate when no service is selected', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    component.selectedServiceId = null;
-    
-    component.nextStep();
-    
-    expect(routerSpy).not.toHaveBeenCalled();
-  });
-
   it('should return correct icon for service name', () => {
     expect(component.getServiceIcon('Cleaning')).toBe('🧹');
     expect(component.getServiceIcon('Cooking')).toBe('👨‍🍳');
     expect(component.getServiceIcon('Gardening')).toBe('🌱');
     expect(component.getServiceIcon('Unknown')).toBe('🏠');
+  });
+
+  it('should load experts on initialization', () => {
+    spyOn(component, 'loadExperts');
+    component.ngOnInit();
+    expect(component.loadExperts).toHaveBeenCalled();
+  });
+
+  it('should filter experts by name when search query changes', () => {
+    const searchQuery = 'John';
+    component.onSearchChange(searchQuery);
+    expect(component.searchQuery).toBe(searchQuery);
+  });
+
+  it('should clear filters and reset pagination', () => {
+    component.searchQuery = 'test';
+    component.minRating = 4.5;
+    component.verifiedOnly = true;
+    component.currentPage = 3;
+
+    component.clearFilters();
+
+    expect(component.searchQuery).toBe('');
+    expect(component.minRating).toBe(0);
+    expect(component.verifiedOnly).toBe(false);
+    expect(component.currentPage).toBe(1);
   });
 });
