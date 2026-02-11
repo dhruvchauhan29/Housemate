@@ -50,7 +50,8 @@ export class BookingSummaryComponent implements OnInit {
   // Mock available coupons
   private availableCoupons = {
     'SAVE10': { id: '1', code: 'SAVE10', discount: 10, discountType: 'PERCENTAGE' as const, valid: true },
-    'FLAT50': { id: '2', code: 'FLAT50', discount: 50, discountType: 'FIXED' as const, valid: true }
+    'FLAT50': { id: '2', code: 'FLAT50', discount: 50, discountType: 'FIXED' as const, valid: true },
+    'NEW50': { id: '3', code: 'NEW50', discount: 50, discountType: 'PERCENTAGE' as const, valid: true }
   };
 
   ngOnInit() {
