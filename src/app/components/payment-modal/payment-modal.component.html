@@ -1,123 +1,143 @@
 <div class="payment-modal">
-  <div class="modal-header">
-    <h2 mat-dialog-title>Payment</h2>
-    <button mat-icon-button (click)="close()" class="close-button">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-
   <mat-dialog-content>
-    <!-- Image placeholder: Payment illustration from Figma -->
-    
-    <div class="total-amount">
-      <span class="label">Total Amount</span>
-      <span class="amount">₹{{ data.totalAmount | number:'1.2-2' }}</span>
-    </div>
-
-    <div class="payment-methods">
-      <h3>Select Payment Method</h3>
-      <mat-radio-group [(ngModel)]="paymentMethod" class="payment-method-group">
-        <mat-radio-button value="card" class="payment-method-option">
-          <div class="method-content">
-            <mat-icon>credit_card</mat-icon>
-            <span>Credit/Debit Card</span>
+    <div class="modal-content-wrapper">
+      <!-- Left Column: Price Summary -->
+      <div class="price-summary-column">
+        <h2 class="section-title">Price Summary</h2>
+        
+        <div class="price-details">
+          <div class="price-row">
+            <span class="label">Book Amount</span>
+            <span class="value">₹{{ data.bookAmount | number:'1.2-2' }}</span>
           </div>
-        </mat-radio-button>
-        <mat-radio-button value="upi" class="payment-method-option">
-          <div class="method-content">
-            <mat-icon>payment</mat-icon>
-            <span>UPI</span>
+          
+          <div class="price-row">
+            <span class="label">Subtotal</span>
+            <span class="value">₹{{ data.subtotal | number:'1.2-2' }}</span>
           </div>
-        </mat-radio-button>
-        <mat-radio-button value="netbanking" class="payment-method-option">
-          <div class="method-content">
-            <mat-icon>account_balance</mat-icon>
-            <span>Net Banking</span>
+          
+          <div class="price-row">
+            <span class="label">GST (18%)</span>
+            <span class="value">₹{{ data.gst | number:'1.2-2' }}</span>
           </div>
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-
-    <!-- Card Payment Form -->
-    <form *ngIf="paymentMethod === 'card'" [formGroup]="cardPaymentForm" class="card-form">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Card Number</mat-label>
-        <input matInput formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16">
-        <mat-icon matPrefix>credit_card</mat-icon>
-        <mat-error *ngIf="cardPaymentForm.get('cardNumber')?.hasError('required')">
-          Card number is required
-        </mat-error>
-        <mat-error *ngIf="cardPaymentForm.get('cardNumber')?.hasError('pattern')">
-          Enter 16 digits
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Card Holder Name</mat-label>
-        <input matInput formControlName="cardName" placeholder="John Doe">
-        <mat-icon matPrefix>person</mat-icon>
-        <mat-error *ngIf="cardPaymentForm.get('cardName')?.hasError('required')">
-          Name is required
-        </mat-error>
-      </mat-form-field>
-
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="expiry-field">
-          <mat-label>Expiry Date</mat-label>
-          <input matInput formControlName="expiryDate" placeholder="MM/YY" maxlength="5">
-          <mat-icon matPrefix>calendar_today</mat-icon>
-          <mat-error *ngIf="cardPaymentForm.get('expiryDate')?.hasError('required')">
-            Required
-          </mat-error>
-          <mat-error *ngIf="cardPaymentForm.get('expiryDate')?.hasError('pattern')">
-            MM/YY
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="cvv-field">
-          <mat-label>CVV</mat-label>
-          <input matInput formControlName="cvv" placeholder="123" type="password" maxlength="3">
-          <mat-icon matPrefix>lock</mat-icon>
-          <mat-error *ngIf="cardPaymentForm.get('cvv')?.hasError('required')">
-            Required
-          </mat-error>
-          <mat-error *ngIf="cardPaymentForm.get('cvv')?.hasError('pattern')">
-            3 digits
-          </mat-error>
-        </mat-form-field>
+          
+          <div class="price-row total">
+            <span class="label">Total Amount</span>
+            <span class="value total-amount">₹{{ data.totalAmount | number:'1.2-2' }}</span>
+          </div>
+        </div>
       </div>
-    </form>
 
-    <!-- UPI Payment -->
-    <div *ngIf="paymentMethod === 'upi'" class="upi-form">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>UPI ID</mat-label>
-        <input matInput [(ngModel)]="upiId" placeholder="username@upi">
-        <mat-icon matPrefix>account_balance_wallet</mat-icon>
-      </mat-form-field>
-      <p class="hint-text">Enter your UPI ID to complete the payment</p>
-    </div>
+      <!-- Right Column: Payment Form -->
+      <div class="payment-form-column">
+        <div class="payment-header">
+          <h2 class="payment-title">PAYMENT</h2>
+          <button mat-icon-button (click)="close()" class="close-button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
 
-    <!-- Net Banking -->
-    <div *ngIf="paymentMethod === 'netbanking'" class="netbanking-info">
-      <div class="info-box">
-        <mat-icon>info</mat-icon>
-        <p>You will be redirected to your bank's website to complete the payment securely.</p>
+        <!-- Payment Method Tabs -->
+        <div class="payment-tabs">
+          <button 
+            class="tab-button" 
+            [class.active]="paymentMethod === 'card'"
+            (click)="paymentMethod = 'card'">
+            Card Payment
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="paymentMethod === 'upi'"
+            (click)="paymentMethod = 'upi'">
+            UPI Payment
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="paymentMethod === 'netbanking'"
+            (click)="paymentMethod = 'netbanking'">
+            Net Banking
+          </button>
+        </div>
+
+        <!-- Card Payment Form -->
+        <form *ngIf="paymentMethod === 'card'" [formGroup]="cardPaymentForm" class="card-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Card Number</mat-label>
+            <input matInput formControlName="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16">
+            <mat-error *ngIf="cardPaymentForm.get('cardNumber')?.hasError('required')">
+              Card number is required
+            </mat-error>
+            <mat-error *ngIf="cardPaymentForm.get('cardNumber')?.hasError('pattern')">
+              Enter 16 digits
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cardholder Name</mat-label>
+            <input matInput formControlName="cardName" placeholder="John Doe">
+            <mat-error *ngIf="cardPaymentForm.get('cardName')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="expiry-field">
+              <mat-label>Expiry Date</mat-label>
+              <input matInput formControlName="expiryDate" placeholder="MM/YY" maxlength="5">
+              <mat-error *ngIf="cardPaymentForm.get('expiryDate')?.hasError('required')">
+                Required
+              </mat-error>
+              <mat-error *ngIf="cardPaymentForm.get('expiryDate')?.hasError('pattern')">
+                MM/YY
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="cvv-field">
+              <mat-label>CVV</mat-label>
+              <input matInput formControlName="cvv" placeholder="123" type="password" maxlength="3">
+              <mat-error *ngIf="cardPaymentForm.get('cvv')?.hasError('required')">
+                Required
+              </mat-error>
+              <mat-error *ngIf="cardPaymentForm.get('cvv')?.hasError('pattern')">
+                3 digits
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="security-message">
+            <mat-icon>lock</mat-icon>
+            <span>Your card details are encrypted and secure</span>
+          </div>
+        </form>
+
+        <!-- UPI Payment -->
+        <div *ngIf="paymentMethod === 'upi'" class="upi-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>UPI ID</mat-label>
+            <input matInput [(ngModel)]="upiId" placeholder="username@upi">
+          </mat-form-field>
+          <p class="hint-text">Enter your UPI ID to complete the payment</p>
+        </div>
+
+        <!-- Net Banking -->
+        <div *ngIf="paymentMethod === 'netbanking'" class="netbanking-info">
+          <div class="info-box">
+            <mat-icon>info</mat-icon>
+            <p>You will be redirected to your bank's website to complete the payment securely.</p>
+          </div>
+        </div>
+
+        <!-- Payment Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          class="pay-button" 
+          (click)="processPayment()"
+          [disabled]="processing">
+          <span *ngIf="!processing">Pay ₹{{ data.totalAmount | number:'1.2-2' }}</span>
+          <span *ngIf="processing">Processing...</span>
+        </button>
       </div>
     </div>
   </mat-dialog-content>
-
-  <mat-dialog-actions>
-    <button 
-      mat-raised-button 
-      color="primary" 
-      class="pay-button" 
-      (click)="processPayment()"
-      [disabled]="processing">
-      <mat-icon *ngIf="!processing">payment</mat-icon>
-      <mat-icon *ngIf="processing" class="spinner">sync</mat-icon>
-      <span *ngIf="!processing">Pay ₹{{ data.totalAmount | number:'1.2-2' }}</span>
-      <span *ngIf="processing">Processing...</span>
-    </button>
-  </mat-dialog-actions>
 </div>
