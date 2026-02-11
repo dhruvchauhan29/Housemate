@@ -59,6 +59,10 @@ export class ModifyBookingComponent implements OnInit {
   newBaseAmount = 0;
   newGst = 0;
   newDiscount = 0;
+  
+  // Constants
+  private readonly DEFAULT_PRICE_PER_HOUR = 100;
+  private readonly PARTIAL_PAYMENT_RATIO = 0.5; // 50% for partial payments
 
   constructor(
     private route: ActivatedRoute,
@@ -96,8 +100,9 @@ export class ModifyBookingComponent implements OnInit {
         if (booking.paymentStatus === 'paid') {
           this.amountPaid = booking.totalAmount;
         } else if (booking.paymentStatus === 'partial') {
-          // For partial payments, we'll assume half is paid (can be extended with actual partial amount)
-          this.amountPaid = Math.floor(booking.totalAmount / 2);
+          // TODO: Store actual partial payment amount in booking object
+          // For now, using a ratio-based calculation
+          this.amountPaid = Math.floor(booking.totalAmount * this.PARTIAL_PAYMENT_RATIO);
         } else {
           this.amountPaid = 0;
         }
@@ -179,7 +184,7 @@ export class ModifyBookingComponent implements OnInit {
     
     // Calculate new pricing based on modifications
     const duration = this.modifiedDuration || this.booking.duration;
-    let pricePerHour = 100; // Default price
+    let pricePerHour = this.DEFAULT_PRICE_PER_HOUR;
     
     // Get expert's price if available
     if (this.modifiedExpert?.pricePerHour) {
@@ -314,7 +319,10 @@ export class ModifyBookingComponent implements OnInit {
     // If refund scenario, mark payment status accordingly
     if (this.refundAmount > 0) {
       updates.paymentStatus = 'paid'; // Keep as paid since refund will be processed separately
-      // TODO: Add refund transaction tracking if backend supports it
+      // TODO: Implement refund transaction tracking
+      // This should create a refund record in a refunds table/collection
+      // with booking ID, amount, status (pending/completed/failed), timestamp
+      // The refund can be processed asynchronously by a payment service
     }
 
     this.bookingService.updateBooking(+this.booking.id, updates).subscribe({

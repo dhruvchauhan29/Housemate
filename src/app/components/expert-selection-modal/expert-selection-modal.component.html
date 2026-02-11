@@ -24,7 +24,7 @@
   <!-- Experts List -->
   <mat-dialog-content *ngIf="!isLoading && !error">
     <div class="experts-header">
-      <p class="experts-count">{{ filteredExperts.length }} Available Expert{{ filteredExperts.length !== 1 ? 's' : '' }} Near You</p>
+      <p class="experts-count">{{ filteredExperts.length }} Available Experts Near You</p>
     </div>
 
     <!-- Empty State -->
@@ -65,12 +65,12 @@
                       {{ star }}
                     </mat-icon>
                   </span>
-                  <span class="rating-text">{{ expert.rating || 4.7 }} ({{ expert.reviewsCount || 122 }})</span>
+                  <span class="rating-text">{{ expert.rating || DEFAULT_RATING }} ({{ expert.reviewsCount || DEFAULT_REVIEWS_COUNT }})</span>
                 </div>
               </div>
             </div>
             <div class="expert-price">
-              <span class="price-label">₹{{ expert.pricePerHour || 100 }}/hr</span>
+              <span class="price-label">₹{{ expert.pricePerHour || DEFAULT_PRICE_PER_HOUR }}/hr</span>
             </div>
           </div>
 
@@ -83,7 +83,7 @@
             </div>
             <div class="meta-item">
               <mat-icon>location_on</mat-icon>
-              <span>{{ expert.address || '2.3 km away' }}</span>
+              <span>{{ expert.address || DEFAULT_DISTANCE }}</span>
             </div>
             <div class="meta-item" *ngIf="expert.serviceCategory">
               <mat-icon>build</mat-icon>

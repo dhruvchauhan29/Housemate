@@ -97,7 +97,7 @@
           <mat-icon class="detail-icon">timer</mat-icon>
           <div class="detail-content">
             <span class="detail-label">Duration</span>
-            <span class="detail-value">{{ booking.duration }} hour(s)</span>
+            <span class="detail-value">{{ booking.duration }} {{ booking.duration === 1 ? 'hour' : 'hours' }}</span>
           </div>
         </div>
       </div>

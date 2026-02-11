@@ -30,6 +30,12 @@ export class ExpertSelectionModalComponent implements OnInit {
   selectedExpert: Expert | null = null;
   isLoading = true;
   error: string | null = null;
+  
+  // Default values for missing expert data
+  readonly DEFAULT_RATING = 4.5;
+  readonly DEFAULT_REVIEWS_COUNT = 100;
+  readonly DEFAULT_PRICE_PER_HOUR = 100;
+  readonly DEFAULT_DISTANCE = '2.3 km away';
 
   constructor(
     private dialogRef: MatDialogRef<ExpertSelectionModalComponent>,
@@ -89,7 +95,7 @@ export class ExpertSelectionModalComponent implements OnInit {
 
   getRatingStars(rating?: number): string[] {
     const stars = [];
-    const rate = rating || 4.5; // Default rating
+    const rate = rating || this.DEFAULT_RATING;
     for (let i = 1; i <= 5; i++) {
       if (i <= rate) {
         stars.push('star');
