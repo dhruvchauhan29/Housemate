@@ -55,11 +55,11 @@ export class BookingService {
     return this.http.get<SavedBooking[]>(this.apiUrl);
   }
 
-  getBookingById(id: number): Observable<SavedBooking> {
+  getBookingById(id: number | string): Observable<SavedBooking> {
     return this.http.get<SavedBooking>(`${this.apiUrl}/${id}`);
   }
 
-  updateBooking(id: number, booking: Partial<SavedBooking>): Observable<SavedBooking> {
+  updateBooking(id: number | string, booking: Partial<SavedBooking>): Observable<SavedBooking> {
     return this.http.patch<SavedBooking>(`${this.apiUrl}/${id}`, booking);
   }
 

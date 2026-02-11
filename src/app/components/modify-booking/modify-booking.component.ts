@@ -86,15 +86,7 @@ export class ModifyBookingComponent implements OnInit {
       return;
     }
     
-    // Validate that the ID can be converted to a number (if using numeric IDs)
-    const numericId = Number(this.bookingId);
-    if (isNaN(numericId)) {
-      console.error('[ModifyBooking] Invalid booking ID:', this.bookingId);
-      this.error = 'Invalid booking ID. Please return to the bookings list.';
-      this.isLoading = false;
-      return;
-    }
-    
+    console.log('[ModifyBooking] Booking ID from route:', this.bookingId);
     this.loadBookingDetails();
   }
 
@@ -104,19 +96,11 @@ export class ModifyBookingComponent implements OnInit {
       return;
     }
 
-    const numericId = Number(this.bookingId);
-    if (isNaN(numericId)) {
-      console.error('[ModifyBooking] Cannot load booking with invalid ID:', this.bookingId);
-      this.error = 'Invalid booking ID. Please return to the bookings list.';
-      this.isLoading = false;
-      return;
-    }
-
     this.isLoading = true;
     this.error = null;
 
-    console.log('[ModifyBooking] Loading booking with ID:', numericId);
-    this.bookingService.getBookingById(numericId).subscribe({
+    console.log('[ModifyBooking] Loading booking with ID:', this.bookingId);
+    this.bookingService.getBookingById(this.bookingId).subscribe({
       next: (booking) => {
         console.log('[ModifyBooking] Successfully loaded booking:', booking);
         this.booking = booking;
@@ -260,9 +244,12 @@ export class ModifyBookingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(+this.booking.id, { status: 'cancelled' }).subscribe({
+        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
           next: () => {
-            this.router.navigate(['/my-bookings']);
+            this.snackBar.open('Booking cancelled successfully!', 'OK', { duration: 3000 });
+            setTimeout(() => {
+              this.router.navigate(['/my-bookings']);
+            }, 1000);
           },
           error: (error) => {
             console.error('Error cancelling booking:', error);
@@ -351,7 +338,7 @@ export class ModifyBookingComponent implements OnInit {
       // The refund can be processed asynchronously by a payment service
     }
 
-    this.bookingService.updateBooking(+this.booking.id, updates).subscribe({
+    this.bookingService.updateBooking(this.booking.id, updates).subscribe({
       next: () => {
         this.snackBar.open('Booking updated successfully!', 'OK', { duration: 3000 });
         setTimeout(() => {

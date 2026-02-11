@@ -47,15 +47,7 @@ export class BookingDetailsModalComponent implements OnInit {
       return;
     }
     
-    // Validate that the ID can be converted to a number (if using numeric IDs)
-    const numericId = Number(this.data.bookingId);
-    if (isNaN(numericId)) {
-      console.error('[BookingDetailsModal] Invalid booking ID:', this.data.bookingId);
-      this.error = 'Invalid booking ID. Please close and try again.';
-      this.isLoading = false;
-      return;
-    }
-    
+    console.log('[BookingDetailsModal] Booking ID from data:', this.data.bookingId);
     this.loadBookingDetails();
   }
 
@@ -65,19 +57,11 @@ export class BookingDetailsModalComponent implements OnInit {
       return;
     }
 
-    const numericId = Number(this.data.bookingId);
-    if (isNaN(numericId)) {
-      console.error('[BookingDetailsModal] Cannot load booking with invalid ID:', this.data.bookingId);
-      this.error = 'Invalid booking ID. Please close and try again.';
-      this.isLoading = false;
-      return;
-    }
-
     this.isLoading = true;
     this.error = null;
 
-    console.log('[BookingDetailsModal] Loading booking with ID:', numericId);
-    this.bookingService.getBookingById(numericId).subscribe({
+    console.log('[BookingDetailsModal] Loading booking with ID:', this.data.bookingId);
+    this.bookingService.getBookingById(this.data.bookingId).subscribe({
       next: (booking) => {
         console.log('[BookingDetailsModal] Successfully loaded booking:', booking);
         this.booking = booking;
@@ -122,7 +106,7 @@ export class BookingDetailsModalComponent implements OnInit {
 
     cancelDialogRef.afterClosed().subscribe(result => {
       if (result === true && this.booking?.id) {
-        this.bookingService.updateBooking(+this.booking.id, { status: 'cancelled' }).subscribe({
+        this.bookingService.updateBooking(this.booking.id, { status: 'cancelled' }).subscribe({
           next: () => {
             this.dialogRef.close({ cancelled: true });
           },
@@ -149,9 +133,9 @@ export class BookingDetailsModalComponent implements OnInit {
     });
 
     paymentDialogRef.afterClosed().subscribe(result => {
-      if (result?.transactionId) {
+      if (result?.transactionId && this.booking?.id) {
         // Update booking with payment info
-        this.bookingService.updateBooking(+this.booking!.id!, {
+        this.bookingService.updateBooking(this.booking.id, {
           transactionId: result.transactionId,
           paymentStatus: 'paid'
         }).subscribe({
