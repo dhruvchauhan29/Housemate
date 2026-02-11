@@ -5,15 +5,34 @@ import { Store } from '@ngrx/store';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormsModule } from '@angular/forms';
 import { AppState } from '../../store/app.state';
 import { Service, Expert } from '../../store/models/booking.model';
 import { selectService, selectExpert } from '../../store/actions/booking.actions';
 import { selectSelectedService, selectSelectedExpert } from '../../store/selectors/booking.selectors';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ExpertService, ExpertSearchParams, Expert as ApiExpert } from '../../services/expert.service';
 
 @Component({
   selector: 'app-select-service',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule, 
+    MatCardModule, 
+    MatButtonModule, 
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
+    FormsModule
+  ],
   templateUrl: './select-service.component.html',
   styleUrl: './select-service.component.scss'
 })
@@ -74,60 +93,33 @@ export class SelectServiceComponent implements OnInit {
     }
   ];
 
-  filteredExperts: Expert[] = [
-    {
-      id: '1',
-      name: 'Sara Khan',
-      rating: 4.7,
-      reviewCount: 122,
-      experience: '8 years',
-      distance: '2.3 km',
-      pricePerHour: 299,
-      verified: true,
-      services: ['Cooking', 'Electrician'],
-      languages: ['Hindi', 'English']
-    },
-    {
-      id: '2',
-      name: 'Rajesh Kumar',
-      rating: 4.7,
-      reviewCount: 122,
-      experience: '8 years',
-      distance: '2.3 km',
-      pricePerHour: 299,
-      verified: true,
-      services: ['Cooking', 'Electrician'],
-      languages: ['Hindi', 'English']
-    },
-    {
-      id: '3',
-      name: 'Priya Sharma',
-      rating: 4.8,
-      reviewCount: 156,
-      experience: '6 years',
-      distance: '1.8 km',
-      pricePerHour: 320,
-      verified: true,
-      services: ['Cleaning', 'Organizing'],
-      languages: ['Hindi', 'English', 'Marathi']
-    },
-    {
-      id: '4',
-      name: 'Amit Patel',
-      rating: 4.6,
-      reviewCount: 98,
-      experience: '5 years',
-      distance: '3.5 km',
-      pricePerHour: 280,
-      verified: true,
-      services: ['Gardening', 'Landscaping'],
-      languages: ['Hindi', 'English', 'Gujarati']
-    }
-  ];
+  // Expert listing
+  filteredExperts: ApiExpert[] = [];
+  isLoadingExperts = false;
+  expertError: string | null = null;
+  totalExperts = 0;
+  
+  // Search & Filters
+  searchQuery = '';
+  private searchSubject = new Subject<string>();
+  showFilters = false;
+  
+  // Filter values
+  minRating = 0;
+  minPrice = 0;
+  maxPrice = 200;
+  verifiedOnly = false;
+  selectedLanguage = '';
+  sortBy = '';
+  
+  // Pagination
+  currentPage = 1;
+  pageSize = 8;
 
   constructor(
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private expertService: ExpertService
   ) {
     this.selectedService$ = this.store.select(selectSelectedService);
     this.selectedExpert$ = this.store.select(selectSelectedExpert);
@@ -136,20 +128,135 @@ export class SelectServiceComponent implements OnInit {
   ngOnInit() {
     this.selectedService$.subscribe(service => {
       this.selectedServiceId = service?.id || null;
+      // Load experts when service is selected
+      if (this.selectedServiceId) {
+        this.loadExperts();
+      }
     });
+    
     this.selectedExpert$.subscribe(expert => {
       this.selectedExpertId = expert?.id || null;
+    });
+    
+    // Setup debounced search
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.currentPage = 1;
+      this.loadExperts();
     });
   }
 
   selectServiceCard(service: Service) {
     this.selectedServiceId = service.id;
     this.store.dispatch(selectService({ service }));
+    this.loadExperts();
   }
 
-  selectExpertCard(expert: Expert) {
-    this.selectedExpertId = expert.id;
-    this.store.dispatch(selectExpert({ expert }));
+  selectExpertCard(expert: ApiExpert) {
+    // Map API expert to store Expert model
+    const storeExpert: Expert = {
+      id: expert.id,
+      name: expert.fullName,
+      rating: expert.rating || 4.5,
+      reviewCount: expert.reviewsCount || 100,
+      experience: expert.experience,
+      distance: expert.address || 'Unknown',
+      pricePerHour: expert.pricePerHour || 100,
+      verified: expert.verified || false,
+      services: [expert.serviceCategory],
+      languages: expert.languages || ['Hindi', 'English']
+    };
+    
+    this.selectedExpertId = storeExpert.id;
+    this.store.dispatch(selectExpert({ expert: storeExpert }));
+  }
+
+  loadExperts() {
+    if (!this.selectedServiceId) {
+      this.filteredExperts = [];
+      return;
+    }
+    
+    this.isLoadingExperts = true;
+    this.expertError = null;
+    
+    // Get service name for filtering
+    const selectedService = this.services.find(s => s.id === this.selectedServiceId);
+    const serviceName = selectedService?.name || '';
+    
+    const params: ExpertSearchParams = {
+      serviceCategory: serviceName,
+      q: this.searchQuery || undefined,
+      minRating: this.minRating > 0 ? this.minRating : undefined,
+      minPrice: this.minPrice > 0 ? this.minPrice : undefined,
+      maxPrice: this.maxPrice < 200 ? this.maxPrice : undefined,
+      verified: this.verifiedOnly ? true : undefined,
+      language: this.selectedLanguage || undefined,
+      sort: (this.sortBy as any) || undefined,
+      page: this.currentPage,
+      limit: this.pageSize
+    };
+    
+    this.expertService.searchExperts(params).subscribe({
+      next: (result) => {
+        this.filteredExperts = result.experts;
+        this.totalExperts = result.total;
+        this.isLoadingExperts = false;
+      },
+      error: (error) => {
+        console.error('Error loading experts:', error);
+        this.expertError = 'Failed to load experts. Please try again.';
+        this.isLoadingExperts = false;
+        this.filteredExperts = [];
+      }
+    });
+  }
+
+  onSearchChange(value: string) {
+    this.searchQuery = value;
+    this.searchSubject.next(value);
+  }
+
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
+  }
+
+  applyFilters() {
+    this.currentPage = 1;
+    this.loadExperts();
+  }
+
+  clearFilters() {
+    this.searchQuery = '';
+    this.minRating = 0;
+    this.minPrice = 0;
+    this.maxPrice = 200;
+    this.verifiedOnly = false;
+    this.selectedLanguage = '';
+    this.sortBy = '';
+    this.currentPage = 1;
+    this.loadExperts();
+  }
+
+  nextPage() {
+    const maxPage = Math.ceil(this.totalExperts / this.pageSize);
+    if (this.currentPage < maxPage) {
+      this.currentPage++;
+      this.loadExperts();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadExperts();
+    }
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalExperts / this.pageSize);
   }
 
   getServiceIcon(serviceName: string): string {

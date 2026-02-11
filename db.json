@@ -95,6 +95,180 @@
         "Hindi",
         "English"
       ]
+    },
+    {
+      "id": "5",
+      "email": "priya@example.com",
+      "password": "password",
+      "fullName": "Priya Sharma",
+      "age": 26,
+      "address": "1.5 km away",
+      "mobileNumber": "+91 9876543213",
+      "serviceCategory": "Gardening",
+      "experience": "3 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 110,
+      "rating": 4.8,
+      "reviewsCount": 156,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Marathi"
+      ]
+    },
+    {
+      "id": "6",
+      "email": "vijay@example.com",
+      "password": "password",
+      "fullName": "Vijay Patel",
+      "age": 40,
+      "address": "5.2 km away",
+      "mobileNumber": "+91 9876543214",
+      "serviceCategory": "Cooking",
+      "experience": "12 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 150,
+      "rating": 4.9,
+      "reviewsCount": 234,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Gujarati"
+      ]
+    },
+    {
+      "id": "7",
+      "email": "neha@example.com",
+      "password": "password",
+      "fullName": "Neha Verma",
+      "age": 27,
+      "address": "2.8 km away",
+      "mobileNumber": "+91 9876543215",
+      "serviceCategory": "Cleaning",
+      "experience": "6 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 105,
+      "rating": 4.6,
+      "reviewsCount": 145,
+      "verified": false,
+      "languages": [
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "id": "8",
+      "email": "ravi@example.com",
+      "password": "password",
+      "fullName": "Ravi Kumar",
+      "age": 33,
+      "address": "4.5 km away",
+      "mobileNumber": "+91 9876543216",
+      "serviceCategory": "Gardening",
+      "experience": "7 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 130,
+      "rating": 4.7,
+      "reviewsCount": 178,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Tamil"
+      ]
+    },
+    {
+      "id": "9",
+      "email": "anjali@example.com",
+      "password": "password",
+      "fullName": "Anjali Singh",
+      "age": 30,
+      "address": "1.2 km away",
+      "mobileNumber": "+91 9876543217",
+      "serviceCategory": "Cooking",
+      "experience": "5 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 95,
+      "rating": 4.4,
+      "reviewsCount": 89,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Bengali"
+      ]
+    },
+    {
+      "id": "10",
+      "email": "suresh@example.com",
+      "password": "password",
+      "fullName": "Suresh Menon",
+      "age": 38,
+      "address": "3.7 km away",
+      "mobileNumber": "+91 9876543218",
+      "serviceCategory": "Cleaning",
+      "experience": "10 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 140,
+      "rating": 4.9,
+      "reviewsCount": 201,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Malayalam"
+      ]
+    },
+    {
+      "id": "11",
+      "email": "kavita@example.com",
+      "password": "password",
+      "fullName": "Kavita Joshi",
+      "age": 25,
+      "address": "6.0 km away",
+      "mobileNumber": "+91 9876543219",
+      "serviceCategory": "Gardening",
+      "experience": "2 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 85,
+      "rating": 4.3,
+      "reviewsCount": 67,
+      "verified": false,
+      "languages": [
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "id": "12",
+      "email": "arun@example.com",
+      "password": "password",
+      "fullName": "Arun Reddy",
+      "age": 31,
+      "address": "2.1 km away",
+      "mobileNumber": "+91 9876543220",
+      "serviceCategory": "Cooking",
+      "experience": "9 years",
+      "idProof": "uploaded-file.jpg",
+      "role": "EXPERT",
+      "pricePerHour": 125,
+      "rating": 4.8,
+      "reviewsCount": 189,
+      "verified": true,
+      "languages": [
+        "Hindi",
+        "English",
+        "Telugu"
+      ]
     }
   ],
   "bookings": [
