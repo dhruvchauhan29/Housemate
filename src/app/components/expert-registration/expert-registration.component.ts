@@ -174,7 +174,11 @@ export class ExpertRegistrationComponent {
       // Map service IDs to service names for proper filtering
       const serviceNames = formData.servicesOffered.map((serviceId: string) => {
         const service = this.services.find(s => s.id === serviceId);
-        return service ? service.name : serviceId;
+        if (!service) {
+          console.warn(`Service with id '${serviceId}' not found in services array. Using ID as fallback.`);
+          return serviceId;
+        }
+        return service.name;
       });
 
       const expert: User = {
