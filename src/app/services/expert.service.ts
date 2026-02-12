@@ -58,17 +58,21 @@ export class ExpertService {
   }
 
   searchExperts(params: ExpertSearchParams): Observable<ExpertSearchResult> {
-    let httpParams = new HttpParams();
-    
-    // Add service category filter
-    if (params.serviceCategory) {
-      httpParams = httpParams.set('serviceCategory', params.serviceCategory);
-    }
-    
-    // Fetch all experts and apply client-side filtering
-    return this.http.get<Expert[]>(this.apiUrl, { params: httpParams }).pipe(
+    // Note: We fetch all experts and apply client-side filtering because json-server
+    // does not support case-insensitive queries. For production with a real backend,
+    // consider implementing server-side case-insensitive filtering for better performance.
+    // The current approach is acceptable for the expected dataset size in this application.
+    return this.http.get<Expert[]>(this.apiUrl).pipe(
       map(experts => {
         let filtered = experts;
+        
+        // Apply case-insensitive service category filter
+        if (params.serviceCategory) {
+          const categoryLower = params.serviceCategory.toLowerCase();
+          filtered = filtered.filter(expert => 
+            expert.serviceCategory.toLowerCase().includes(categoryLower)
+          );
+        }
         
         // Apply search query filter (name only)
         if (params.q) {

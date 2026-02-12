@@ -171,6 +171,16 @@ export class ExpertRegistrationComponent {
       
       const formData = this.registrationForm.value;
       
+      // Map service IDs to service names for proper filtering
+      const serviceNames = formData.servicesOffered.map((serviceId: string) => {
+        const service = this.services.find(s => s.id === serviceId);
+        if (!service) {
+          console.warn(`Service with id '${serviceId}' not found in services array. Using ID as fallback.`);
+          return serviceId;
+        }
+        return service.name;
+      });
+
       const expert: User = {
         fullName: formData.fullName,
         mobileNumber: '+91' + formData.mobileNumber,
@@ -178,7 +188,7 @@ export class ExpertRegistrationComponent {
         password: formData.password,
         address: `${formData.completeAddress}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
         role: 'EXPERT' as const,
-        serviceCategory: formData.servicesOffered.join(', '),
+        serviceCategory: serviceNames.join(', '),
         experience: `${formData.experienceYears} years ${formData.experienceMonths} months`,
         idProof: formData.idProofType + ': ' + formData.idProofNumber
       };
